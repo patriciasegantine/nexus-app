@@ -3,8 +3,9 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/header'
 import React from "react";
+import { AuthProvider } from "@/contexts/auth";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({subsets: ['latin']})
 
 export const metadata: Metadata = {
   title: {
@@ -27,10 +28,12 @@ export default function RootLayout({
   return (
     <html lang="en">
     <body className={inter.className}>
-    <Header />
-    <main className="pt-14">
-      {children}
-    </main>
+    <AuthProvider>
+      <Header/>
+      <main className="pt-14">
+        {children}
+      </main>
+    </AuthProvider>
     </body>
     </html>
   )
