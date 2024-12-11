@@ -1,13 +1,22 @@
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import React from "react";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 import './globals.css'
+import { Header } from '@/components/header'
+import React from "react";
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Dashboard Analytics",
-  description: "E-commerce analytics dashboard",
+  title: {
+    default: 'Nexus',
+    template: '%s | Nexus'
+  },
+  description: 'Connect and organize your workflow with Nexus - The central hub for your tasks and projects.',
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/site.webmanifest',
 }
 
 export default function RootLayout({
@@ -17,7 +26,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-    <body className={inter.className}>{children}</body>
+    <body className={inter.className}>
+    <Header />
+    <main className="pt-14">
+      {children}
+    </main>
+    </body>
     </html>
   )
 }
