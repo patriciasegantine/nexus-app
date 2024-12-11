@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
-import { forgotPasswordSchema, type ForgotPasswordInput } from "@/types/auth"
+import { forgotPasswordSchema, type ForgotPasswordInput } from "@/validations/auth"
 import { AppRoutes } from "@/constants/routes"
 
 export default function ForgotPasswordPage() {

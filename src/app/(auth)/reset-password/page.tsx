@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
-import { resetPasswordSchema, type ResetPasswordInput } from "@/types/auth"
+import { resetPasswordSchema, type ResetPasswordInput } from "@/validations/auth"
 import { AppRoutes } from "@/constants/routes"
 import { PasswordRules } from "@/components/password-rules";
 import { usePasswordRules } from "@/hooks/usePasswordRules";

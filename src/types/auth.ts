@@ -1,58 +1,30 @@
-import * as z from "zod"
+export interface LoginCredentials {
+  email: string
+  password: string
+}
 
-export const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Invalid email address"),
-  password: z
-    .string()
-    .min(1, "Password is required")
-    .min(6, "Password must be at least 6 characters"),
-})
+export interface RegisterCredentials {
+  name: string
+  email: string
+  password: string
+}
 
-export type LoginInput = z.infer<typeof loginSchema>
+export interface ForgotPasswordCredentials {
+  email: string
+}
 
-export const registerSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Name is required")
-    .min(3, "Name must be at least 3 characters"),
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Invalid email address"),
-  password: z
-    .string()
-    .min(1, "Password is required")
-    .min(6, "Password must be at least 6 characters"),
-})
+export interface ResetPasswordCredentials {
+  password: string
+  token: string
+}
 
-export type RegisterInput = z.infer<typeof registerSchema>
+export interface User {
+  id: string
+  name: string
+  email: string
+}
 
-export const forgotPasswordSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Invalid email address"),
-})
-
-export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>
-
-export const resetPasswordSchema = z.object({
-  token: z.string(),
-  password: z
-    .string()
-    .min(8, "Password must be at least 6 characters")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
-  confirmPassword: z
-    .string()
-    .min(1, "Please confirm your password"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-})
-
-export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>
+export interface AuthResponse {
+  user: User
+  token: string
+}
