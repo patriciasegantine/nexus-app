@@ -1,4 +1,7 @@
 export enum AppRoutes {
+  // General
+  HOME = '/',
+  
   // Auth Routes
   LOGIN = '/login',
   REGISTER = '/register',
