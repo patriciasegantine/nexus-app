@@ -8,7 +8,8 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { type LoginInput, loginSchema } from "@/validations/auth"
 import { AppRoutes } from "@/constants/routes"
 import { LoginCredentials } from "@/types/auth";
-import { useAuth } from "@/contexts/auth";
+import { useLogin } from "@/hooks/auth/use-login";
+import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const form = useForm<LoginInput>({
@@ -19,14 +20,10 @@ export default function LoginPage() {
     },
   })
   
-  const {signIn} = useAuth()
-  const onSubmit = async (data: LoginCredentials) => {
-    try {
-      await signIn(data)
-    } catch (error) {
-      // error
-      console.error(error)
-    }
+  const login = useLogin()
+  
+  const onSubmit = (data: LoginCredentials) => {
+    login.mutate(data)
   }
   
   return (
@@ -83,8 +80,19 @@ export default function LoginPage() {
               </a>
             </div>
             
-            <Button className="w-full h-12" type="submit">
-              Sign in
+            <Button
+              className="w-full h-12"
+              type="submit"
+              disabled={login.isPending}
+            >
+              {login.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+                  Resetting password...
+                </>
+              ) : (
+                'Reset password'
+              )}
             </Button>
           </form>
         </Form>
@@ -94,7 +102,7 @@ export default function LoginPage() {
             href={AppRoutes.REGISTER}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors block"
           >
-            Don't have an account? Sign up
+            Don&#39;t have an account? Sign up
           </a>
         </div>
       </div>
