@@ -4,38 +4,33 @@ import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import { AppRoutes } from '@/constants/routes'
 import type { ApiErrorResponse } from '@/types/api'
-import { ResetPasswordCredentials } from "@/types/auth";
+import { AUTH_ERROR_CODES } from "@/constants/erros";
 import { AUTH_MESSAGES } from "@/constants/messagens";
 
-export function useResetPassword() {
+export function useRegister() {
   const {toast} = useToast()
   const router = useRouter()
   
   return useMutation({
-    mutationFn: async (data: ResetPasswordCredentials) => {
-      const response = await authService.resetPassword(data)
-      return response
-    },
+    mutationFn: authService.register,
     onSuccess: () => {
       toast({
         title: "Success",
-        description: AUTH_MESSAGES.RESET_PASSWORD_SUCCESS,
+        description: AUTH_MESSAGES.REGISTER_SUCCESS,
       })
       router.push(AppRoutes.LOGIN)
     },
     onError: (error: ApiErrorResponse) => {
       let errorMessage = error.message
       
-      if (error.code === 'SAME_PASSWORD') {
-        errorMessage = AUTH_MESSAGES.SAME_PASSWORD
-      } else if (error.code === 'INVALID_TOKEN') {
-        errorMessage = AUTH_MESSAGES.INVALID_RESET_LINK
+      if (error.code === AUTH_ERROR_CODES.USER_ALREADY_EXISTS) {
+        errorMessage = AUTH_MESSAGES.USER_ALREADY_EXISTS
       }
       
       toast({
         variant: "destructive",
         title: "Error",
-        description: errorMessage || AUTH_MESSAGES.RESET_PASSWORD_FAIL
+        description: errorMessage,
       })
     }
   })
