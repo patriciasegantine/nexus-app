@@ -5,26 +5,64 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
-import { resetPasswordSchema, type ResetPasswordInput } from "@/validations/auth"
+import { type ResetPasswordInput, resetPasswordSchema } from "@/validations/auth"
 import { AppRoutes } from "@/constants/routes"
 import { PasswordRules } from "@/components/password-rules";
-import { usePasswordRules } from "@/hooks/usePasswordRules";
+import { useSearchParams } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { ResetPasswordCredentials } from "@/types/auth";
+import { Link, Loader2 } from "lucide-react";
+import { useResetPassword } from "@/hooks/auth/use-reset-password";
+import { usePasswordRules } from "@/hooks/auth/use-password-rules";
 
 export default function ResetPasswordPage() {
+  const searchParams = useSearchParams()
+  const {toast} = useToast()
+  const resetPassword = useResetPassword()
+  const token = searchParams.get('token')
+  
   const form = useForm<ResetPasswordInput>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      password: "",
+      newPassword: "",
       confirmPassword: "",
-      token: ""
+      token: token || "",
     },
   })
   
-  const password = form.watch("password")
-  const { showRules, setShowRules, passwordRules } = usePasswordRules(password)
+  const password = form.watch("newPassword")
+  const {showRules, setShowRules, passwordRules} = usePasswordRules(password)
   
-  const onSubmit = async (data: ResetPasswordInput) => {
-    console.log(data)
+  const onSubmit = async (data: ResetPasswordCredentials) => {
+    if (!token) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Invalid reset link. Please request a new one.",
+      })
+      return
+    }
+    
+    resetPassword.mutate({
+      token: token,
+      newPassword: data.newPassword
+    })
+  }
+  
+  if (!searchParams.get('token')) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+        <div className="text-center space-y-4">
+          <h1 className="text-2xl font-semibold text-destructive">Invalid Reset Link</h1>
+          <p className="text-muted-foreground">
+            This password reset link is invalid or has expired.
+          </p>
+          <Button asChild>
+            <Link href={AppRoutes.FORGOT_PASSWORD}>Request New Link</Link>
+          </Button>
+        </div>
+      </div>
+    )
   }
   
   return (
@@ -41,8 +79,8 @@ export default function ResetPasswordPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
-              name="password"
-              render={({ field }) => (
+              name="newPassword"
+              render={({field}) => (
                 <FormItem>
                   <FormControl>
                     <Input
@@ -53,17 +91,17 @@ export default function ResetPasswordPage() {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />
             
-            {showRules && <PasswordRules rules={passwordRules} />}
+            {showRules && <PasswordRules rules={passwordRules}/>}
             
             <FormField
               control={form.control}
               name="confirmPassword"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormControl>
                     <Input
@@ -73,13 +111,24 @@ export default function ResetPasswordPage() {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />
             
-            <Button className="w-full h-12" type="submit">
-              Reset password
+            <Button
+              className="w-full h-12"
+              type="submit"
+              disabled={resetPassword.isPending}
+            >
+              {resetPassword.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+                  Resetting password...
+                </>
+              ) : (
+                'Reset password'
+              )}
             </Button>
           </form>
         </Form>

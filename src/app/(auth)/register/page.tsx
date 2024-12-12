@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { RegisterInput, registerSchema } from "@/validations/auth";
 import { AppRoutes } from "@/constants/routes";
-import { usePasswordRules } from "@/hooks/usePasswordRules";
+import { usePasswordRules } from "@/hooks/auth/use-password-rules";
 import { PasswordRules } from "@/components/password-rules";
 import { RegisterCredentials } from "@/types/auth";
 import { useAuth } from "@/contexts/auth";

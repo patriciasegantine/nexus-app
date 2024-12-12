@@ -5,6 +5,7 @@ import { Header } from '@/components/header'
 import React from "react";
 import { AuthProvider } from "@/contexts/auth";
 import { Toaster } from "@/components/ui/toaster";
+import { QueryProvider } from "@/providers/query-provider";
 
 const inter = Inter({subsets: ['latin']})
 
@@ -29,13 +30,15 @@ export default function RootLayout({
   return (
     <html lang="en">
     <body className={inter.className}>
-    <AuthProvider>
-      <Header/>
-      <main className="pt-14">
-        {children}
-      </main>
-      <Toaster/>
-    </AuthProvider>
+    <QueryProvider>
+      <AuthProvider>
+        <Header/>
+        <main className="pt-14">
+          {children}
+        </main>
+        <Toaster/>
+      </AuthProvider>
+    </QueryProvider>
     </body>
     </html>
   )

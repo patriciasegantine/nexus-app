@@ -41,7 +41,7 @@ export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>
 
 export const resetPasswordSchema = z.object({
   token: z.string(),
-  password: z
+  newPassword: z
     .string()
     .min(8, "Password must be at least 6 characters")
     .regex(/[a-z]/, "Password must contain at least one lowercase letter")
@@ -50,7 +50,7 @@ export const resetPasswordSchema = z.object({
   confirmPassword: z
     .string()
     .min(1, "Please confirm your password"),
-}).refine((data) => data.password === data.confirmPassword, {
+}).refine((data) => data.newPassword === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
 })
