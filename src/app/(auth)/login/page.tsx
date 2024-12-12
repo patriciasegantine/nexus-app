@@ -5,8 +5,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
-import { loginSchema, type LoginInput } from "@/validations/auth"
+import { type LoginInput, loginSchema } from "@/validations/auth"
 import { AppRoutes } from "@/constants/routes"
+import { LoginCredentials } from "@/types/auth";
+import { useAuth } from "@/contexts/auth";
 
 export default function LoginPage() {
   const form = useForm<LoginInput>({
@@ -17,8 +19,14 @@ export default function LoginPage() {
     },
   })
   
-  const onSubmit = async (data: LoginInput) => {
-    console.log(data)
+  const {signIn} = useAuth()
+  const onSubmit = async (data: LoginCredentials) => {
+    try {
+      await signIn(data)
+    } catch (error) {
+      // error
+      console.error(error)
+    }
   }
   
   return (
@@ -34,7 +42,7 @@ export default function LoginPage() {
             <FormField
               control={form.control}
               name="email"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormControl>
                     <Input
@@ -44,14 +52,14 @@ export default function LoginPage() {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
               name="password"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormControl>
                     <Input
@@ -61,7 +69,7 @@ export default function LoginPage() {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />
