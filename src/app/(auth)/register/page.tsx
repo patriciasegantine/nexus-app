@@ -9,6 +9,8 @@ import { RegisterInput, registerSchema } from "@/validations/auth";
 import { AppRoutes } from "@/constants/routes";
 import { usePasswordRules } from "@/hooks/usePasswordRules";
 import { PasswordRules } from "@/components/password-rules";
+import { RegisterCredentials } from "@/types/auth";
+import { useAuth } from "@/contexts/auth";
 
 export default function RegisterPage() {
   const form = useForm<RegisterInput>({
@@ -21,10 +23,17 @@ export default function RegisterPage() {
   })
   
   const password = form.watch("password")
-  const { showRules, setShowRules, passwordRules } = usePasswordRules(password)
+  const {showRules, setShowRules, passwordRules} = usePasswordRules(password)
   
-  const onSubmit = async (data: RegisterInput) => {
-    console.log(data)
+  const {signUp} = useAuth()
+  
+  const onSubmit = async (data: RegisterCredentials) => {
+    try {
+      await signUp(data)
+    } catch (error) {
+      //  error
+      console.error(error)
+    }
   }
   
   return (
@@ -40,7 +49,7 @@ export default function RegisterPage() {
             <FormField
               control={form.control}
               name="name"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormControl>
                     <Input
@@ -49,7 +58,7 @@ export default function RegisterPage() {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />
@@ -57,7 +66,7 @@ export default function RegisterPage() {
             <FormField
               control={form.control}
               name="email"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormControl>
                     <Input
@@ -67,7 +76,7 @@ export default function RegisterPage() {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />
@@ -75,7 +84,7 @@ export default function RegisterPage() {
             <FormField
               control={form.control}
               name="password"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormControl>
                     <Input
@@ -86,12 +95,12 @@ export default function RegisterPage() {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />
             
-            {showRules && <PasswordRules rules={passwordRules} />}
+            {showRules && <PasswordRules rules={passwordRules}/>}
             
             <Button className="w-full h-12" type="submit">
               Sign up
