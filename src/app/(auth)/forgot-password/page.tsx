@@ -5,19 +5,43 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
-import { forgotPasswordSchema, type ForgotPasswordInput } from "@/validations/auth"
+import { forgotPasswordSchema } from "@/validations/auth"
 import { AppRoutes } from "@/constants/routes"
+import { authService } from "@/services/auth";
+import { ForgotPasswordCredentials } from "@/types/auth";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { ApiError } from "@/types/api";
 
 export default function ForgotPasswordPage() {
-  const form = useForm<ForgotPasswordInput>({
+  const router = useRouter()
+  const {toast} = useToast()
+  const form = useForm<ForgotPasswordCredentials>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: "",
     },
   })
   
-  const onSubmit = async (data: ForgotPasswordInput) => {
-    console.log(data)
+  const onSubmit = async (data: ForgotPasswordCredentials) => {
+    try {
+      await authService.forgotPassword(data)
+      
+      toast({
+        title: "Check your email",
+        description: "We sent you a link to reset your password.",
+      })
+      
+      router.push(AppRoutes.LOGIN)
+    } catch (error: unknown) {
+      const apiError = error as ApiError
+      
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: apiError.message || "Something went wrong. Please try again.",
+      })
+    }
   }
   
   return (
@@ -26,7 +50,7 @@ export default function ForgotPasswordPage() {
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-light">Reset password</h1>
           <p className="text-sm text-muted-foreground">
-            Enter your email address and we'll send you a link to reset your password
+            Enter your email address and we&#39;ll send you a link to reset your password
           </p>
         </div>
         
@@ -35,7 +59,7 @@ export default function ForgotPasswordPage() {
             <FormField
               control={form.control}
               name="email"
-              render={({ field }) => (
+              render={({field}) => (
                 <FormItem>
                   <FormControl>
                     <Input
@@ -45,7 +69,7 @@ export default function ForgotPasswordPage() {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />

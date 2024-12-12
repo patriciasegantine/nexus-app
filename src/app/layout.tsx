@@ -4,6 +4,7 @@ import './globals.css'
 import { Header } from '@/components/header'
 import React from "react";
 import { AuthProvider } from "@/contexts/auth";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({subsets: ['latin']})
 
@@ -33,6 +34,7 @@ export default function RootLayout({
       <main className="pt-14">
         {children}
       </main>
+      <Toaster/>
     </AuthProvider>
     </body>
     </html>

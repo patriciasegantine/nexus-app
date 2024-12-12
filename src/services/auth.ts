@@ -1,13 +1,14 @@
 import { api } from './api'
 import { API_ROUTES } from '@/constants/api'
 import type {
+  AuthResponse,
+  ForgotPasswordCredentials,
   LoginCredentials,
   RegisterCredentials,
-  ForgotPasswordCredentials,
-  ResetPasswordCredentials,
-  AuthResponse
+  ResetPasswordCredentials
 } from '@/types/auth'
 import type { ApiResponse } from '@/types/api'
+import { AppRoutes } from "@/constants/routes";
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<ApiResponse<AuthResponse>> {
@@ -21,7 +22,12 @@ export const authService = {
   },
   
   async forgotPassword(credentials: ForgotPasswordCredentials): Promise<ApiResponse<void>> {
-    const response = await api.post(API_ROUTES.AUTH.FORGOT_PASSWORD, credentials)
+    const response = await api.post(API_ROUTES.AUTH.FORGOT_PASSWORD, {
+      ...credentials,
+      redirectTo: AppRoutes.RESET_PASSWORD,
+      baseUrl: window.location.origin
+    })
+    
     return response.data
   },
   
