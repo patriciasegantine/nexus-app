@@ -29,7 +29,7 @@ export function useLogin() {
           title: "Success",
           description: AUTH_MESSAGES.LOGIN_SUCCESS,
         })
-        router.push(AppRoutes.HOME)
+        router.push(AppRoutes.DASHBOARD)
       }
     },
     onError: (error: ApiErrorResponse) => {
