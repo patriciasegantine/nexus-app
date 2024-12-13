@@ -12,8 +12,8 @@ import { useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { ResetPasswordCredentials } from "@/types/auth";
 import { Link, Loader2 } from "lucide-react";
-import { useResetPassword } from "@/hooks/auth/use-reset-password";
-import { usePasswordRules } from "@/hooks/auth/use-password-rules";
+import { usePasswordRules } from "@/hooks/use-password-rules";
+import { useResetPassword } from "@/hooks/auth/use-auth-mutation";
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams()

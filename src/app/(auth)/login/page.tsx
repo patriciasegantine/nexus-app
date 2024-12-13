@@ -8,8 +8,8 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { type LoginInput, loginSchema } from "@/validations/auth"
 import { AppRoutes } from "@/constants/routes"
 import { LoginCredentials } from "@/types/auth";
-import { useLogin } from "@/hooks/auth/use-login";
 import { Loader2 } from "lucide-react";
+import { useLogin } from "@/hooks/auth/use-auth-mutation";
 
 export default function LoginPage() {
   const form = useForm<LoginInput>({
@@ -88,10 +88,10 @@ export default function LoginPage() {
               {login.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
-                  Resetting password...
+                  Signing in...
                 </>
               ) : (
-                'Reset password'
+                'Sign in'
               )}
             </Button>
           </form>

@@ -1,3 +1,15 @@
+export interface User {
+  id: string
+  name: string
+  email: string
+  role: string
+}
+
+export interface AuthResponse {
+  user: User
+  accessToken: string
+}
+
 export interface LoginCredentials {
   email: string
   password: string
@@ -14,17 +26,6 @@ export interface ForgotPasswordCredentials {
 }
 
 export interface ResetPasswordCredentials {
-  newPassword: string
   token: string
-}
-
-export interface User {
-  id: string
-  name: string
-  email: string
-}
-
-export interface AuthResponse {
-  user: User
-  token: string
+  password: string
 }

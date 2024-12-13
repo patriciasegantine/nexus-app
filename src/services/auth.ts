@@ -75,7 +75,7 @@ export const authService = {
     }
   },
   
-  logout() {
+  async logout() {
     localStorage.removeItem('@nexus:token')
     localStorage.removeItem('@nexus:user')
   }

@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/header'
 import React from "react";
-import { AuthProvider } from "@/contexts/auth";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryProvider } from "@/providers/query-provider";
 
@@ -31,13 +30,11 @@ export default function RootLayout({
     <html lang="en">
     <body className={inter.className}>
     <QueryProvider>
-      <AuthProvider>
-        <Header/>
-        <main className="pt-14">
-          {children}
-        </main>
-        <Toaster/>
-      </AuthProvider>
+      <Header/>
+      <main className="pt-14">
+        {children}
+      </main>
+      <Toaster/>
     </QueryProvider>
     </body>
     </html>

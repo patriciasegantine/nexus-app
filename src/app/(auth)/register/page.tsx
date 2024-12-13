@@ -7,12 +7,14 @@ import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { RegisterInput, registerSchema } from "@/validations/auth";
 import { AppRoutes } from "@/constants/routes";
-import { usePasswordRules } from "@/hooks/auth/use-password-rules";
+import { usePasswordRules } from "@/hooks/use-password-rules";
 import { PasswordRules } from "@/components/password-rules";
 import { RegisterCredentials } from "@/types/auth";
-import { useAuth } from "@/contexts/auth";
+import { useRegister } from "@/hooks/auth/use-auth-mutation";
 
 export default function RegisterPage() {
+  const register = useRegister()
+  
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -25,15 +27,8 @@ export default function RegisterPage() {
   const password = form.watch("password")
   const {showRules, setShowRules, passwordRules} = usePasswordRules(password)
   
-  const {signUp} = useAuth()
-  
-  const onSubmit = async (data: RegisterCredentials) => {
-    try {
-      await signUp(data)
-    } catch (error) {
-      //  error
-      console.error(error)
-    }
+  const onSubmit = (data: RegisterCredentials) => {
+    register.mutate(data)
   }
   
   return (

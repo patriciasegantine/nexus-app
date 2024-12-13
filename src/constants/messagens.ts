@@ -1,8 +1,8 @@
 export const AUTH_MESSAGES = {
   LOGIN_SUCCESS: "Welcome back!",
   REGISTER_SUCCESS: "Account created successfully! Please check your email.",
-  FORGOT_PASSWORD_SUCCESS: "If an account exists with this email, you will receive password reset instructions.",
-  FORGOT_PASSWORD_FAIL: "Failed to process request. Please try again.",
+  FORGOT_PASSWORD: "If an account exists with this email, you will receive password reset instructions.",
+  LOGOUT_SUCCESS: "You have been signed out.",
   RESET_PASSWORD_SUCCESS: "Password reset successful. You can now login with your new password.",
   RESET_PASSWORD_FAIL: "Failed to reset password. Please try again.",
   INVALID_CREDENTIALS: "Invalid email or password",

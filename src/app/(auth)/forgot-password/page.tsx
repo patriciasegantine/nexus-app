@@ -7,15 +7,13 @@ import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { forgotPasswordSchema } from "@/validations/auth"
 import { AppRoutes } from "@/constants/routes"
-import { authService } from "@/services/auth";
-import { ForgotPasswordCredentials } from "@/types/auth";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { ApiError } from "@/types/api";
+import { ForgotPasswordCredentials } from "@/types/auth"
+import { Loader2 } from "lucide-react"
+import { useForgotPassword } from "@/hooks/auth/use-auth-mutation";
 
 export default function ForgotPasswordPage() {
-  const router = useRouter()
-  const {toast} = useToast()
+  const forgotPassword = useForgotPassword()
+  
   const form = useForm<ForgotPasswordCredentials>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
@@ -23,25 +21,8 @@ export default function ForgotPasswordPage() {
     },
   })
   
-  const onSubmit = async (data: ForgotPasswordCredentials) => {
-    try {
-      await authService.forgotPassword(data)
-      
-      toast({
-        title: "Check your email",
-        description: "We sent you a link to reset your password.",
-      })
-      
-      router.push(AppRoutes.LOGIN)
-    } catch (error: unknown) {
-      const apiError = error as ApiError
-      
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: apiError.message || "Something went wrong. Please try again.",
-      })
-    }
+  const onSubmit = (data: ForgotPasswordCredentials) => {
+    forgotPassword.mutate(data)
   }
   
   return (
@@ -74,8 +55,19 @@ export default function ForgotPasswordPage() {
               )}
             />
             
-            <Button className="w-full h-12" type="submit">
-              Send reset link
+            <Button
+              className="w-full h-12"
+              type="submit"
+              disabled={forgotPassword.isPending}
+            >
+              {forgotPassword.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+                  Sending reset link...
+                </>
+              ) : (
+                'Send reset link'
+              )}
             </Button>
           </form>
         </Form>
