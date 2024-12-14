@@ -105,7 +105,7 @@ export default function RegisterPage() {
         
         <div className="text-center">
           <a
-            href={AppRoutes.LOGIN}
+            href={AppRoutes.AUTH.LOGIN}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             Already have an account? Sign in

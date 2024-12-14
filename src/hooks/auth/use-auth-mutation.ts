@@ -29,7 +29,7 @@ export function useLogin() {
           title: "Success",
           description: AUTH_MESSAGES.LOGIN_SUCCESS,
         })
-        router.push(AppRoutes.DASHBOARD)
+        router.push(AppRoutes.DASHBOARD.HOME)
       }
     },
     onError: (error: ApiErrorResponse) => {
@@ -59,7 +59,7 @@ export function useRegister() {
         title: "Success",
         description: AUTH_MESSAGES.REGISTER_SUCCESS,
       })
-      router.push(AppRoutes.LOGIN)
+      router.push(AppRoutes.AUTH.LOGIN)
     },
     onError: (error: ApiErrorResponse) => {
       let errorMessage = error.message
@@ -88,14 +88,14 @@ export function useForgotPassword() {
         title: "Check your email",
         description: AUTH_MESSAGES.FORGOT_PASSWORD,
       })
-      router.push(AppRoutes.LOGIN)
+      router.push(AppRoutes.AUTH.LOGIN)
     },
     onError: () => {
       toast({
         title: "Check your email",
         description: AUTH_MESSAGES.FORGOT_PASSWORD,
       })
-      router.push(AppRoutes.LOGIN)
+      router.push(AppRoutes.AUTH.LOGIN)
     }
   })
 }
@@ -114,7 +114,7 @@ export function useResetPassword() {
         title: "Success",
         description: AUTH_MESSAGES.RESET_PASSWORD_SUCCESS,
       })
-      router.push(AppRoutes.LOGIN)
+      router.push(AppRoutes.AUTH.LOGIN)
     },
     onError: (error: ApiErrorResponse) => {
       let errorMessage = error.message
@@ -151,7 +151,7 @@ export function useLogout() {
         title: "Success",
         description: AUTH_MESSAGES.LOGOUT_SUCCESS,
       })
-      router.push(AppRoutes.LOGIN)
+      router.push(AppRoutes.AUTH.LOGIN)
     }
   })
 }

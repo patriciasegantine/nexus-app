@@ -73,7 +73,7 @@ export default function LoginPage() {
             
             <div className="text-right">
               <a
-                href={AppRoutes.FORGOT_PASSWORD}
+                href={AppRoutes.AUTH.FORGOT_PASSWORD}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 Forgot your password?
@@ -99,7 +99,7 @@ export default function LoginPage() {
         
         <div className="text-center pt-4">
           <a
-            href={AppRoutes.REGISTER}
+            href={AppRoutes.AUTH.REGISTER}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors block"
           >
             Don&#39;t have an account? Sign up

@@ -58,7 +58,7 @@ export default function ResetPasswordPage() {
             This password reset link is invalid or has expired.
           </p>
           <Button asChild>
-            <Link href={AppRoutes.FORGOT_PASSWORD}>Request New Link</Link>
+            <Link href={AppRoutes.AUTH.FORGOT_PASSWORD}>Request New Link</Link>
           </Button>
         </div>
       </div>
@@ -135,7 +135,7 @@ export default function ResetPasswordPage() {
         
         <div className="text-center">
           <a
-            href={AppRoutes.LOGIN}
+            href={AppRoutes.AUTH.LOGIN}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             Back to sign in

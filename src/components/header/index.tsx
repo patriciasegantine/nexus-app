@@ -31,7 +31,7 @@ export function Header() {
             <UserNav user={user}/>
           ) : (
             <Link
-              href={AppRoutes.LOGIN}
+              href={AppRoutes.AUTH.LOGIN}
               className="text-sm font-medium hover:text-foreground transition-colors"
             >
               Sign in

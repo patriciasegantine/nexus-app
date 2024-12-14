@@ -74,7 +74,7 @@ export default function ForgotPasswordPage() {
         
         <div className="text-center">
           <a
-            href={AppRoutes.LOGIN}
+            href={AppRoutes.AUTH.LOGIN}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             Back to sign in

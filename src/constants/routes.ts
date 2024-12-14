@@ -1,10 +1,15 @@
 export const AppRoutes = {
   HOME: '/',
-  LOGIN: '/login',
-  REGISTER: '/register',
-  FORGOT_PASSWORD: '/forgot-password',
-  RESET_PASSWORD: '/reset-password',
-  DASHBOARD: '/dashboard',
-  PROFILE: '/profile',
-  SETTINGS: '/settings',
+  AUTH: {
+    LOGIN: '/login',
+    REGISTER: '/register',
+    FORGOT_PASSWORD: '/forgot-password',
+    RESET_PASSWORD: '/reset-password',
+  },
+  DASHBOARD: {
+    HOME: '/dashboard',
+    TASKS: '/dashboard/tasks',
+    PROFILE: '/dashboard/profile',
+    SETTINGS: '/dashboard/settings',
+  },
 } as const
