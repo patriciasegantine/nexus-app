@@ -1,9 +1,10 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useStats } from '@/hooks/dashboard/use-stats'
 import { CheckCircle2, Clock, ListTodo, Loader2 } from 'lucide-react'
 import React from "react";
+import { useDashboardStats } from "@/hooks/dashboard/use-dashboard-stats";
+import { TASK_STATUS_COLORS } from "@/constants/task";
 
 interface StatsCardProps {
   title: string
@@ -13,7 +14,7 @@ interface StatsCardProps {
 }
 
 export function DashboardStats() {
-  const {data: stats, isLoading} = useStats()
+  const {data: stats, isLoading} = useDashboardStats()
   
   return (
     <div className="grid gap-4 md:grid-cols-4">
@@ -24,21 +25,21 @@ export function DashboardStats() {
         isLoading={isLoading}
       />
       <StatsCard
+        title="Todo"
+        value={stats?.byStatus['TODO']}
+        icon={<Clock className="h-4 w-4" style={{color: TASK_STATUS_COLORS.TODO}}/>}
+        isLoading={isLoading}
+      />
+      <StatsCard
         title="In Progress"
         value={stats?.inProgress}
-        icon={<Clock className="h-4 w-4 text-blue-500"/>}
+        icon={<Clock className="h-4 w-4" style={{color: TASK_STATUS_COLORS.IN_PROGRESS}}/>}
         isLoading={isLoading}
       />
       <StatsCard
         title="Completed"
         value={stats?.completed}
-        icon={<CheckCircle2 className="h-4 w-4 text-green-500"/>}
-        isLoading={isLoading}
-      />
-      <StatsCard
-        title="Completion Rate"
-        value={`${stats?.completionRate}%`}
-        icon={<CheckCircle2 className="h-4 w-4 text-green-500"/>}
+        icon={<CheckCircle2 className="h-4 w-4" style={{color: TASK_STATUS_COLORS.DONE}}/>}
         isLoading={isLoading}
       />
     </div>
@@ -52,6 +53,7 @@ function StatsCard({title, value, icon, isLoading}: StatsCardProps) {
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         {icon}
       </CardHeader>
+      
       <CardContent>
         {isLoading ? (
           <Loader2 className="h-4 w-4 animate-spin"/>
