@@ -5,6 +5,6 @@ export const QUERY_KEYS = {
   },
   DASHBOARD: {
     STATS: ['dashboard', 'stats'],
+    ACTIVITIES: ['dashboard', 'activities'],
   },
-  
 } as const

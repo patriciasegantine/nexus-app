@@ -2,6 +2,7 @@
 
 import { DashboardStats } from '@/components/dashboard/overview/dashboard-stats'
 import { TeamProgress } from "@/components/dashboard/overview/team-progress";
+import { RecentActivities } from "@/components/dashboard/overview/recent-activities";
 
 export default function DashboardPage() {
   return (
@@ -15,9 +16,10 @@ export default function DashboardPage() {
       
       <DashboardStats/>
       
-      <TeamProgress/>
-    
-    
+      <div className="grid gap-6 md:grid-cols-2">
+        <TeamProgress/>
+        <RecentActivities/>
+      </div>
     </div>
   )
 }
