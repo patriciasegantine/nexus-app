@@ -1,4 +1,5 @@
 export type TaskStatusKey = 'TODO' | 'IN_PROGRESS' | 'DONE'
+export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH'
 
 export const TASK_STATUS: Record<TaskStatusKey, TaskStatusKey> = {
   TODO: 'TODO',
@@ -12,14 +13,20 @@ export const TASK_STATUS_NAMES: Record<TaskStatusKey, string> = {
   DONE: 'Done'
 } as const
 
+export const INITIAL_COLUMNS = [
+  {id: TASK_STATUS.TODO, name: TASK_STATUS_NAMES.TODO},
+  {id: TASK_STATUS.IN_PROGRESS, name: TASK_STATUS_NAMES.IN_PROGRESS},
+  {id: TASK_STATUS.DONE, name: TASK_STATUS_NAMES.DONE}
+] as const
+
 export const TASK_STATUS_COLORS: Record<TaskStatusKey, string> = {
   TODO: 'hsl(var(--status-todo))',
   IN_PROGRESS: 'hsl(var(--status-in-progress))',
   DONE: 'hsl(var(--status-done))'
 } as const
 
-export const INITIAL_COLUMNS = [
-  {id: TASK_STATUS.TODO, name: TASK_STATUS_NAMES.TODO},
-  {id: TASK_STATUS.IN_PROGRESS, name: TASK_STATUS_NAMES.IN_PROGRESS},
-  {id: TASK_STATUS.DONE, name: TASK_STATUS_NAMES.DONE}
-] as const
+export const TASK_PRIORITIES_COLORS: Record<TaskPriority, string> = {
+  HIGH: 'hsl(var(--priority-high))',
+  MEDIUM: 'hsl(var(--priority-medium))',
+  LOW: 'hsl(var(--priority-low))'
+} as const
