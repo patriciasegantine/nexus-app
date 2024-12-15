@@ -1,6 +1,7 @@
 'use client'
 
 import { DashboardStats } from '@/components/dashboard/overview/dashboard-stats'
+import { TeamProgress } from "@/components/dashboard/overview/team-progress";
 
 export default function DashboardPage() {
   return (
@@ -11,7 +12,12 @@ export default function DashboardPage() {
           A summary of your team&#39;s progress and activities
         </p>
       </div>
+      
       <DashboardStats/>
+      
+      <TeamProgress/>
+    
+    
     </div>
   )
 }
