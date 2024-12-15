@@ -23,7 +23,7 @@ export function PriorityDistribution() {
   }
   
   const priority = Object.entries(data?.byPriority || {}).map(([name, value]) => ({
-    name,
+    name: name.toLowerCase(),
     value,
     color: TASK_PRIORITIES_COLORS[name as keyof typeof TASK_PRIORITIES_COLORS]
   }))
@@ -69,7 +69,7 @@ export function PriorityDistribution() {
                         style={{backgroundColor: data.color}}
                       />
                       <span className="font-medium text-foreground">
-                        {data.name.toLowerCase()} Priority
+                        {data.name} priority
                       </span>
                     </div>
                     <div className="mt-1 text-muted-foreground">

@@ -23,7 +23,7 @@ export function WorkItemChart() {
   }
   
   const status = Object.entries(data?.byStatus || {}).map(([name, value]) => ({
-    name,
+    name: name.replace('_', ' ').toLowerCase(),
     value,
     color: TASK_STATUS_COLORS[name as keyof typeof TASK_STATUS_COLORS]
   }))
