@@ -1,13 +1,13 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useStats } from '@/hooks/dashboard/use-stats'
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis, } from 'recharts'
 import { Loader2 } from 'lucide-react'
 import { TASK_STATUS_COLORS } from "@/constants/task";
+import { useDashboardStats } from "@/hooks/dashboard/use-dashboard-stats";
 
 export function WorkItemChart() {
-  const {data: stats, isLoading} = useStats()
+  const {data, isLoading} = useDashboardStats()
   
   if (isLoading) {
     return (
@@ -22,8 +22,8 @@ export function WorkItemChart() {
     )
   }
   
-  const data = Object.entries(stats?.byStatus || {}).map(([name, value]) => ({
-    name: name.replace('_', ' ').toLowerCase(),
+  const status = Object.entries(data?.byStatus || {}).map(([name, value]) => ({
+    name,
     value,
     color: TASK_STATUS_COLORS[name as keyof typeof TASK_STATUS_COLORS]
   }))
@@ -37,7 +37,7 @@ export function WorkItemChart() {
         <div className="h-[300px] relative">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
-              data={data}
+              data={status}
               margin={{
                 top: 20,
                 right: 20,
@@ -85,27 +85,16 @@ export function WorkItemChart() {
                 dataKey="value"
                 radius={[4, 4, 0, 0]}
               >
-                {data.map((entry, index) => (
+                {status.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={entry.color}
-                    className="hover:opacity-80 transition-opacity"
+                    // className="hover:opacity-80 transition-opacity"
                   />
                 ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-          
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex items-center gap-4">
-            {Object.entries(TASK_STATUS_COLORS).map(([status, color]) => (
-              <div key={status} className="flex items-center gap-2">
-                <div className="h-3 w-8" style={{backgroundColor: color}}/>
-                <span className="text-sm text-muted-foreground capitalize">
-                  {status.toLowerCase().replace('_', ' ')}
-                </span>
-              </div>
-            ))}
-          </div>
         </div>
       </CardContent>
     </Card>
