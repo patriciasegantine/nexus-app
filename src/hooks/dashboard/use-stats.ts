@@ -3,6 +3,7 @@ import { QUERY_KEYS } from '@/constants/query-keys'
 
 interface DashboardStats {
   totalWorkItems: number
+  todo: number
   inProgress: number
   completed: number
   completionRate: number
@@ -16,6 +17,7 @@ const fetchStats = async (): Promise<DashboardStats> => {
   
   return {
     totalWorkItems: 24,
+    todo: 4,
     inProgress: 8,
     completed: 12,
     completionRate: 50,

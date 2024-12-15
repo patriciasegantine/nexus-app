@@ -1,8 +1,9 @@
 'use client'
 
 import { DashboardStats } from '@/components/dashboard/overview/dashboard-stats'
-import { TeamProgress } from "@/components/dashboard/overview/team-progress";
-import { RecentActivities } from "@/components/dashboard/overview/recent-activities";
+import { TeamProgress } from '@/components/dashboard/overview/team-progress'
+import { RecentActivities } from '@/components/dashboard/overview/recent-activities'
+import { WorkItemChart } from '@/components/dashboard/overview/work-item-chart'
 
 export default function DashboardPage() {
   return (
@@ -15,6 +16,10 @@ export default function DashboardPage() {
       </div>
       
       <DashboardStats/>
+      
+      <div className="grid gap-6 md:grid-cols-2">
+        <WorkItemChart/>
+      </div>
       
       <div className="grid gap-6 md:grid-cols-2">
         <TeamProgress/>
