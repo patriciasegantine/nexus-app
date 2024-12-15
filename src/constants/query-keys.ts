@@ -3,8 +3,8 @@ export const QUERY_KEYS = {
     USER: ['auth', 'user'],
     SESSION: ['auth', 'session'],
   },
-  USERS: {
-    ALL: ['users'],
-    DETAIL: (id: string) => ['users', id],
+  DASHBOARD: {
+    STATS: ['dashboard', 'stats'],
   },
+  
 } as const
