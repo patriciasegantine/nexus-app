@@ -92,7 +92,7 @@ export function useDashboardStats() {
   return useQuery({
     queryKey: QUERY_KEYS.DASHBOARD.STATS,
     queryFn: async () => {
-      // await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, 1000))
       return mockStats
     }
   })

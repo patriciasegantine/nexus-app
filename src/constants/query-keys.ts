@@ -6,5 +6,8 @@ export const QUERY_KEYS = {
   DASHBOARD: {
     STATS: ['dashboard', 'stats'],
     ACTIVITIES: ['dashboard', 'activities'],
+    TEAM_PROGRESS: ['dashboard', 'team-progress'],
+    VELOCITY: ['dashboard', 'velocity'],
+    BURNDOWN: ['dashboard', 'burndown'],
   },
 } as const

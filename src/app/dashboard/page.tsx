@@ -6,6 +6,7 @@ import { RecentActivities } from '@/components/dashboard/overview/recent-activit
 import { WorkItemChart } from '@/components/dashboard/overview/work-item-chart'
 import { PriorityDistribution } from '@/components/dashboard/overview/priority-distribution'
 import { TeamVelocity } from "@/components/dashboard/overview/team-velocity";
+import { BurndownChart } from "@/components/dashboard/overview/burndown-chart";
 
 export default function DashboardPage() {
   return (
@@ -26,6 +27,7 @@ export default function DashboardPage() {
       
       <div className="grid gap-6 md:grid-cols-2">
         <TeamVelocity/>
+        <BurndownChart/>
       </div>
       
       <div className="grid gap-6 md:grid-cols-2">
