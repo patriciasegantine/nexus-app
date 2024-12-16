@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis, } from 'recharts'
 import { Loader2 } from 'lucide-react'
-import { TASK_STATUS_COLORS } from "@/constants/task";
+import { TASK_STATUS_COLORS, TASK_STATUS_NAMES } from "@/constants/task";
 import { useDashboardStats } from "@/hooks/dashboard/use-dashboard-stats";
 
 export function WorkItemChart() {
@@ -23,7 +23,7 @@ export function WorkItemChart() {
   }
   
   const status = Object.entries(data?.byStatus || {}).map(([name, value]) => ({
-    name: name.replace('_', ' ').toLowerCase(),
+    name: TASK_STATUS_NAMES[name as keyof typeof TASK_STATUS_NAMES],
     value,
     color: TASK_STATUS_COLORS[name as keyof typeof TASK_STATUS_COLORS]
   }))
@@ -89,7 +89,6 @@ export function WorkItemChart() {
                   <Cell
                     key={`cell-${index}`}
                     fill={entry.color}
-                    // className="hover:opacity-80 transition-opacity"
                   />
                 ))}
               </Bar>

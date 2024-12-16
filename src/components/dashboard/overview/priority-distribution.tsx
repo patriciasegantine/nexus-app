@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useDashboardStats } from '@/hooks/dashboard/use-dashboard-stats'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import { Loader2 } from 'lucide-react'
-import { TASK_PRIORITIES_COLORS } from "@/constants/task"
+import { TASK_PRIORITIES_COLORS, TASK_PRIORITY_NAMES } from "@/constants/task"
 
 export function PriorityDistribution() {
   const {data, isLoading} = useDashboardStats()
@@ -23,7 +23,7 @@ export function PriorityDistribution() {
   }
   
   const priority = Object.entries(data?.byPriority || {}).map(([name, value]) => ({
-    name: name.toLowerCase(),
+    name: TASK_PRIORITY_NAMES[name as keyof typeof TASK_PRIORITY_NAMES],
     value,
     color: TASK_PRIORITIES_COLORS[name as keyof typeof TASK_PRIORITIES_COLORS]
   }))
@@ -72,9 +72,6 @@ export function PriorityDistribution() {
                         {data.name} priority
                       </span>
                     </div>
-                    <div className="mt-1 text-muted-foreground">
-                      {data.value} tasks
-                    </div>
                   </div>
                 )
               }}
@@ -82,13 +79,11 @@ export function PriorityDistribution() {
             <Legend
               formatter={(value: string) => (
                 <span className="text-sm font-medium text-foreground capitalize">
-                  {value.toLowerCase()}
+                  {value}
                 </span>
               )}
               iconType="rect"
-              wrapperStyle={{
-                paddingTop: '20px'
-              }}
+              wrapperStyle={{paddingTop: '20px'}}
             />
           </PieChart>
         </ResponsiveContainer>
