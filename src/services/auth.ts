@@ -44,7 +44,7 @@ export const authService = {
   async forgotPassword(credentials: ForgotPasswordCredentials): Promise<ApiResponse<void>> {
     const response = await api.post(API_ROUTES.AUTH.FORGOT_PASSWORD, {
       ...credentials,
-      redirectTo: AppRoutes.RESET_PASSWORD,
+      redirectTo: AppRoutes.AUTH.RESET_PASSWORD,
       baseUrl: window.location.origin
     })
     

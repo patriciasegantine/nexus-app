@@ -5,15 +5,16 @@ import Image from "next/image"
 import { useUser } from '@/hooks/auth/use-user'
 import { AppRoutes } from "@/constants/routes"
 import { UserNav } from "@/components/header/user-nav";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 export function Header() {
   const {data: user} = useUser()
   
   return (
-    <header className="fixed top-0 left-0 right-0 h-14 border-b bg-background">
+    <header className="fixed top-0 left-0 right-0 h-16 border-b bg-background z-40">
       <div className="h-full px-6 flex items-center justify-between">
         <Link
-          href={AppRoutes.HOME}
+          href={AppRoutes.DASHBOARD.HOME}
           className="flex items-center gap-2"
         >
           <Image
@@ -27,6 +28,9 @@ export function Header() {
         </Link>
         
         <div className="flex items-center gap-4">
+          
+          <ThemeToggle/>
+          
           {user ? (
             <UserNav user={user}/>
           ) : (

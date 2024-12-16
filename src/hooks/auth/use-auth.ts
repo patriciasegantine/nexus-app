@@ -21,11 +21,11 @@ export function useAuth(requireAuth: boolean = true) {
     const isAuthRoute = authRoutes.some(route => pathname.startsWith(route))
     
     if (requireAuth && !user && !isAuthRoute) {
-      router.push(`${AppRoutes.AUTH.LOGIN}?redirect=${encodeURIComponent(pathname)}`)
+      router.push(AppRoutes.AUTH.LOGIN)
     }
     
     if (!requireAuth && user && isAuthRoute) {
-      router.push(AppRoutes.DASHBOARD.PROFILE)
+      router.push(AppRoutes.DASHBOARD.HOME)
     }
   }, [user, isLoading, pathname, requireAuth, router])
   

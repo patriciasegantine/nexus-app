@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { Header } from '@/components/header'
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryProvider } from "@/providers/query-provider";
+import { ThemeProvider } from '@/components/theme/theme-provider'
+import { AppProvider } from "@/contexts/app-context";
+import { Header } from "@/components/header";
 
 const inter = Inter({subsets: ['latin']})
 
@@ -13,7 +15,7 @@ export const metadata: Metadata = {
     default: 'Nexus',
     template: '%s | Nexus'
   },
-  description: 'Connect and organize your workflow with Nexus - The central hub for your tasks and projects.',
+  description: 'Connect and organize your workflow with Nexus - The central hub for your board and projects.',
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
@@ -27,15 +29,24 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
     <body className={inter.className}>
-    <QueryProvider>
-      <Header/>
-      <main className="pt-14">
-        {children}
-      </main>
-      <Toaster/>
-    </QueryProvider>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <QueryProvider>
+        <AppProvider>
+          <Header/>
+          <main className="pt-14">
+            {children}
+          </main>
+        </AppProvider>
+        <Toaster/>
+      </QueryProvider>
+    </ThemeProvider>
     </body>
     </html>
   )
