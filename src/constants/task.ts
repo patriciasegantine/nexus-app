@@ -30,3 +30,9 @@ export const TASK_PRIORITIES_COLORS: Record<TaskPriority, string> = {
   MEDIUM: 'hsl(var(--priority-medium))',
   LOW: 'hsl(var(--priority-low))'
 } as const
+
+export const TASK_PRIORITY_NAMES: Record<TaskPriority, string> = {
+  HIGH: 'High',
+  MEDIUM: 'Medium',
+  LOW: 'Low'
+} as const

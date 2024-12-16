@@ -1,21 +1,13 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useStats } from '@/hooks/dashboard/use-stats'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Progress } from '@/components/ui/progress'
 import { Loader2 } from 'lucide-react'
-
-interface TeamMemberProgress {
-  id: string
-  name: string
-  avatar?: string
-  completedTasks: number
-  totalTasks: number
-}
+import { useTeamProgress } from "@/hooks/dashboard/use-dashboard-stats";
 
 export function TeamProgress() {
-  const {isLoading} = useStats()
+  const {data: teamProgress, isLoading} = useTeamProgress()
   
   if (isLoading) {
     return (
@@ -30,34 +22,13 @@ export function TeamProgress() {
     )
   }
   
-  const teamProgress: TeamMemberProgress[] = [
-    {
-      id: '1',
-      name: 'John Doe',
-      completedTasks: 5,
-      totalTasks: 8,
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      completedTasks: 8,
-      totalTasks: 10,
-    },
-    {
-      id: '3',
-      name: 'Bob Johnson',
-      completedTasks: 11,
-      totalTasks: 15,
-    },
-  ]
-  
   return (
     <Card>
       <CardHeader>
         <CardTitle>Team Progress</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {teamProgress.map((member) => (
+        {teamProgress?.map((member) => (
           <div key={member.id} className="space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">

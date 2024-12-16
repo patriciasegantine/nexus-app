@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { QUERY_KEYS } from '@/constants/query-keys'
-import type { Activity, BurndownData, DashboardStats, TeamMember, VelocityData } from '@/types/dashboard'
+import type { BurndownData, DashboardStats, TeamMember, VelocityData } from '@/types/dashboard'
 
 // Mock data
 const mockStats: DashboardStats = {
@@ -47,30 +47,6 @@ const mockTeam: TeamMember[] = [
   }
 ]
 
-const mockActivities: Activity[] = [
-  {
-    id: '1',
-    user: {name: 'John Doe'},
-    action: 'completed',
-    target: 'Setup Authentication',
-    createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString()
-  },
-  {
-    id: '2',
-    user: {name: 'Jane Smith'},
-    action: 'started',
-    target: 'Implement Dashboard',
-    createdAt: new Date(Date.now() - 1000 * 60 * 45).toISOString()
-  },
-  {
-    id: '3',
-    user: {name: 'Bob Johnson'},
-    action: 'updated',
-    target: 'Fix Login Bug',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString()
-  }
-]
-
 const mockVelocity: VelocityData[] = [
   {sprint: 'Sprint 1', planned: 20, completed: 18},
   {sprint: 'Sprint 2', planned: 22, completed: 20},
@@ -104,16 +80,6 @@ export function useTeamProgress() {
     queryFn: async () => {
       await new Promise(resolve => setTimeout(resolve, 1000))
       return mockTeam
-    }
-  })
-}
-
-export function useActivities() {
-  return useQuery({
-    queryKey: QUERY_KEYS.DASHBOARD.ACTIVITIES,
-    queryFn: async () => {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      return mockActivities
     }
   })
 }
