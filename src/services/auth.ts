@@ -1,5 +1,4 @@
 import { api } from './api'
-import { API_ROUTES } from '@/constants/api'
 import type {
   AuthResponse,
   ForgotPasswordCredentials,
@@ -10,12 +9,13 @@ import type {
 import type { ApiResponse } from '@/types/api'
 import axios from 'axios'
 import { AppRoutes } from "@/constants/routes";
+import { ApiRoutes } from "@/constants/api-routes";
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<ApiResponse<AuthResponse>> {
     try {
       const response = await api.post<ApiResponse<AuthResponse>>(
-        API_ROUTES.AUTH.LOGIN,
+        ApiRoutes.AUTH.LOGIN,
         credentials
       )
       
@@ -37,12 +37,12 @@ export const authService = {
   },
   
   async register(credentials: RegisterCredentials): Promise<ApiResponse<AuthResponse>> {
-    const response = await api.post(API_ROUTES.AUTH.REGISTER, credentials)
+    const response = await api.post(ApiRoutes.AUTH.REGISTER, credentials)
     return response.data
   },
   
   async forgotPassword(credentials: ForgotPasswordCredentials): Promise<ApiResponse<void>> {
-    const response = await api.post(API_ROUTES.AUTH.FORGOT_PASSWORD, {
+    const response = await api.post(ApiRoutes.AUTH.FORGOT_PASSWORD, {
       ...credentials,
       redirectTo: AppRoutes.AUTH.RESET_PASSWORD,
       baseUrl: window.location.origin
@@ -54,7 +54,7 @@ export const authService = {
   async resetPassword(credentials: ResetPasswordCredentials): Promise<ApiResponse<void>> {
     try {
       const response = await api.post<ApiResponse<void>>(
-        API_ROUTES.AUTH.RESET_PASSWORD,
+        ApiRoutes.AUTH.RESET_PASSWORD,
         credentials
       )
       

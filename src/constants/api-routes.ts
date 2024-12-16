@@ -1,4 +1,4 @@
-export const API_ROUTES = {
+export const ApiRoutes = {
   AUTH: {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
@@ -6,3 +6,5 @@ export const API_ROUTES = {
     RESET_PASSWORD: '/auth/reset-password',
   },
 } as const
+
+export type ApiRoute = typeof ApiRoutes

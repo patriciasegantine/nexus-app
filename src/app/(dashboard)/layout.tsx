@@ -1,12 +1,16 @@
 'use client'
 
-import React from "react";
 import { ProtectedRoute } from '@/components/auth/protected-route'
-import { DashboardSidebar } from '@/components/sidebar/dashboard-sidebar'
-import { cn } from "@/lib/utils";
-import { useApp } from "@/contexts/app-context";
+import { useApp } from '@/contexts/app-context'
+import { cn } from '@/lib/utils'
+import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
+import React from "react";
 
-export default function DashboardLayout({children}: { children: React.ReactNode }) {
+export default function DashboardLayout({
+                                          children,
+                                        }: {
+  children: React.ReactNode
+}) {
   const {isCollapsed} = useApp()
   
   return (

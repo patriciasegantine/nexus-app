@@ -1,5 +1,4 @@
 export const AppRoutes = {
-  HOME: '/',
   AUTH: {
     LOGIN: '/login',
     REGISTER: '/register',
@@ -7,10 +6,10 @@ export const AppRoutes = {
     RESET_PASSWORD: '/reset-password',
   },
   DASHBOARD: {
-    HOME: '/dashboard',
-    BOARD: '/dashboard/board',
-    BACKLOG: '/dashboard/backlog',
-    PROFILE: '/dashboard/profile',
-    SETTINGS: '/dashboard/settings',
+    HOME: '/',
+    WORK_ITEMS: '/work-items',
+    BOARD: '/board',
+    PROFILE: '/profile',
+    SETTINGS: '/settings',
   },
 } as const

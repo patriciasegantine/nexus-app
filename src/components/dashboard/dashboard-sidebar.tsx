@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { AppRoutes } from '@/constants/routes'
-import { ChevronLeft, LayoutDashboard, ListTodo, Settings, User } from "lucide-react"
+import { ChevronLeft, KanbanSquare, LayoutDashboard, ListTodo, Settings, User } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useApp } from "@/contexts/app-context"
 
@@ -15,14 +15,15 @@ const sidebarItems = [
     href: AppRoutes.DASHBOARD.HOME,
     icon: <LayoutDashboard className="h-4 w-4"/>
   },
+  
   {
     title: "Board",
     href: AppRoutes.DASHBOARD.BOARD,
-    icon: <ListTodo className="h-4 w-4"/>
+    icon: <KanbanSquare className="h-4 w-4"/>
   },
   {
-    title: "Backlog",
-    href: AppRoutes.DASHBOARD.BACKLOG,
+    title: "Work Items",
+    href: AppRoutes.DASHBOARD.WORK_ITEMS,
     icon: <ListTodo className="h-4 w-4"/>
   },
   {
