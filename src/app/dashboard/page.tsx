@@ -5,6 +5,7 @@ import { TeamProgress } from '@/components/dashboard/overview/team-progress'
 import { RecentActivities } from '@/components/dashboard/overview/recent-activities'
 import { WorkItemChart } from '@/components/dashboard/overview/work-item-chart'
 import { PriorityDistribution } from '@/components/dashboard/overview/priority-distribution'
+import { TeamVelocity } from "@/components/dashboard/overview/team-velocity";
 
 export default function DashboardPage() {
   return (
@@ -21,6 +22,10 @@ export default function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-2">
         <WorkItemChart/>
         <PriorityDistribution/>
+      </div>
+      
+      <div className="grid gap-6 md:grid-cols-2">
+        <TeamVelocity/>
       </div>
       
       <div className="grid gap-6 md:grid-cols-2">
