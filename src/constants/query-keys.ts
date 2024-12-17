@@ -10,4 +10,8 @@ export const QUERY_KEYS = {
     VELOCITY: ['dashboard', 'velocity'],
     BURNDOWN: ['dashboard', 'burndown'],
   },
+  WORK_ITEMS: {
+    ALL: 'work-items',
+    DETAIL: (id: string) => ['work-items', id],
+  }
 } as const
