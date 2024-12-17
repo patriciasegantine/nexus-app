@@ -7,6 +7,9 @@
         --background: 0 0% 98%;
         --foreground: 240 5% 15%;
 
+        /* Neutral White */
+        --neutral-white: 0 0% 95%;
+
         /* Card Colours */
         --card: 0 0% 98%;
         --card-foreground: 240 5% 15%;
@@ -76,6 +79,9 @@
         --background: 240 5% 10%;
         --foreground: 210 20% 90%;
 
+        /* Neutral White */
+        --neutral-white: 0 0% 95%;
+
         /* Card Colours */
         --card: 240 5% 10%;
         --card-foreground: 210 20% 90%;
@@ -119,14 +125,14 @@
         --chart-5: 240 5% 15%;
 
         /* Status Colors */
-        --status-done: 142.1 50% 50%;
-        --status-in-progress: 221.2 70% 60%;
-        --status-todo: 215.4 20% 60%;
+        --status-done: 142.1 30% 50%;
+        --status-in-progress: 221.2 40% 55%;
+        --status-todo: 215.4 10% 60%;
 
         /* Priority Colors */
-        --priority-high: 0 70% 50%;
-        --priority-medium: 48 80% 45%;
-        --priority-low: 142.1 50% 50%;
+        --priority-high: 0 40% 50%;
+        --priority-medium: 48 50% 45%;
+        --priority-low: 142.1 30% 50%;
 
         /* Velocity Colors */
         --velocity-planned: 271 60% 60%;
