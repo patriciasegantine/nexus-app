@@ -15,7 +15,7 @@ export function BoardStatusHeader({
                                     onToggleAllCollapse
                                   }: BoardStatusHeaderProps) {
   return (
-    <div className="grid border-b bg-muted/50" style={{gridTemplateColumns: '400px 1fr'}}>
+    <div className="grid border-b bg-muted/50" style={{gridTemplateColumns: '500px 1fr'}}>
       <div className="p-4">
         <Button
           variant="ghost"

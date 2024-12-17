@@ -23,7 +23,7 @@ export function BoardContent({
             <div
               key={workItem.id}
               className="grid border-b hover:bg-muted/50 transition-colors"
-              style={{gridTemplateColumns: '400px 1fr'}}
+              style={{gridTemplateColumns: '500px 1fr'}}
             >
               <WorkItemComponent
                 workItem={workItem}
