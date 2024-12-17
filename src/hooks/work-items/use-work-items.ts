@@ -19,6 +19,13 @@ const mockWorkItems: WorkItem[] = [
         workItemId: '1',
         description: 'Integrate NextAuth.js and configure providers.',
       },
+      {
+        id: 't-2',
+        title: 'Setup NextAuth Provider 2',
+        status: 'TODO',
+        workItemId: '1',
+        description: 'Integrate NextAuth.js and configure providers.',
+      },
     ],
     type: 'FEATURE',
     assignee: {
@@ -39,9 +46,16 @@ const mockWorkItems: WorkItem[] = [
     dueDate: new Date().toISOString(),
     tasks: [
       {
-        id: 't-2',
+        id: 't-3',
         title: 'Add email format validation',
         status: 'DONE',
+        workItemId: '2',
+        description: 'Check for valid email format during login.',
+      },
+      {
+        id: 't-4',
+        title: 'Add email format validation',
+        status: 'IN_PROGRESS',
         workItemId: '2',
         description: 'Check for valid email format during login.',
       },
@@ -65,9 +79,16 @@ const mockWorkItems: WorkItem[] = [
     dueDate: new Date().toISOString(),
     tasks: [
       {
-        id: 't-3',
+        id: 't-5',
         title: 'Create dark mode toggle',
-        status: 'DONE',
+        status: 'TODO',
+        workItemId: '3',
+        description: 'Allow users to toggle between light and dark modes.',
+      },
+      {
+        id: 't-6',
+        title: 'Create dark mode toggle',
+        status: 'TODO',
         workItemId: '3',
         description: 'Allow users to toggle between light and dark modes.',
       },
