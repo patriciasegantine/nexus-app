@@ -24,6 +24,7 @@ A modern React frontend application for data analytics and visualization, featur
 ## 🔒 Authentication
 
 The application uses JWT authentication with:
+
 - Access tokens for API requests
 - Refresh token mechanism
 - Automatic token refresh
@@ -52,22 +53,26 @@ The application uses JWT authentication with:
 ## 🔧 Installation
 
 1. Clone the repository
+
 ```bash
 git clone https://github.com/patriciasegantine/dashboard-analytics-frontend.git
-cd dashboard-analytics-frontend
+cd sidebar-analytics-frontend
 ```
 
 2. Install dependencies
+
 ```bash
 npm install
 ```
 
 3. Set up environment variables
+
 ```bash
 cp .env.example .env
 ```
 
 4. Configure your .env file with:
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:4000
 ```
@@ -75,21 +80,25 @@ NEXT_PUBLIC_API_URL=http://localhost:4000
 ## 🏃‍♂️ Running the Application
 
 ### Development
+
 ```bash
 npm run dev
 ```
 
 ### Build
+
 ```bash
 npm run build
 ```
 
 ### Start Production Server
+
 ```bash
 npm run start
 ```
 
 ## 📦 Project Structure
+
     frontend/
     ├── public/
     ├── node_modules/
@@ -104,8 +113,8 @@ npm run start
     │ └── utils/
     └── package.json
 
-
 ## 📱 Routing
+
 - Next.js 13+ App Router
 - Route Groups
 - Layouts
@@ -121,6 +130,7 @@ This project uses the Dashboard Analytics API for data management and authentica
 ### Main Endpoints:
 
 #### Authentication
+
 - `POST /auth/register` - Create new user account
 - `POST /auth/login` - User authentication
 - `POST /auth/refresh-token` - Refresh access token
@@ -128,10 +138,12 @@ This project uses the Dashboard Analytics API for data management and authentica
 - `POST /auth/logout` - User logout
 
 #### Password Recovery
+
 - `POST /auth/forgot-password` - Request password reset
 - `POST /auth/reset-password` - Reset user password
 
-For more details about the API, please check the [API Documentation](https://github.com/patriciasegantine/dashboard-analytics-server#readme).
+For more details about the API, please check
+the [API Documentation](https://github.com/patriciasegantine/dashboard-analytics-server#readme).
 
 ## 📝 License
 

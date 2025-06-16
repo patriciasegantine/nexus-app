@@ -3,7 +3,7 @@
 import { ProtectedRoute } from '@/components/auth/protected-route'
 import { useApp } from '@/contexts/app-context'
 import { cn } from '@/lib/utils'
-import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
+import { Sidebar } from "@/components/sidebar/sidebar";
 import React from "react";
 
 export default function DashboardLayout({
@@ -17,7 +17,7 @@ export default function DashboardLayout({
     <ProtectedRoute>
       <div className="min-h-screen bg-background mt-8">
         <div className="flex">
-          <DashboardSidebar/>
+          <Sidebar/>
           <main
             className={cn(
               "flex-1 transition-all duration-300 ease-in-out",
