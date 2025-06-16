@@ -4,11 +4,11 @@ export const QUERY_KEYS = {
     SESSION: ['auth', 'session'],
   },
   DASHBOARD: {
-    STATS: ['dashboard', 'stats'],
-    ACTIVITIES: ['dashboard', 'activities'],
-    TEAM_PROGRESS: ['dashboard', 'team-progress'],
-    VELOCITY: ['dashboard', 'velocity'],
-    BURNDOWN: ['dashboard', 'burndown'],
+    STATS: ['sidebar', 'stats'],
+    ACTIVITIES: ['sidebar', 'activities'],
+    TEAM_PROGRESS: ['sidebar', 'team-progress'],
+    VELOCITY: ['sidebar', 'velocity'],
+    BURNDOWN: ['sidebar', 'burndown'],
   },
   WORK_ITEMS: {
     ALL: 'work-items',
