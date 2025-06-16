@@ -1,12 +1,12 @@
 'use client'
 
-import { DashboardStats } from '@/components/dashboard/overview/dashboard-stats'
-import { TeamProgress } from '@/components/dashboard/overview/team-progress'
-import { RecentActivities } from '@/components/dashboard/overview/recent-activities'
-import { WorkItemChart } from '@/components/dashboard/overview/work-item-chart'
-import { PriorityDistribution } from '@/components/dashboard/overview/priority-distribution'
-import { TeamVelocity } from "@/components/dashboard/overview/team-velocity";
-import { BurndownChart } from "@/components/dashboard/overview/burndown-chart";
+import { DashboardStats } from '@/components/overview/dashboard-stats'
+import { TeamProgress } from '@/components/overview/team-progress'
+import { RecentActivities } from '@/components/overview/recent-activities'
+import { WorkItemChart } from '@/components/overview/work-item-chart'
+import { PriorityDistribution } from '@/components/overview/priority-distribution'
+import { TeamVelocity } from "@/components/overview/team-velocity";
+import { BurndownChart } from "@/components/overview/burndown-chart";
 
 export default function DashboardPage() {
   return (
