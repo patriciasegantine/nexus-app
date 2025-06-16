@@ -18,14 +18,12 @@ const mockWorkItems: WorkItem[] = [
         status: 'DONE',
         workItemId: '1',
         description: 'Integrate NextAuth.js and configure providers.',
-      },
-      {
-        id: 't-2',
-        title: 'Setup NextAuth Provider 2',
-        status: 'TODO',
-        workItemId: '1',
-        description: 'Integrate NextAuth.js and configure providers.',
-      },
+        assignee: {
+          name: 'Patricia',
+          avatar: 'http:'
+        },
+        priority: "HIGH"
+      }
     ],
     type: 'FEATURE',
     assignee: {
@@ -51,6 +49,11 @@ const mockWorkItems: WorkItem[] = [
         status: 'DONE',
         workItemId: '2',
         description: 'Check for valid email format during login.',
+        assignee: {
+          name: 'Patricia',
+          avatar: 'http:'
+        },
+        priority: "MEDIUM"
       },
       {
         id: 't-4',
@@ -58,6 +61,11 @@ const mockWorkItems: WorkItem[] = [
         status: 'IN_PROGRESS',
         workItemId: '2',
         description: 'Check for valid email format during login.',
+        assignee: {
+          name: 'Patricia',
+          avatar: 'http:'
+        },
+        priority: "LOW"
       },
     ],
     type: 'BUG',
@@ -68,92 +76,7 @@ const mockWorkItems: WorkItem[] = [
     },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '3',
-    title: 'Add dark mode support',
-    description: 'Implement dark mode for the user interface',
-    status: 'IN_PROGRESS',
-    priority: 'HIGH',
-    tags: ['UI', 'Feature'],
-    dueDate: new Date().toISOString(),
-    tasks: [
-      {
-        id: 't-5',
-        title: 'Create dark mode toggle',
-        status: 'TODO',
-        workItemId: '3',
-        description: 'Allow users to toggle between light and dark modes.',
-      },
-      {
-        id: 't-6',
-        title: 'Create dark mode toggle',
-        status: 'TODO',
-        workItemId: '3',
-        description: 'Allow users to toggle between light and dark modes.',
-      },
-    ],
-    type: 'FEATURE',
-    assignee: {
-      id: '3',
-      name: 'Emily Brown',
-      email: 'emily@example.com',
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '4',
-    title: 'Refactor API endpoints',
-    description: 'Improve performance of existing API endpoints',
-    status: 'DONE',
-    priority: 'LOW',
-    tags: ['Refactor', 'Backend'],
-    dueDate: new Date().toISOString(),
-    tasks: [
-      {
-        id: 't-4',
-        title: 'Optimise user data retrieval',
-        status: 'DONE',
-        workItemId: '4',
-        description: 'Reduce response time for user data requests.',
-      },
-    ],
-    type: 'IDEA',
-    assignee: {
-      id: '4',
-      name: 'Michael Green',
-      email: 'michael@example.com',
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '5',
-    title: 'Add user profile page',
-    description: 'Create a profile page for users to manage their information',
-    status: 'TODO',
-    priority: 'HIGH',
-    tags: ['Profile', 'Feature'],
-    dueDate: new Date().toISOString(),
-    tasks: [
-      {
-        id: 't-5',
-        title: 'Design profile page layout',
-        status: 'DONE',
-        workItemId: '5',
-        description: 'Create the layout and UI for the user profile page.',
-      },
-    ],
-    type: 'FEATURE',
-    assignee: {
-      id: '5',
-      name: 'Sophia Wilson',
-      email: 'sophia@example.com',
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
+  }
 ]
 
 export function useWorkItems() {
