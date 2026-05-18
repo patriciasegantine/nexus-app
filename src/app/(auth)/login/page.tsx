@@ -1,13 +1,19 @@
-import { signIn } from "@/auth"
+"use client"
+
+import { useActionState } from "react"
+import { signIn } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { AuthError } from "next-auth"
-import { redirect } from "next/navigation"
 import Link from "next/link"
 import { AppRoutes } from "@/constants/routes"
+import { loginUser } from "@/lib/actions/auth"
+
+const initialState = { success: false, error: undefined }
 
 export default function LoginPage() {
+  const [state, action, isPending] = useActionState(loginUser, initialState)
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-sm space-y-8">
@@ -19,24 +25,7 @@ export default function LoginPage() {
         </div>
 
         {/* Email/Password */}
-        <form
-          action={async (formData: FormData) => {
-            "use server"
-            try {
-              await signIn("credentials", {
-                email: formData.get("email"),
-                password: formData.get("password"),
-                redirectTo: "/",
-              })
-            } catch (error) {
-              if (error instanceof AuthError) {
-                redirect(`/login?error=invalid_credentials`)
-              }
-              throw error
-            }
-          }}
-          className="space-y-4"
-        >
+        <form action={action} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -59,8 +48,11 @@ export default function LoginPage() {
               required
             />
           </div>
-          <Button type="submit" className="w-full h-12">
-            Sign in
+          {state.error && (
+            <p className="text-sm text-destructive">{state.error}</p>
+          )}
+          <Button type="submit" className="w-full h-12" disabled={isPending}>
+            {isPending ? "Signing in..." : "Sign in"}
           </Button>
         </form>
 
@@ -75,13 +67,12 @@ export default function LoginPage() {
         </div>
 
         {/* Google */}
-        <form
-          action={async () => {
-            "use server"
-            await signIn("google", { redirectTo: "/" })
-          }}
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full h-12"
+          onClick={() => signIn("google", { callbackUrl: "/" })}
         >
-          <Button type="submit" variant="outline" className="w-full h-12">
             <svg
               className="mr-2 h-4 w-4"
               viewBox="0 0 24 24"
@@ -106,7 +97,6 @@ export default function LoginPage() {
             </svg>
             Continue with Google
           </Button>
-        </form>
 
         <div className="text-center">
           <Link
