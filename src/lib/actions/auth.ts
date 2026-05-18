@@ -1,19 +1,49 @@
 "use server"
 
-import { z } from "zod"
 import bcrypt from "bcryptjs"
+import { AuthError } from "next-auth"
 import { db } from "@/lib/db"
 import { signIn } from "@/auth"
-
-const registerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-})
+import { AUTH_MESSAGES } from "@/constants/messagens"
+import { loginSchema, registerSchema } from "@/validations/auth"
 
 export type RegisterState = {
   success: boolean
   error?: string
+}
+
+export type LoginState = {
+  success: boolean
+  error?: string
+}
+
+export async function loginUser(
+  _prev: LoginState,
+  formData: FormData
+): Promise<LoginState> {
+  const raw = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+  }
+
+  const parsed = loginSchema.safeParse(raw)
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.errors[0].message }
+  }
+
+  try {
+    await signIn("credentials", {
+      email: parsed.data.email.trim().toLowerCase(),
+      password: parsed.data.password,
+      redirectTo: "/",
+    })
+    return { success: true }
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return { success: false, error: AUTH_MESSAGES.INVALID_CREDENTIALS }
+    }
+    throw error
+  }
 }
 
 export async function registerUser(
@@ -31,11 +61,13 @@ export async function registerUser(
     return { success: false, error: parsed.error.errors[0].message }
   }
 
-  const { name, email, password } = parsed.data
+  const name = parsed.data.name.trim()
+  const email = parsed.data.email.trim().toLowerCase()
+  const { password } = parsed.data
 
   const existing = await db.user.findUnique({ where: { email } })
   if (existing) {
-    return { success: false, error: "An account with this email already exists." }
+    return { success: false, error: AUTH_MESSAGES.USER_ALREADY_EXISTS }
   }
 
   const hashedPassword = await bcrypt.hash(password, 12)
@@ -45,7 +77,14 @@ export async function registerUser(
   })
 
   // Auto sign-in after registration
-  await signIn("credentials", { email, password, redirectTo: "/" })
+  try {
+    await signIn("credentials", { email, password, redirectTo: "/" })
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return { success: false, error: AUTH_MESSAGES.INVALID_CREDENTIALS }
+    }
+    throw error
+  }
 
   return { success: true }
 }
