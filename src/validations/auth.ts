@@ -8,7 +8,7 @@ export const loginSchema = z.object({
   password: z
     .string()
     .min(1, "Password is required")
-    .min(6, "Password must be at least 6 characters"),
+    .min(8, "Password must be at least 8 characters"),
 })
 
 export type LoginInput = z.infer<typeof loginSchema>
@@ -25,7 +25,7 @@ export const registerSchema = z.object({
   password: z
     .string()
     .min(1, "Password is required")
-    .min(6, "Password must be at least 6 characters"),
+    .min(8, "Password must be at least 8 characters"),
 })
 
 export type RegisterInput = z.infer<typeof registerSchema>
@@ -43,7 +43,7 @@ export const resetPasswordSchema = z.object({
   token: z.string(),
   newPassword: z
     .string()
-    .min(8, "Password must be at least 6 characters")
+    .min(8, "Password must be at least 8 characters")
     .regex(/[a-z]/, "Password must contain at least one lowercase letter")
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
     .regex(/[0-9]/, "Password must contain at least one number"),
