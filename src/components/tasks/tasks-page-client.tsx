@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { TasksList } from "@/components/tasks/tasks-list"
 import { TaskDialog } from "@/components/tasks/task-dialog"
-import { Plus } from "lucide-react"
+import { ClipboardList, Plus } from "lucide-react"
 import type { TaskListItem } from "@/types/task"
 
 interface TasksPageClientProps {
@@ -43,7 +43,18 @@ export function TasksPageClient({ initialTasks }: TasksPageClientProps) {
         </Button>
       </div>
 
-      <TasksList tasks={initialTasks} onTaskClick={handleEditTask} />
+      {initialTasks.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-24 text-center">
+          <ClipboardList className="h-12 w-12 text-muted-foreground mb-4" />
+          <p className="text-muted-foreground mb-4">No tasks yet. Create your first one.</p>
+          <Button size="sm" onClick={handleNewTask}>
+            <Plus className="h-4 w-4 mr-2" />
+            New task
+          </Button>
+        </div>
+      ) : (
+        <TasksList tasks={initialTasks} onTaskClick={handleEditTask} />
+      )}
 
       <TaskDialog
         open={dialogOpen}

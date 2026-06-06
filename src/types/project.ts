@@ -22,6 +22,8 @@ export interface ProjectWithTasks extends Project {
   tasks: TaskCard[]
 }
 
+export type ProjectFormData = Pick<Project, 'name' | 'description' | 'tags'>
+
 export interface RecentProject {
   id: string
   name: string
