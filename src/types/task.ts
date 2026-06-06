@@ -21,6 +21,7 @@ export interface RecentTask {
   id: string
   title: string
   status: TaskStatus
+  priority: TaskPriority
   updatedAt: Date
   project: { name: string } | null
 }
