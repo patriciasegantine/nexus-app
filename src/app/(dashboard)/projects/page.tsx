@@ -19,7 +19,8 @@ export default async function ProjectsPage() {
       {projects.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <FolderKanban className="h-12 w-12 text-muted-foreground mb-4" />
-          <p className="text-muted-foreground">No projects yet. Create your first one.</p>
+          <p className="text-muted-foreground mb-4">No projects yet. Create your first one.</p>
+          <NewProjectButton />
         </div>
       ) : (
         <div className="space-y-4">
