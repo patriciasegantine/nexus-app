@@ -11,7 +11,7 @@ import { useApp } from "@/contexts/app-context"
 import { Badge } from "@/components/ui/badge"
 
 export function Header() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const { toggleMobileSidebar } = useApp()
 
   return (
@@ -40,7 +40,10 @@ export function Header() {
               3
             </Badge>
           </Button>
-          {session?.user && <UserNav user={session.user} />}
+          {status === 'loading' && (
+            <div className="h-10 w-10 rounded-full bg-muted animate-pulse" />
+          )}
+          {status === 'authenticated' && session?.user && <UserNav user={session.user} />}
         </div>
       </div>
     </header>
