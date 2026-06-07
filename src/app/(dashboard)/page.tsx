@@ -1,6 +1,7 @@
 import { getDashboardStats } from '@/lib/data/dashboard'
 import { DashboardStats } from '@/components/overview/dashboard-stats'
 import { RecentProjects } from '@/components/overview/recent-projects'
+import { RecentTasksTable } from '@/components/overview/recent-tasks-table'
 import { PriorityDistribution } from '@/components/overview/priority-distribution'
 import { TasksByStatus } from '@/components/overview/tasks-by-status'
 import { NewProjectButton } from '@/components/projects/new-project-button'
@@ -45,6 +46,7 @@ export default async function DashboardPage() {
         <PriorityDistribution byPriority={stats?.byPriority ?? {}} />
       </div>
 
+      <RecentTasksTable tasks={stats?.recentTasks ?? []} />
       <RecentProjects projects={stats?.recentProjects ?? []} />
     </div>
   )
