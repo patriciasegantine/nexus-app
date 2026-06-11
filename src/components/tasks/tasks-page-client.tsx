@@ -6,7 +6,19 @@ import { TasksList } from "@/components/tasks/tasks-list"
 import { TaskDialog } from "@/components/tasks/task-dialog"
 import { TaskFilters } from "@/components/tasks/task-filters"
 import { TaskPagination } from "@/components/tasks/task-pagination"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { ClipboardList, Plus } from "lucide-react"
+import { duplicateTask, deleteTask } from "@/actions/tasks"
+import { toast } from "@/hooks/use-toast"
 import type { TaskListItem } from "@/types/task"
 import type { Project } from "@/types/project"
 
@@ -22,6 +34,7 @@ interface TasksPageClientProps {
 export function TasksPageClient({ tasks, total, projects, page, perPage, hasFilters }: TasksPageClientProps) {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<TaskListItem | null>(null)
+  const [taskToDelete, setTaskToDelete] = useState<TaskListItem | null>(null)
 
   function handleNewTask() {
     setSelectedTask(null)
@@ -36,6 +49,27 @@ export function TasksPageClient({ tasks, total, projects, page, perPage, hasFilt
   function handleDialogClose() {
     setSelectedTask(null)
     setDialogOpen(false)
+  }
+
+  async function handleDuplicate(task: TaskListItem) {
+    const result = await duplicateTask(task.id)
+    if (result.success) {
+      toast({ title: "Task duplicated successfully." })
+    } else {
+      toast({ title: result.error, variant: "destructive" })
+    }
+  }
+
+  async function handleConfirmDelete() {
+    if (!taskToDelete) return
+    const id = taskToDelete.id
+    setTaskToDelete(null)
+    const result = await deleteTask(id)
+    if (result.success) {
+      toast({ title: "Task deleted." })
+    } else {
+      toast({ title: result.error, variant: "destructive" })
+    }
   }
 
   return (
@@ -72,7 +106,12 @@ export function TasksPageClient({ tasks, total, projects, page, perPage, hasFilt
             )}
           </div>
         ) : (
-          <TasksList tasks={tasks} onTaskClick={handleEditTask} />
+          <TasksList
+            tasks={tasks}
+            onTaskClick={handleEditTask}
+            onDuplicate={handleDuplicate}
+            onDelete={(task) => setTaskToDelete(task)}
+          />
         )}
       </div>
 
@@ -84,6 +123,28 @@ export function TasksPageClient({ tasks, total, projects, page, perPage, hasFilt
         projectId={selectedTask?.project?.id}
         task={selectedTask || undefined}
       />
+
+      <AlertDialog open={!!taskToDelete} onOpenChange={(open) => !open && setTaskToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete task</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete{" "}
+              <span className="font-medium text-foreground">&ldquo;{taskToDelete?.title}&rdquo;</span>?{" "}
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

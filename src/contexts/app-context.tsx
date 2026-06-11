@@ -13,13 +13,14 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined)
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return localStorage.getItem('sidebarCollapsed') === 'true'
+  })
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    const storedCollapsed = localStorage.getItem('sidebarCollapsed')
-    if (storedCollapsed === 'true') setIsCollapsed(true)
     setMounted(true)
   }, [])
 
