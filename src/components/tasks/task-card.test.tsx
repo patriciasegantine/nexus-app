@@ -2,6 +2,10 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { TaskCard } from '@/components/tasks/task-card'
 import type { TaskCard as TaskCardType } from '@/types/task'
 
+jest.mock('@/actions/tasks', () => ({
+  addTaskTag: jest.fn(),
+}))
+
 class ResizeObserverMock {
   constructor(callback: ResizeObserverCallback) {
     void callback
@@ -53,5 +57,19 @@ describe('TaskCard filters', () => {
     expect(onStatusClick).toHaveBeenCalledWith('IN_PROGRESS')
     expect(onPriorityClick).toHaveBeenCalledWith('HIGH')
     expect(onDueDateClick).toHaveBeenCalledWith(task.dueDate)
+  })
+
+  it('shows quick tag creation only below the tag limit', () => {
+    const { rerender } = render(<TaskCard task={task} />)
+
+    expect(screen.getByRole('button', { name: 'Add tag' })).toBeInTheDocument()
+
+    rerender(
+      <TaskCard
+        task={{ ...task, tags: ['one', 'two', 'three', 'four', 'five'] }}
+      />,
+    )
+
+    expect(screen.queryByRole('button', { name: 'Add tag' })).not.toBeInTheDocument()
   })
 })
