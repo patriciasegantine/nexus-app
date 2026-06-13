@@ -4,7 +4,7 @@
 @layer base {
     :root {
         /* Base Colours — Zinc */
-        --background: 240 4.8% 98%;
+        --background: 240 4.8% 96%;
         --foreground: 240 10% 3.9%;
 
         /* App Chrome Colours */

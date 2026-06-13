@@ -1,6 +1,7 @@
 import { getBoardData } from "@/lib/data/projects"
 import { ProjectCard } from "@/components/projects/project-card"
 import { NewProjectButton } from "@/components/projects/new-project-button"
+import { PageHeader } from "@/components/ui/page-header"
 import { FolderKanban } from "lucide-react"
 
 export default async function ProjectsPage() {
@@ -8,13 +9,11 @@ export default async function ProjectsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Projects</h1>
-          <p className="text-muted-foreground">Manage your projects</p>
-        </div>
-        <NewProjectButton />
-      </div>
+      <PageHeader
+        title="Projects"
+        description="Manage your projects"
+        action={<NewProjectButton iconOnlyOnMobile />}
+      />
 
       {projects.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">

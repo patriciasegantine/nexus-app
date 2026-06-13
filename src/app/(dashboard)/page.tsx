@@ -7,6 +7,7 @@ import { PriorityDistribution } from '@/components/overview/priority-distributio
 import { TasksByStatus } from '@/components/overview/tasks-by-status'
 import { NewProjectButton } from '@/components/projects/new-project-button'
 import { SampleDataButton } from '@/components/overview/sample-data-button'
+import { PageHeader } from '@/components/ui/page-header'
 
 export default async function DashboardPage() {
   const stats = await getDashboardStats()
@@ -14,10 +15,10 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Overview</h1>
-        <p className="text-muted-foreground">A summary of your progress and activities</p>
-      </div>
+      <PageHeader
+        title="Overview"
+        description="A summary of your progress and activities"
+      />
 
       {hasNoProjects && (
         <div className="rounded-lg border bg-card p-8 flex flex-col items-center justify-center text-center gap-4">
