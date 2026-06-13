@@ -12,6 +12,7 @@ import {
   PriorityFilterField,
   ProjectFilterField,
   StatusFilterField,
+  TagFilterField,
 } from "@/components/tasks/task-filter-fields"
 import type { Project } from "@/types/project"
 
@@ -23,7 +24,9 @@ interface MobileTaskFiltersProps {
   priority: string
   projectId: string
   dueDate: string
+  tag: string
   projects: Project[]
+  tags: string[]
   onFilterChange: (key: string, value: string | null) => void
   onClear: () => void
 }
@@ -36,7 +39,9 @@ export function MobileTaskFilters({
   priority,
   projectId,
   dueDate,
+  tag,
   projects,
+  tags,
   onFilterChange,
   onClear,
 }: MobileTaskFiltersProps) {
@@ -114,6 +119,15 @@ export function MobileTaskFilters({
           <DueDateFilterField
             value={dueDate}
             onChange={(value) => onFilterChange("dueDate", value)}
+            className="w-full"
+          />
+        </FilterField>
+
+        <FilterField label="Tag">
+          <TagFilterField
+            value={tag}
+            onChange={(value) => onFilterChange("tag", value)}
+            tags={tags}
             className="w-full"
           />
         </FilterField>

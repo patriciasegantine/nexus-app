@@ -18,12 +18,13 @@ interface TasksPageClientProps {
   tasks: TaskListItem[]
   total: number
   projects: Project[]
+  tags: string[]
   page: number
   perPage: number
   hasFilters: boolean
 }
 
-export function TasksPageClient({ tasks, total, projects, page, perPage, hasFilters }: TasksPageClientProps) {
+export function TasksPageClient({ tasks, total, projects, tags, page, perPage, hasFilters }: TasksPageClientProps) {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<TaskListItem | null>(null)
   const [taskToDelete, setTaskToDelete] = useState<TaskListItem | null>(null)
@@ -82,7 +83,7 @@ export function TasksPageClient({ tasks, total, projects, page, perPage, hasFilt
         }
       />
 
-      <TaskFilters projects={projects} />
+      <TaskFilters projects={projects} tags={tags} />
 
       <hr className="border-border/60 -mt-2" />
 
