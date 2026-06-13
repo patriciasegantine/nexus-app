@@ -1,5 +1,9 @@
 import { getVisibleTagCount } from '@/components/tasks/task-tags'
 
+jest.mock('@/actions/tasks', () => ({
+  addTaskTag: jest.fn(),
+}))
+
 describe('getVisibleTagCount', () => {
   it('shows every tag when they fit on one line', () => {
     expect(getVisibleTagCount([40, 50, 60], 158)).toBe(3)

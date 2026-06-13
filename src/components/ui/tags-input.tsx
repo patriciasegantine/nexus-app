@@ -4,8 +4,7 @@ import { useRef } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tag } from '@/components/ui/tag'
-
-const MAX_TAGS = 5
+import { MAX_TAG_LENGTH, MAX_TAGS } from '@/constants/tags'
 
 interface TagsInputProps {
   label?: string
@@ -54,7 +53,7 @@ export function TagsInput({
         onChange={(e) => onInputChange(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Add a tag and press Enter"
-        maxLength={30}
+        maxLength={MAX_TAG_LENGTH}
         disabled={isAtLimit}
       />
       {isAtLimit && (
