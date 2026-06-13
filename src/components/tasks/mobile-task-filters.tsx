@@ -1,12 +1,17 @@
 import type { ReactNode } from "react"
-import { SlidersHorizontal, X } from "lucide-react"
+import { SlidersHorizontal } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 import {
   DueDateFilterField,
   PriorityFilterField,
@@ -51,8 +56,8 @@ export function MobileTaskFilters({
   }
 
   return (
-    <Popover open={open} onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild>
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerTrigger asChild>
         <Button
           variant="outline"
           size="icon"
@@ -69,70 +74,60 @@ export function MobileTaskFilters({
             </Badge>
           )}
         </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-[calc(100vw-2rem)] space-y-4 p-4"
-        align="end"
-      >
-        <div className="flex items-center justify-between border-b pb-3">
-          <div>
-            <p className="font-medium">Filters</p>
-            <p className="text-xs text-muted-foreground">Refine the tasks shown</p>
+      </DrawerTrigger>
+      <DrawerContent className="md:hidden">
+        <DrawerHeader>
+          <DrawerTitle>Filters</DrawerTitle>
+          <DrawerDescription>Refine the tasks shown</DrawerDescription>
+        </DrawerHeader>
+
+        <DrawerBody>
+          <div className="space-y-4">
+            <FilterField label="Status">
+              <StatusFilterField
+                value={status}
+                onChange={(value) => onFilterChange("status", value)}
+                className="w-full"
+              />
+            </FilterField>
+
+            <FilterField label="Priority">
+              <PriorityFilterField
+                value={priority}
+                onChange={(value) => onFilterChange("priority", value)}
+                className="w-full"
+              />
+            </FilterField>
+
+            <FilterField label="Project">
+              <ProjectFilterField
+                value={projectId}
+                onChange={(value) => onFilterChange("projectId", value)}
+                projects={projects}
+                className="w-full"
+              />
+            </FilterField>
+
+            <FilterField label="Due date">
+              <DueDateFilterField
+                value={dueDate}
+                onChange={(value) => onFilterChange("dueDate", value)}
+                className="w-full"
+              />
+            </FilterField>
+
+            <FilterField label="Tag">
+              <TagFilterField
+                value={tag}
+                onChange={(value) => onFilterChange("tag", value)}
+                tags={tags}
+                className="w-full"
+              />
+            </FilterField>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => onOpenChange(false)}
-            aria-label="Close filters"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
+        </DrawerBody>
 
-        <FilterField label="Status">
-          <StatusFilterField
-            value={status}
-            onChange={(value) => onFilterChange("status", value)}
-            className="w-full"
-          />
-        </FilterField>
-
-        <FilterField label="Priority">
-          <PriorityFilterField
-            value={priority}
-            onChange={(value) => onFilterChange("priority", value)}
-            className="w-full"
-          />
-        </FilterField>
-
-        <FilterField label="Project">
-          <ProjectFilterField
-            value={projectId}
-            onChange={(value) => onFilterChange("projectId", value)}
-            projects={projects}
-            className="w-full"
-          />
-        </FilterField>
-
-        <FilterField label="Due date">
-          <DueDateFilterField
-            value={dueDate}
-            onChange={(value) => onFilterChange("dueDate", value)}
-            className="w-full"
-          />
-        </FilterField>
-
-        <FilterField label="Tag">
-          <TagFilterField
-            value={tag}
-            onChange={(value) => onFilterChange("tag", value)}
-            tags={tags}
-            className="w-full"
-          />
-        </FilterField>
-
-        <div className="flex gap-2 border-t pt-4">
+        <DrawerFooter>
           {activeCount > 0 && (
             <Button variant="outline" className="flex-1" onClick={handleClear}>
               Clear filters
@@ -141,9 +136,9 @@ export function MobileTaskFilters({
           <Button className="flex-1" onClick={() => onOpenChange(false)}>
             Done
           </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   )
 }
 
