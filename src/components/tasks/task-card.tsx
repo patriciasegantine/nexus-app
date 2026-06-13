@@ -1,9 +1,9 @@
 'use client'
 
 import { Card, CardContent } from "@/components/ui/card"
-import { Tag } from "@/components/ui/tag"
 import { StatusBadge } from "@/components/tasks/status-badge"
 import { PriorityBadge } from "@/components/tasks/priority-badge"
+import { TaskTags } from "@/components/tasks/task-tags"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,21 +17,33 @@ import type { TaskCard as TaskCardType } from "@/types/task"
 
 interface TaskCardProps {
   task: TaskCardType & { project?: { id?: string; name: string } | null }
-  onClick?: () => void
   onEdit?: () => void
   onDuplicate?: () => void
   onDelete?: () => void
+  onTagClick?: (tag: string) => void
+  onStatusClick?: (status: TaskCardType["status"]) => void
+  onPriorityClick?: (priority: TaskCardType["priority"]) => void
+  onDueDateClick?: (dueDate: Date) => void
   showProject?: boolean
 }
 
-export function TaskCard({ task, onClick, onEdit, onDuplicate, onDelete, showProject = false }: TaskCardProps) {
+export function TaskCard({
+  task,
+  onEdit,
+  onDuplicate,
+  onDelete,
+  onTagClick,
+  onStatusClick,
+  onPriorityClick,
+  onDueDateClick,
+  showProject = false,
+}: TaskCardProps) {
   const dueDate = task.dueDate ? new Date(task.dueDate) : null
   const isOverdue = dueDate != null && task.status !== 'DONE' && isBefore(dueDate, startOfToday())
 
   return (
     <Card
-      className="group hover:shadow-md transition-all duration-200 h-full cursor-pointer border border-border shadow-sm bg-card"
-      onClick={onClick}
+      className="group h-full border border-border bg-card shadow-sm transition-all duration-200 hover:shadow-md"
     >
       <CardContent className="p-4 flex flex-col h-full gap-3">
 
@@ -40,10 +52,26 @@ export function TaskCard({ task, onClick, onEdit, onDuplicate, onDelete, showPro
           <p className="font-semibold text-sm leading-tight line-clamp-2 text-foreground flex-1 min-w-0">
             {task.title}
           </p>
-          <div className={`flex items-center gap-1 shrink-0 text-xs mt-0.5 ${isOverdue ? 'text-destructive' : 'text-muted-foreground'}`}>
-            <CalendarDays className="h-3.5 w-3.5" />
-            {dueDate ? format(dueDate, 'MMM d') : '—'}
-          </div>
+          {dueDate && onDueDateClick ? (
+            <button
+              type="button"
+              onClick={() => onDueDateClick?.(dueDate)}
+              className={`mt-0.5 flex shrink-0 items-center gap-1 rounded-sm text-xs transition-opacity hover:opacity-75 ${isOverdue ? 'text-destructive' : 'text-muted-foreground'}`}
+            >
+              <CalendarDays className="h-3.5 w-3.5" />
+              {format(dueDate, 'MMM d')}
+            </button>
+          ) : dueDate ? (
+            <div className={`mt-0.5 flex shrink-0 items-center gap-1 text-xs ${isOverdue ? 'text-destructive' : 'text-muted-foreground'}`}>
+              <CalendarDays className="h-3.5 w-3.5" />
+              {format(dueDate, 'MMM d')}
+            </div>
+          ) : (
+            <div className="mt-0.5 flex shrink-0 items-center gap-1 text-xs text-muted-foreground">
+              <CalendarDays className="h-3.5 w-3.5" />
+              —
+            </div>
+          )}
         </div>
 
         {/* Project name */}
@@ -53,22 +81,19 @@ export function TaskCard({ task, onClick, onEdit, onDuplicate, onDelete, showPro
 
         {/* Status + Priority */}
         <div className="flex items-center justify-between gap-2">
-          <StatusBadge status={task.status} />
-          <PriorityBadge priority={task.priority} />
+          <StatusBadge
+            status={task.status}
+            onClick={onStatusClick ? () => onStatusClick(task.status) : undefined}
+          />
+          <PriorityBadge
+            priority={task.priority}
+            onClick={onPriorityClick ? () => onPriorityClick(task.priority) : undefined}
+          />
         </div>
 
         {/* Footer: tags (left) + ⋮ menu (right) */}
-        <div className="flex items-center justify-between gap-2 mt-auto min-h-[22px]">
-          <div className="flex flex-wrap gap-1 min-w-0">
-            {task.tags.slice(0, 3).map((tag) => (
-              <Tag key={tag} label={tag} />
-            ))}
-            {task.tags.length > 3 && (
-              <span className="text-xs text-muted-foreground self-center">
-                +{task.tags.length - 3}
-              </span>
-            )}
-          </div>
+        <div className="mt-auto flex min-h-[30px] items-end justify-between gap-2 pt-2">
+          <TaskTags tags={task.tags} onTagClick={onTagClick} />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -81,28 +106,36 @@ export function TaskCard({ task, onClick, onEdit, onDuplicate, onDelete, showPro
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-36">
-              <DropdownMenuItem
-                onClick={(e) => { e.stopPropagation(); onEdit?.() }}
-                className="cursor-pointer"
-              >
-                <Pencil className="h-3.5 w-3.5 mr-2" />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => { e.stopPropagation(); onDuplicate?.() }}
-                className="cursor-pointer"
-              >
-                <Copy className="h-3.5 w-3.5 mr-2" />
-                Duplicate
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={(e) => { e.stopPropagation(); onDelete?.() }}
-                className="cursor-pointer text-destructive focus:text-destructive"
-              >
-                <Trash2 className="h-3.5 w-3.5 mr-2" />
-                Delete
-              </DropdownMenuItem>
+              {onEdit && (
+                <DropdownMenuItem
+                  onClick={(e) => { e.stopPropagation(); onEdit() }}
+                  className="cursor-pointer"
+                >
+                  <Pencil className="h-3.5 w-3.5 mr-2" />
+                  Edit
+                </DropdownMenuItem>
+              )}
+              {onDuplicate && (
+                <DropdownMenuItem
+                  onClick={(e) => { e.stopPropagation(); onDuplicate() }}
+                  className="cursor-pointer"
+                >
+                  <Copy className="h-3.5 w-3.5 mr-2" />
+                  Duplicate
+                </DropdownMenuItem>
+              )}
+              {onDelete && (
+                <>
+                  {(onEdit || onDuplicate) && <DropdownMenuSeparator />}
+                  <DropdownMenuItem
+                    onClick={(e) => { e.stopPropagation(); onDelete() }}
+                    className="cursor-pointer text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="h-3.5 w-3.5 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
