@@ -3,8 +3,8 @@ import type { LucideIcon } from 'lucide-react'
 import { AppRoutes } from '@/constants/routes'
 
 export const SIDEBAR_CONFIG = {
-  COLLAPSED_WIDTH: 'w-[70px]',
-  EXPANDED_WIDTH: 'w-64',
+  COLLAPSED_WIDTH: 'w-16',
+  EXPANDED_WIDTH: 'w-[180px]',
   TOP_OFFSET: 'top-[64px]',
   HEIGHT: 'h-[calc(100vh-64px)]',
 } as const
