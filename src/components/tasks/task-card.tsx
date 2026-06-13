@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreVertical, Pencil, Copy, Trash2, CalendarDays } from "lucide-react"
+import { MoreHorizontal, Pencil, Copy, Trash2, CalendarDays } from "lucide-react"
 import { format, isBefore, startOfToday } from "date-fns"
 import type { TaskCard as TaskCardType } from "@/types/task"
 
@@ -77,7 +77,7 @@ export function TaskCard({ task, onClick, onEdit, onDuplicate, onDelete, showPro
                 onClick={(e) => e.stopPropagation()}
                 aria-label="Task options"
               >
-                <MoreVertical className="h-4 w-4" />
+                <MoreHorizontal className="h-4 w-4" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-36">
