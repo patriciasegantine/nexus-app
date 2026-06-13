@@ -12,6 +12,8 @@ export interface GetTasksFilters {
   search?: string
   projectId?: string
   dueDate?: DueDateFilter
+  dueDateExact?: string
+  tag?: string
   page?: number
 }
 
@@ -33,6 +35,12 @@ function buildDueDateWhere(dueDate: DueDateFilter) {
   }
 }
 
+function buildExactDueDateWhere(dueDate: string) {
+  const startOfDay = new Date(`${dueDate}T00:00:00.000Z`)
+  const endOfDay = new Date(startOfDay.getTime() + 86400000)
+  return { dueDate: { gte: startOfDay, lt: endOfDay } }
+}
+
 export async function getTasks(filters?: GetTasksFilters): Promise<{ tasks: TaskListItem[], total: number }> {
   const session = await auth()
   if (!session?.user?.id) return { tasks: [], total: 0 }
@@ -47,6 +55,8 @@ export async function getTasks(filters?: GetTasksFilters): Promise<{ tasks: Task
     ...(filters?.search && { title: { contains: filters.search, mode: 'insensitive' as const } }),
     ...(filters?.projectId && { projectId: filters.projectId }),
     ...(filters?.dueDate && buildDueDateWhere(filters.dueDate)),
+    ...(filters?.dueDateExact && buildExactDueDateWhere(filters.dueDateExact)),
+    ...(filters?.tag && { tags: { has: filters.tag } }),
   }
 
   const [tasks, total] = await db.$transaction([
@@ -61,6 +71,20 @@ export async function getTasks(filters?: GetTasksFilters): Promise<{ tasks: Task
   ])
 
   return { tasks, total }
+}
+
+export async function getTaskTags(): Promise<string[]> {
+  const session = await auth()
+  if (!session?.user?.id) return []
+
+  const tasks = await db.task.findMany({
+    where: { userId: session.user.id },
+    select: { tags: true },
+  })
+
+  return Array.from(new Set(tasks.flatMap((task) => task.tags))).sort((a, b) =>
+    a.localeCompare(b),
+  )
 }
 
 export async function getTasksByProject(projectId: string) {
@@ -134,4 +158,3 @@ export async function getDashboardStats() {
     recentProjects,
   }
 }
-
