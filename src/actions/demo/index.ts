@@ -6,9 +6,7 @@ import { revalidatePath } from "next/cache"
 import { generateSlug, ensureUniqueSlug } from "@/lib/slug"
 import { AppRoutes } from "@/constants/routes"
 
-type ActionResult<T = void> =
-  | { success: true; data: T }
-  | { success: false; error: string }
+import type { ActionResult } from "@/types/actions"
 
 const daysAgo = (n: number) => new Date(Date.now() - n * 24 * 60 * 60 * 1000)
 const daysFromNow = (n: number) => new Date(Date.now() + n * 24 * 60 * 60 * 1000)

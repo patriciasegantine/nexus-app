@@ -6,9 +6,7 @@ import { revalidatePath } from "next/cache"
 import { AppRoutes } from "@/constants/routes"
 import { z } from "zod"
 
-type ActionResult<T = void> =
-  | { success: true; data: T }
-  | { success: false; error: string }
+import type { ActionResult } from "@/types/actions"
 
 const updateProfileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
