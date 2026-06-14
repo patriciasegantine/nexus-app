@@ -13,8 +13,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { TaskCard } from "@/components/tasks/task-card"
-import { TaskDialog } from "@/components/tasks/task-dialog"
+import { TaskCard } from "@/components/tasks/task-card/task-card"
+import { TaskDialog } from "@/components/tasks/task-dialog/task-dialog"
 import { ProjectDialog } from "@/components/projects/project-dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -24,7 +24,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react"
+import { ClipboardList, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react"
+import { EmptyState } from "@/components/ui/empty-state"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { TASK_STATUS_NAMES, TASK_STATUS_COLUMNS } from "@/constants/task"
@@ -136,9 +137,7 @@ export function ProjectKanban({ project }: ProjectKanbanProps) {
         </div>
 
         {project.tasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <p className="text-muted-foreground">No tasks yet.</p>
-          </div>
+          <EmptyState icon={ClipboardList} title="No tasks yet." className="py-24" />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {TASK_STATUS_COLUMNS.map((status) => (
