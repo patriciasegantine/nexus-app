@@ -31,7 +31,7 @@ jest.mock("@/auth", () => ({
   signIn: jest.fn(),
 }))
 
-jest.mock("@/lib/email", () => ({
+jest.mock("@/lib/mail", () => ({
   sendWelcomeEmail: jest.fn(),
 }))
 

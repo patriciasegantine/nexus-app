@@ -32,7 +32,7 @@ jest.mock("@/lib/db", () => ({
   },
 }))
 
-jest.mock("@/lib/email", () => ({
+jest.mock("@/lib/mail", () => ({
   sendResetPasswordEmail: jest.fn(),
 }))
 
