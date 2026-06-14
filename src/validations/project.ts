@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { MAX_TAG_LENGTH, MAX_TAGS, MAX_TAGS_MESSAGE } from "@/constants/tags"
 
 export const createProjectSchema = z.object({
   name: z
@@ -16,8 +17,8 @@ export const createProjectSchema = z.object({
     .optional()
     .default("#3b82f6"),
   tags: z
-    .array(z.string().min(1).max(30))
-    .max(10, "Maximum 10 tags allowed")
+    .array(z.string().min(1).max(MAX_TAG_LENGTH))
+    .max(MAX_TAGS, MAX_TAGS_MESSAGE)
     .optional()
     .default([]),
 })

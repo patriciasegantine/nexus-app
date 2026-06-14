@@ -152,7 +152,7 @@ export function ProjectKanban({ project }: ProjectKanbanProps) {
                     <TaskCard
                       key={task.id}
                       task={task}
-                      onClick={() => handleEditTask(task)}
+                      onEdit={() => handleEditTask(task)}
                       showProject={false}
                     />
                   ))}

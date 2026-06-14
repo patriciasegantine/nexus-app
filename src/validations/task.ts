@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { MAX_TAG_LENGTH, MAX_TAGS, MAX_TAGS_MESSAGE } from "@/constants/tags"
 
 export const taskStatusSchema = z.enum(["TODO", "IN_PROGRESS", "DONE"])
 export const taskPrioritySchema = z.enum(["LOW", "MEDIUM", "HIGH"])
@@ -15,8 +16,8 @@ export const createTaskSchema = z.object({
   priority: taskPrioritySchema.default("MEDIUM"),
   status: taskStatusSchema.default("TODO"),
   tags: z
-    .array(z.string().min(1).max(30))
-    .max(10, "Maximum 10 tags allowed")
+    .array(z.string().min(1).max(MAX_TAG_LENGTH))
+    .max(MAX_TAGS, MAX_TAGS_MESSAGE)
     .optional()
     .default([]),
   projectId: z.string().min(1, "Project is required"),
@@ -29,8 +30,8 @@ export const updateTaskSchema = createTaskSchema
   .extend({
     projectId: z.string().min(1).optional(),
     tags: z
-      .array(z.string().min(1).max(30))
-      .max(10, "Maximum 10 tags allowed")
+      .array(z.string().min(1).max(MAX_TAG_LENGTH))
+      .max(MAX_TAGS, MAX_TAGS_MESSAGE)
       .optional(),
     dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().nullable(),
   })

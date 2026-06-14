@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -131,7 +131,7 @@ export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProp
             <p className="text-sm text-destructive">{serverError}</p>
           )}
 
-          <div className="flex justify-end gap-2 pt-2">
+          <DialogFooter className="pt-2">
             <Button
               type="button"
               variant="outline"
@@ -143,7 +143,7 @@ export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProp
             <Button type="submit" disabled={isPending}>
               {isPending ? "Saving..." : isEditing ? "Save changes" : "Create project"}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

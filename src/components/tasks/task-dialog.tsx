@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -204,7 +204,7 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
             <p className="text-sm text-destructive">{serverError}</p>
           )}
 
-          <div className="flex justify-end gap-2 pt-2">
+          <DialogFooter className="pt-2">
             <Button
               type="button"
               variant="outline"
@@ -216,7 +216,7 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
             <Button type="submit" disabled={isPending}>
               {isPending ? "Saving..." : isEditing ? "Save changes" : "Create task"}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
