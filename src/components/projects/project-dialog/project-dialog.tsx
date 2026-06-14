@@ -13,7 +13,7 @@ import { createProject, updateProject } from "@/actions/projects"
 import { cn } from "@/lib/utils"
 import { INVALID_INPUT_CLASS } from "@/lib/form-styles"
 import { projectFormSchema as projectSchema, type ProjectFormValues } from "@/validations/project"
-import { PROJECT_COLORS, DEFAULT_PROJECT_COLOR } from "./project-card.utils"
+import { PROJECT_COLORS, DEFAULT_PROJECT_COLOR } from "../project-card/project-card.utils"
 
 interface ProjectDialogProps {
   open: boolean
