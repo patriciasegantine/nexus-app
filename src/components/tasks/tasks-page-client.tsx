@@ -2,14 +2,15 @@
 
 import { useState, useTransition } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { Loader2, Plus } from "lucide-react"
+import { ClipboardList, Loader2, Plus } from "lucide-react"
 import { format } from "date-fns"
 import { TasksList } from "@/components/tasks/tasks-list"
-import { TaskDialog } from "@/components/tasks/task-dialog"
-import { TaskFilters } from "@/components/tasks/task-filters"
+import { TaskDialog } from "@/components/tasks/task-dialog/task-dialog"
+import { TaskFilters } from "@/components/tasks/filters/task-filters"
 import { TaskPagination } from "@/components/tasks/task-pagination"
-import { TasksEmptyState } from "@/components/tasks/tasks-empty-state"
-import { TaskDeleteDialog } from "@/components/tasks/task-delete-dialog"
+import { EmptyState } from "@/components/ui/empty-state"
+import { Button } from "@/components/ui/button"
+import { TaskDeleteDialog } from "@/components/tasks/task-dialog/task-delete-dialog"
 import { PageHeader, PageHeaderAction } from "@/components/ui/page-header"
 import { duplicateTask, deleteTask } from "@/actions/tasks"
 import { toast } from "@/hooks/use-toast"
@@ -100,6 +101,12 @@ export function TasksPageClient({ tasks, total, projects, tags, page, perPage, h
 
       <hr className="border-border/60 -mt-2" />
 
+      {total > 0 && (
+        <p className="text-sm text-muted-foreground -mt-2">
+          {total} {total === 1 ? "task" : "tasks"}
+        </p>
+      )}
+
       <div className="flex-1 relative">
         {isDuplicating && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/60 backdrop-blur-[1px] rounded-lg">
@@ -107,7 +114,16 @@ export function TasksPageClient({ tasks, total, projects, tags, page, perPage, h
           </div>
         )}
         {tasks.length === 0 ? (
-          <TasksEmptyState hasFilters={hasFilters} onNewTask={handleNewTask} />
+          <EmptyState
+            icon={ClipboardList}
+            title={hasFilters ? "No tasks match your filters." : "No tasks yet. Create your first one."}
+            action={!hasFilters && (
+              <Button size="sm" onClick={handleNewTask}>
+                <Plus className="h-4 w-4 mr-2" />
+                New task
+              </Button>
+            )}
+          />
         ) : (
           <TasksList
             tasks={tasks}
