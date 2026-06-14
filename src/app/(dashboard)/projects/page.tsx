@@ -2,6 +2,7 @@ import { getBoardData } from "@/lib/data/projects"
 import { ProjectCard } from "@/components/projects/project-card"
 import { NewProjectButton } from "@/components/projects/new-project-button"
 import { PageHeader } from "@/components/ui/page-header"
+import { EmptyState } from "@/components/ui/empty-state"
 import { FolderKanban } from "lucide-react"
 
 export default async function ProjectsPage() {
@@ -16,11 +17,12 @@ export default async function ProjectsPage() {
       />
 
       {projects.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-center">
-          <FolderKanban className="h-12 w-12 text-muted-foreground mb-4" />
-          <p className="text-muted-foreground mb-4">No projects yet. Create your first one.</p>
-          <NewProjectButton />
-        </div>
+        <EmptyState
+          icon={FolderKanban}
+          title="No projects yet. Create your first one."
+          action={<NewProjectButton />}
+          className="py-24"
+        />
       ) : (
         <div className="space-y-4">
           {projects.map((project) => (
