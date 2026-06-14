@@ -39,8 +39,8 @@ export function TaskPagination({ total, page, perPage }: TaskPaginationProps) {
           disabled={page <= 1}
           onClick={() => goToPage(page - 1)}
         >
-          <ChevronLeft className="h-4 w-4 mr-1" />
-          Previous
+          <ChevronLeft className="h-4 w-4 sm:mr-1" />
+          <span className="hidden sm:inline">Previous</span>
         </Button>
         <Button
           variant="outline"
@@ -48,8 +48,8 @@ export function TaskPagination({ total, page, perPage }: TaskPaginationProps) {
           disabled={page >= totalPages}
           onClick={() => goToPage(page + 1)}
         >
-          Next
-          <ChevronRight className="h-4 w-4 ml-1" />
+          <span className="hidden sm:inline">Next</span>
+          <ChevronRight className="h-4 w-4 sm:ml-1" />
         </Button>
       </div>
     </div>

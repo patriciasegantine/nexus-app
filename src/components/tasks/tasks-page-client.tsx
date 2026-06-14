@@ -101,6 +101,12 @@ export function TasksPageClient({ tasks, total, projects, tags, page, perPage, h
 
       <hr className="border-border/60 -mt-2" />
 
+      {total > 0 && (
+        <p className="text-sm text-muted-foreground -mt-2">
+          {total} {total === 1 ? "task" : "tasks"}
+        </p>
+      )}
+
       <div className="flex-1 relative">
         {isDuplicating && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/60 backdrop-blur-[1px] rounded-lg">
