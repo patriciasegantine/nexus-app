@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/chart'
 import { TASK_PRIORITIES_COLORS, TASK_PRIORITY_NAMES } from "@/constants/task"
 import { PieChart as PieChartIcon } from 'lucide-react'
+import { EmptyState } from "@/components/ui/empty-state"
 
 interface PriorityDistributionProps {
   byPriority?: Record<string, number>
@@ -40,10 +41,7 @@ export function PriorityDistribution({ byPriority = {} }: PriorityDistributionPr
       </CardHeader>
       <CardContent>
         {isEmpty ? (
-          <div className="h-[140px] flex flex-col items-center justify-center gap-2 text-muted-foreground">
-            <PieChartIcon className="h-8 w-8" />
-            <p className="text-sm">No data yet</p>
-          </div>
+          <EmptyState variant="compact" icon={PieChartIcon} title="No data yet" />
         ) : (
           <ChartContainer config={chartConfig} className="aspect-auto h-[240px] sm:h-[300px] w-full">
             <PieChart>

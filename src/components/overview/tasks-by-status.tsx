@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartContainer, ChartTooltip, type ChartConfig } from '@/components/ui/chart'
 import { TASK_STATUS_COLORS, TASK_STATUS_NAMES } from "@/constants/task"
 import { BarChart2 } from 'lucide-react'
+import { EmptyState } from "@/components/ui/empty-state"
 
 interface TasksByStatusProps {
   byStatus: Record<string, number>
@@ -33,10 +34,7 @@ export function TasksByStatus({ byStatus }: TasksByStatusProps) {
       </CardHeader>
       <CardContent>
         {isEmpty ? (
-          <div className="h-[140px] flex flex-col items-center justify-center gap-2 text-muted-foreground">
-            <BarChart2 className="h-8 w-8" />
-            <p className="text-sm">No data yet</p>
-          </div>
+          <EmptyState variant="compact" icon={BarChart2} title="No data yet" />
         ) : (
           <ChartContainer config={chartConfig} className="aspect-auto h-[200px] sm:h-[300px] w-full">
             <BarChart data={data} margin={{ top: 8, right: 16, left: -10, bottom: 0 }}>

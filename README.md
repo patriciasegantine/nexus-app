@@ -1,41 +1,44 @@
-# Nexus Dashboard
+# Nexus
+### Project & Task Management
 
-A full-stack project management dashboard built with Next.js, featuring authentication, task tracking, and data visualization.
+A full-stack project management application built with Next.js, featuring authentication, task tracking, Kanban board, and data visualization.
 
 ![preview](./public/preview.png)
 
 ## Tech Stack
 
-- **Framework:** Next.js 15 (App Router)
+- **Framework:** Next.js 15 (App Router, Server Components, Server Actions)
 - **Language:** TypeScript
 - **Auth:** Auth.js v5 (NextAuth) with Google OAuth + Credentials
-- **Database:** PostgreSQL via Prisma ORM
-- **Styling:** Tailwind CSS + Radix UI
-- **State:** TanStack Query
-- **Testing:** Jest + Playwright
+- **Database:** PostgreSQL via Prisma ORM (Neon)
+- **Styling:** Tailwind CSS + shadcn/ui
+- **Email:** Nodemailer via Gmail SMTP
+- **Testing:** Jest (unit + integration)
 
 ## Features
 
 - Credential and Google OAuth authentication
 - Password reset flow with email verification
+- Rate limiting on auth endpoints
 - Protected routes via Edge middleware
 - Dark/Light theme
-- Kanban board with drag-and-drop
+- Kanban board per project
 - Dashboard with charts and analytics
-- Responsive layout
+- Task filtering, pagination, and tagging
+- Responsive layout with mobile drawers
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18.17+
-- PostgreSQL
+- PostgreSQL (local or cloud via Neon/Supabase/Railway)
 
 ### Installation
 
 ```bash
-git clone https://github.com/patriciasegantine/nexus-dashboard-frontend.git
-cd nexus-dashboard-frontend
+git clone https://github.com/patriciasegantine/nexus-app.git
+cd nexus-dashboard
 npm install
 ```
 
@@ -53,11 +56,10 @@ DATABASE_URL=
 AUTH_SECRET=
 AUTH_GOOGLE_ID=
 AUTH_GOOGLE_SECRET=
+NEXTAUTH_URL=
 
-EMAIL_HOST=
-EMAIL_PORT=
-EMAIL_USER=
-EMAIL_PASS=
+GMAIL_USER=
+GMAIL_APP_PASSWORD=
 EMAIL_FROM=
 ```
 
@@ -70,7 +72,7 @@ npm run prisma:migrate
 ### Running
 
 ```bash
-npm run dev        # development
+npm run dev        # development (port 4000)
 npm run build      # production build
 npm run start      # production server
 ```
@@ -79,8 +81,7 @@ npm run start      # production server
 
 ```bash
 npm test              # Jest unit + integration tests
-npm run test:e2e      # Playwright e2e (headless)
-npm run test:e2e:ui   # Playwright e2e (UI mode)
+npm run test:watch    # Jest in watch mode
 ```
 
 ## Project Structure
@@ -89,36 +90,48 @@ npm run test:e2e:ui   # Playwright e2e (UI mode)
 src/
 ├── app/
 │   ├── (auth)/          # login, register, forgot/reset password
-│   ├── (dashboard)/     # protected pages (board, tasks, overview...)
-│   └── api/             # API routes (auth, webhooks)
+│   └── (dashboard)/     # protected pages (projects, tasks, overview)
+├── actions/             # Server Actions (auth, tasks, projects, settings)
 ├── auth/                # Auth.js config (Edge-safe)
-├── components/          # Shared UI components
+├── components/          # UI components grouped by domain
+│   ├── ui/              # shadcn/ui primitives + shared components
+│   ├── tasks/           # task-card, task-dialog, filters, tags
+│   ├── projects/        # project-card, kanban
+│   ├── overview/        # dashboard charts and stats
+│   └── ...
 ├── constants/           # App-wide constants
 ├── contexts/            # React contexts
 ├── hooks/               # Custom hooks
-├── lib/                 # Utilities, db client, email, rate limiting
-├── providers/           # App providers
+├── lib/                 # DB client, mail, rate limiting, utilities
 ├── types/               # TypeScript types
 └── validations/         # Zod schemas
 ```
 
 ## Architecture
 
-This project is migrating from a client-only frontend (consuming an external REST API) to a **full-stack Next.js application** using the built-in backend capabilities.
+This project follows a **Server-first** architecture using Next.js App Router:
 
-### Current state
+- **Data fetching** — React Server Components query the database directly via Prisma
+- **Mutations** — Server Actions with Zod validation and `revalidatePath` for cache invalidation
+- **Auth** — Auth.js v5 with Edge-compatible middleware for route protection
+- **Email** — Nodemailer dispatched directly from Server Actions (no webhook layer)
+- **IDOR protection** — all queries scoped by `userId`
 
-- Authentication is fully handled server-side via Auth.js v5 + Prisma
-- Password reset, email sending, and rate limiting run as Next.js API Routes
-- Dashboard data is still consumed from the external API (migration in progress)
+---
 
-### Pending architectural work
+## Migration Notes
 
-- Remove remaining external API calls and migrate data fetching to server actions or Next.js route handlers
-- Resolve `AppContext` theme duplication with `next-themes`
-- Clean up `dotenv` from production dependencies (Next.js loads `.env` natively)
-- Standardize component co-location across auth pages
-- Evaluate `axios` usage — likely replaceable with native `fetch` after full migration
+This project started as a **client-only frontend** consuming an external REST API, using React Query for data fetching and Axios for HTTP calls.
+
+It has since been fully migrated to a **fullstack Next.js application**:
+
+| Before | After |
+|---|---|
+| External REST API | Prisma + PostgreSQL directly |
+| React Query | Server Components + `revalidatePath` |
+| Axios | Server Actions |
+| API webhook for email | Nodemailer in Server Actions |
+| Co-located page components | Domain-grouped components |
 
 ---
 
