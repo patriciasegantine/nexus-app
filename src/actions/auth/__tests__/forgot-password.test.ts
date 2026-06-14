@@ -1,7 +1,7 @@
 /** @jest-environment node */
 import { requestPasswordReset } from "@/actions/auth"
 import { db } from "@/lib/db"
-import { sendResetPasswordEmail } from "@/lib/email"
+import { sendResetPasswordEmail } from "@/lib/mail"
 import { isRateLimited } from "@/lib/rate-limit"
 
 jest.mock("nodemailer", () => ({

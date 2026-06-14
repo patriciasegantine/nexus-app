@@ -8,7 +8,7 @@ import { db } from "@/lib/db"
 import { signIn } from "@/auth"
 import { AUTH_MESSAGES } from "@/constants/messages"
 import { forgotPasswordSchema, loginSchema, registerSchema, resetPasswordSchema } from "@/validations/auth"
-import { sendWelcomeEmail, sendResetPasswordEmail } from "@/lib/email"
+import { sendWelcomeEmail, sendResetPasswordEmail } from "@/lib/mail"
 import { isRateLimited } from "@/lib/rate-limit"
 import { getBaseUrl } from "@/lib/base-url"
 

@@ -4,7 +4,7 @@ import { AUTH_MESSAGES } from "@/constants/messages"
 import bcrypt from "bcryptjs"
 import { db } from "@/lib/db"
 import { signIn } from "@/auth"
-import { sendWelcomeEmail } from "@/lib/email"
+import { sendWelcomeEmail } from "@/lib/mail"
 
 jest.mock("nodemailer", () => ({
   createTransport: jest.fn(() => ({ sendMail: jest.fn() })),

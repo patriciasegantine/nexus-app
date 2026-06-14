@@ -7,17 +7,8 @@ import { revalidatePath } from "next/cache"
 import { AppRoutes } from "@/constants/routes"
 import { generateSlug, ensureUniqueSlug } from "@/lib/slug"
 
-type ActionResult<T = void> =
-  | { success: true; data: T }
-  | { success: false; error: string }
-
-function parseTags(formData: FormData): string[] {
-  try {
-    return JSON.parse((formData.get("tags") as string) || "[]")
-  } catch {
-    return []
-  }
-}
+import type { ActionResult } from "@/types/actions"
+import { parseTags } from "@/actions/shared"
 
 export async function createProject(
   formData: FormData

@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs"
 import { db } from "@/lib/db"
 import { authConfig } from "@/auth/config"
 import { loginSchema } from "@/validations/auth"
-import { sendWelcomeEmail } from "@/lib/email"
+import { sendWelcomeEmail } from "@/lib/mail"
 
 export const { handlers, auth, signIn } = NextAuth({
   ...authConfig,
