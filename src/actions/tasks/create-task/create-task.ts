@@ -5,7 +5,7 @@ import { auth } from "@/auth"
 import { AppRoutes } from "@/constants/routes"
 import { db } from "@/lib/db"
 import { createTaskSchema } from "@/validations/task"
-import { parseDatetime, parseTags, type ActionResult } from "./shared"
+import { parseDatetime, parseTags, type ActionResult } from "../shared"
 
 export async function createTask(
   formData: FormData
