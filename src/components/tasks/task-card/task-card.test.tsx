@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { TaskCard } from '@/components/tasks/task-card'
+import { TaskCard } from '@/components/tasks/task-card/task-card'
 import type { TaskCard as TaskCardType } from '@/types/task'
 
 jest.mock('@/actions/tasks', () => ({
