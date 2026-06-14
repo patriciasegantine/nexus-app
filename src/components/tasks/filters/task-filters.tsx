@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react"
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { ActiveTaskFilters } from "@/components/tasks/active-task-filters"
-import { DesktopTaskFilters } from "@/components/tasks/desktop-task-filters"
-import { MobileTaskFilters } from "@/components/tasks/mobile-task-filters"
+import { ActiveTaskFilters } from "@/components/tasks/filters/active-task-filters"
+import { DesktopTaskFilters } from "@/components/tasks/filters/desktop-task-filters"
+import { MobileTaskFilters } from "@/components/tasks/filters/mobile-task-filters"
 import type { Project } from "@/types/project"
 
 interface TaskFiltersProps {

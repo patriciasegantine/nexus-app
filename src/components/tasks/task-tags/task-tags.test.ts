@@ -1,4 +1,4 @@
-import { getVisibleTagCount } from '@/components/tasks/task-tags'
+import { getVisibleTagCount } from '@/components/tasks/task-tags/task-tags'
 
 jest.mock('@/actions/tasks', () => ({
   addTaskTag: jest.fn(),

@@ -12,7 +12,7 @@ import {
   ProjectFilterField,
   StatusFilterField,
   TagFilterField,
-} from "@/components/tasks/task-filter-fields"
+} from "@/components/tasks/filters/task-filter-fields"
 import type { Project } from "@/types/project"
 
 interface DesktopTaskFiltersProps {

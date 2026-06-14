@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { StatusBadge } from "@/components/tasks/status-badge"
 import { PriorityBadge } from "@/components/tasks/priority-badge"
-import { TaskTags } from "@/components/tasks/task-tags"
+import { TaskTags } from "@/components/tasks/task-tags/task-tags"
 import {
   Tooltip,
   TooltipContent,
