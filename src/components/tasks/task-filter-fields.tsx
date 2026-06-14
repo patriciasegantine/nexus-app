@@ -18,6 +18,10 @@ interface ProjectFilterFieldProps extends FilterFieldProps {
   projects: Project[]
 }
 
+interface TagFilterFieldProps extends FilterFieldProps {
+  tags: string[]
+}
+
 export function StatusFilterField({ value, onChange, className }: FilterFieldProps) {
   return (
     <Select
@@ -101,6 +105,32 @@ export function DueDateFilterField({ value, onChange, className }: FilterFieldPr
         <SelectItem value="today">Due today</SelectItem>
         <SelectItem value="this_week">Due this week</SelectItem>
         <SelectItem value="no_due_date">No due date</SelectItem>
+      </SelectContent>
+    </Select>
+  )
+}
+
+export function TagFilterField({
+  value,
+  onChange,
+  tags,
+  className,
+}: TagFilterFieldProps) {
+  return (
+    <Select
+      value={value || "__all_tags__"}
+      onValueChange={(nextValue) => onChange(nextValue === "__all_tags__" ? null : nextValue)}
+    >
+      <SelectTrigger className={className}>
+        <SelectValue placeholder="All tags" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="__all_tags__">All tags</SelectItem>
+        {tags.map((tag) => (
+          <SelectItem key={tag} value={tag}>
+            {tag}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   )

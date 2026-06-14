@@ -3,13 +3,14 @@
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Tag } from "@/components/ui/tag"
 import { Pencil } from "lucide-react"
 import Link from "next/link"
 import { AppRoutes } from "@/constants/routes"
 import { ProjectDialog } from "./project-dialog"
 import { DeleteProjectButton } from "./delete-project-button"
 import { ProjectBoardItem } from "@/types/project"
-import { TAG_COLORS, progressColor } from "./project-card.utils"
+import { progressColor } from "./project-card.utils"
 
 export interface ProjectCardProps {
   project: ProjectBoardItem
@@ -81,13 +82,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
             {project.tags.length > 0 && (
               <div className="flex items-center gap-1.5 flex-wrap">
-                {project.tags.map((tag, i) => (
-                  <span
-                    key={tag}
-                    className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${TAG_COLORS[i % TAG_COLORS.length]}`}
-                  >
-                    {tag}
-                  </span>
+                {project.tags.map((tag) => (
+                  <Tag key={tag} label={tag} />
                 ))}
               </div>
             )}

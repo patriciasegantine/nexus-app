@@ -11,6 +11,7 @@ import {
   PriorityFilterField,
   ProjectFilterField,
   StatusFilterField,
+  TagFilterField,
 } from "@/components/tasks/task-filter-fields"
 import type { Project } from "@/types/project"
 
@@ -19,8 +20,10 @@ interface DesktopTaskFiltersProps {
   priority: string
   projectId: string
   dueDate: string
+  tag: string
   projects: Project[]
-  secondaryActiveCount: number
+  tags: string[]
+  activeCount: number
   hasAnyFilter: boolean
   onFilterChange: (key: string, value: string | null) => void
   onClear: () => void
@@ -31,38 +34,48 @@ export function DesktopTaskFilters({
   priority,
   projectId,
   dueDate,
+  tag,
   projects,
-  secondaryActiveCount,
+  tags,
+  activeCount,
   hasAnyFilter,
   onFilterChange,
   onClear,
 }: DesktopTaskFiltersProps) {
   return (
     <div className="hidden items-center gap-2 md:flex">
-      <StatusFilterField
-        value={status}
-        onChange={(value) => onFilterChange("status", value)}
-        className="w-[140px]"
-      />
-      <PriorityFilterField
-        value={priority}
-        onChange={(value) => onFilterChange("priority", value)}
-        className="w-[140px]"
-      />
-
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="outline" size="sm" className="h-10 shrink-0 gap-2">
+          <Button
+            variant="outline"
+            className="h-10 shrink-0 gap-2 border-border/90 bg-card px-4 shadow-sm"
+          >
             <SlidersHorizontal className="h-4 w-4" />
             Filters
-            {secondaryActiveCount > 0 && (
+            {activeCount > 0 && (
               <Badge variant="secondary" className="h-5 px-1.5 text-xs">
-                {secondaryActiveCount}
+                {activeCount}
               </Badge>
             )}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-64 space-y-4 p-4" align="end">
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium">Status</p>
+            <StatusFilterField
+              value={status}
+              onChange={(value) => onFilterChange("status", value)}
+              className="w-full"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium">Priority</p>
+            <PriorityFilterField
+              value={priority}
+              onChange={(value) => onFilterChange("priority", value)}
+              className="w-full"
+            />
+          </div>
           <div className="space-y-1.5">
             <p className="text-sm font-medium">Project</p>
             <ProjectFilterField
@@ -77,6 +90,15 @@ export function DesktopTaskFilters({
             <DueDateFilterField
               value={dueDate}
               onChange={(value) => onFilterChange("dueDate", value)}
+              className="w-full"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium">Tag</p>
+            <TagFilterField
+              value={tag}
+              onChange={(value) => onFilterChange("tag", value)}
+              tags={tags}
               className="w-full"
             />
           </div>
