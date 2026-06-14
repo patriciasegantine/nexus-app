@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth"
 import { db } from "@/lib/db"
-import { revalidateTaskPaths, type ActionResult } from "./shared"
+import { revalidateTaskPaths, type ActionResult } from "../shared"
 
 export async function duplicateTask(
   taskId: string

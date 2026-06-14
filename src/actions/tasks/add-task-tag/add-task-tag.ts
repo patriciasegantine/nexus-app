@@ -3,7 +3,7 @@
 import { auth } from "@/auth"
 import { MAX_TAG_LENGTH, MAX_TAGS } from "@/constants/tags"
 import { db } from "@/lib/db"
-import { revalidateTaskPaths, type ActionResult } from "./shared"
+import { revalidateTaskPaths, type ActionResult } from "../shared"
 
 export async function addTaskTag(
   taskId: string,
