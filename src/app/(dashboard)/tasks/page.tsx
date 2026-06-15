@@ -2,11 +2,12 @@ import { getTasks, getTaskTags, TASKS_PER_PAGE } from "@/lib/data/tasks"
 import { getProjects } from "@/lib/data/projects"
 import { TasksPageClient } from "@/components/tasks/tasks-page-client"
 import type { TaskStatus, TaskPriority } from "@/types/task"
-import type { DueDateFilter } from "@/lib/data/tasks"
+import type { DueDateFilter, TaskSortOption } from "@/lib/data/tasks"
 
 const VALID_STATUSES = new Set<TaskStatus>(['TODO', 'IN_PROGRESS', 'DONE'])
 const VALID_PRIORITIES = new Set<TaskPriority>(['LOW', 'MEDIUM', 'HIGH'])
 const VALID_DUE_DATES = new Set<DueDateFilter>(['overdue', 'today', 'this_week', 'no_due_date'])
+const VALID_SORTS = new Set<TaskSortOption>(['updatedAt', 'dueDate', 'title'])
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -31,6 +32,7 @@ export default async function TasksPage({ searchParams }: PageProps) {
   const search = typeof params.search === 'string' && params.search ? params.search : undefined
   const projectId = typeof params.projectId === 'string' && params.projectId ? params.projectId : undefined
   const tag = typeof params.tag === 'string' && params.tag ? params.tag : undefined
+  const rawSort = typeof params.sort === 'string' ? params.sort : undefined
   const page = Math.max(1, parseInt(typeof params.page === 'string' ? params.page : '1') || 1)
 
   const status = rawStatus && VALID_STATUSES.has(rawStatus as TaskStatus) ? (rawStatus as TaskStatus) : undefined
@@ -41,11 +43,12 @@ export default async function TasksPage({ searchParams }: PageProps) {
   const dueDate = !dueDateExact && rawDueDate && VALID_DUE_DATES.has(rawDueDate as DueDateFilter)
     ? (rawDueDate as DueDateFilter)
     : undefined
+  const sort = rawSort && VALID_SORTS.has(rawSort as TaskSortOption) ? (rawSort as TaskSortOption) : undefined
 
   const hasFilters = Boolean(status || priority || search || projectId || dueDate || dueDateExact || tag)
 
   const [{ tasks, total }, projects, tags] = await Promise.all([
-    getTasks({ status, priority, search, projectId, dueDate, dueDateExact, tag, page }),
+    getTasks({ status, priority, search, projectId, dueDate, dueDateExact, tag, sort, page }),
     getProjects(),
     getTaskTags(),
   ])

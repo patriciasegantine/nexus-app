@@ -6,7 +6,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Tag } from "@/components/ui/tag"
+import { ProjectTags } from "@/components/projects/project-tags/project-tags"
 import {
   Dialog,
   DialogContent,
@@ -111,13 +111,14 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
             </div>
 
             {/* Progress bar + stats */}
-            <div className="space-y-1.5">
+            <div className="space-y-3">
               <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
                 <div
                   className="h-full rounded-full bg-muted-foreground/40 transition-all"
                   style={{ width: `${project.progress}%` }}
                 />
               </div>
+              
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
                 <span className="font-medium text-foreground">{project.total} tasks</span>
                 <span>{project.todo} todo</span>
@@ -131,13 +132,13 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
             </div>
 
             {/* Tags */}
-            {project.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {project.tags.map((tag) => (
-                  <Tag key={tag} label={tag} onClick={onTagClick ? () => onTagClick(tag) : undefined} />
-                ))}
-              </div>
-            )}
+            <div className="flex w-full py-2">
+              <ProjectTags
+                projectId={project.id}
+                tags={project.tags}
+                onTagClick={onTagClick}
+              />
+            </div>
 
           </div>
         </CardContent>
