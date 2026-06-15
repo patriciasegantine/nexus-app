@@ -1,8 +1,11 @@
+'use client'
+
 import { Suspense } from "react"
+import { useRouter, usePathname, useSearchParams } from "next/navigation"
+import { FolderKanban } from "lucide-react"
 import { ProjectCard } from "@/components/projects/project-card/project-card"
 import { ProjectFilters } from "@/components/projects/filters/project-filters"
 import { EmptyState } from "@/components/ui/empty-state"
-import { FolderKanban } from "lucide-react"
 import { NewProjectButton } from "@/components/projects/new-project-button"
 import type { ProjectBoardItem } from "@/types/project"
 
@@ -13,6 +16,16 @@ interface ProjectsPageClientProps {
 }
 
 export function ProjectsPageClient({ projects, tags, hasFilters }: ProjectsPageClientProps) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  function handleTagClick(tag: string) {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set("tag", tag)
+    router.replace(`${pathname}?${params.toString()}`)
+  }
+
   return (
     <div className="space-y-4">
       <Suspense>
@@ -37,7 +50,7 @@ export function ProjectsPageClient({ projects, tags, hasFilters }: ProjectsPageC
       ) : (
         <div className="space-y-4">
           {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard key={project.id} project={project} onTagClick={handleTagClick} />
           ))}
         </div>
       )}
