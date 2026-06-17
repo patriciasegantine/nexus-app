@@ -17,7 +17,7 @@ export function GoogleSignInButton({
       type="button"
       variant="outline"
       className={className}
-      onClick={() => signIn("google", { callbackUrl })}
+      onClick={() => signIn("google", { callbackUrl }, { prompt: "select_account" })}
     >
       <svg
         className="mr-2 h-4 w-4"

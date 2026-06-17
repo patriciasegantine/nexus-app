@@ -76,18 +76,6 @@ export function ProfileSettings() {
               {saved && <p className="text-sm text-emerald-600">Name updated.</p>}
             </div>
           </div>
-
-          <div className="max-w-xl space-y-1">
-            <Label htmlFor="profile-email">Email</Label>
-            <Input
-              id="profile-email"
-              value={session?.user?.email ?? ''}
-              readOnly
-              disabled
-              className="h-9 cursor-not-allowed"
-            />
-            <p className="text-xs text-muted-foreground">Email cannot be changed.</p>
-          </div>
         </div>
       </div>
     </div>
