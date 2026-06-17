@@ -6,6 +6,8 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { ProjectTags } from "@/components/projects/project-tags/project-tags"
 import {
   Dialog,
@@ -36,8 +38,17 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
   const router = useRouter()
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState("")
   const [deleteError, setDeleteError] = useState("")
   const [isDeleting, startDelete] = useTransition()
+
+  function handleDeleteOpenChange(open: boolean) {
+    setDeleteOpen(open)
+    if (!open) {
+      setDeleteConfirm("")
+      setDeleteError("")
+    }
+  }
 
   function handleDelete() {
     setDeleteError("")
@@ -48,6 +59,7 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
         return
       }
       setDeleteOpen(false)
+      setDeleteConfirm("")
       router.refresh()
     })
   }
@@ -84,7 +96,7 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
                 </div>
               </div>
 
-              <DropdownMenu>
+              <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <button
                     className="-mr-1 -mt-1 shrink-0 rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -146,7 +158,7 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
 
       <ProjectDialog open={editOpen} onOpenChange={setEditOpen} project={project} />
 
-      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+      <Dialog open={deleteOpen} onOpenChange={handleDeleteOpenChange}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Delete project</DialogTitle>
@@ -156,12 +168,28 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
               delete all tasks in this project. This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
+          <div className="space-y-2">
+            <Label htmlFor={`delete-project-${project.id}`} className="text-sm text-muted-foreground">
+              Type <span className="font-medium text-foreground">{project.slug}</span> to confirm.
+            </Label>
+            <Input
+              id={`delete-project-${project.id}`}
+              value={deleteConfirm}
+              onChange={(event) => setDeleteConfirm(event.target.value)}
+              placeholder={project.slug}
+              disabled={isDeleting}
+            />
+          </div>
           {deleteError && <p className="text-sm text-destructive">{deleteError}</p>}
           <DialogFooter className="pt-2">
-            <Button variant="outline" onClick={() => setDeleteOpen(false)} disabled={isDeleting}>
+            <Button variant="outline" onClick={() => handleDeleteOpenChange(false)} disabled={isDeleting}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={isDeleting || deleteConfirm !== project.slug}
+            >
               {isDeleting ? "Deleting..." : "Delete project"}
             </Button>
           </DialogFooter>

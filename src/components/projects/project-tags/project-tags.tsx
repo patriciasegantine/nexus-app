@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, useTransition } from "react"
 import { Loader2, Plus } from "lucide-react"
-import { addProjectTag, removeProjectTag } from "@/actions/projects"
+import { updateProjectTag } from "@/actions/projects"
 import { MAX_TAG_LENGTH, MAX_TAGS } from "@/constants/tags"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -85,7 +85,7 @@ export function ProjectTags({ projectId, tags, onTagClick }: ProjectTagsProps) {
 
   function handleRemoveTag(tag: string) {
     startTransition(async () => {
-      const result = await removeProjectTag(projectId, tag)
+      const result = await updateProjectTag(projectId, tag, "remove")
       if (!result.success) {
         toast({ title: result.error, variant: "destructive" })
         return
@@ -99,7 +99,7 @@ export function ProjectTags({ projectId, tags, onTagClick }: ProjectTagsProps) {
     if (!tag) return
 
     startTransition(async () => {
-      const result = await addProjectTag(projectId, tag)
+      const result = await updateProjectTag(projectId, tag, "add")
       if (!result.success) {
         toast({ title: result.error, variant: "destructive" })
         return

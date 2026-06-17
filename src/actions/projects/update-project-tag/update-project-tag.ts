@@ -1,15 +1,18 @@
 "use server"
 
 import { auth } from "@/auth"
+import { AppRoutes } from "@/constants/routes"
 import { MAX_TAG_LENGTH, MAX_TAGS } from "@/constants/tags"
 import { db } from "@/lib/db"
-import { revalidatePath } from "next/cache"
-import { AppRoutes } from "@/constants/routes"
 import type { ActionResult } from "@/types/actions"
+import { revalidatePath } from "next/cache"
 
-export async function addProjectTag(
+export type ProjectTagOperation = "add" | "remove"
+
+export async function updateProjectTag(
   projectId: string,
   value: string,
+  operation: ProjectTagOperation,
 ): Promise<ActionResult<string[]>> {
   const session = await auth()
   if (!session?.user?.id) {
@@ -28,12 +31,20 @@ export async function addProjectTag(
   })
 
   if (!project) return { success: false, error: "Project not found" }
-  if (project.tags.includes(tag)) return { success: false, error: "Tag already added" }
-  if (project.tags.length >= MAX_TAGS) {
+
+  if (operation === "add" && project.tags.includes(tag)) {
+    return { success: false, error: "Tag already added" }
+  }
+
+  if (operation === "add" && project.tags.length >= MAX_TAGS) {
     return { success: false, error: `Maximum ${MAX_TAGS} tags allowed` }
   }
 
-  const tags = [...project.tags, tag]
+  const tags =
+    operation === "add"
+      ? [...project.tags, tag]
+      : project.tags.filter((currentTag) => currentTag !== tag)
+
   await db.project.update({
     where: { id: projectId, userId: session.user.id },
     data: { tags },
