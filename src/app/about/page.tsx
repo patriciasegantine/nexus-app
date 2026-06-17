@@ -51,6 +51,9 @@ export default function AboutPage() {
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-16 gap-16">
         {/* Hero */}
         <section className="text-center max-w-lg space-y-4">
+          <span className="inline-block text-xs font-medium px-3 py-1 rounded-full border text-muted-foreground">
+            Work in progress
+          </span>
           <h1 className="text-3xl md:text-4xl font-light tracking-tight">
             Your central hub for projects and tasks
           </h1>
