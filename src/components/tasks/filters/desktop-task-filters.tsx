@@ -1,4 +1,4 @@
-import { SlidersHorizontal, X } from "lucide-react"
+import { ArrowUpDown, SlidersHorizontal, X } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,12 +15,19 @@ import {
 } from "@/components/tasks/filters/task-filter-fields"
 import type { Project } from "@/types/project"
 
+const SORT_OPTIONS = [
+  { value: "updatedAt", label: "Recently updated" },
+  { value: "dueDate", label: "Due date" },
+  { value: "title", label: "Title A–Z" },
+]
+
 interface DesktopTaskFiltersProps {
   status: string
   priority: string
   projectId: string
   dueDate: string
   tag: string
+  sort: string
   projects: Project[]
   tags: string[]
   activeCount: number
@@ -35,6 +42,7 @@ export function DesktopTaskFilters({
   projectId,
   dueDate,
   tag,
+  sort,
   projects,
   tags,
   activeCount,
@@ -47,62 +55,59 @@ export function DesktopTaskFilters({
       <div className="hidden items-center gap-2 md:flex">
         <Popover>
           <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className="h-10 shrink-0 gap-2 border-border/90 bg-card px-4 shadow-sm"
-            >
+            <Button variant="outline" className="h-10 shrink-0 gap-2 border-border/90 bg-card px-4 shadow-sm">
               <SlidersHorizontal className="h-4 w-4" />
               Filters
               {activeCount > 0 && (
-                <Badge variant="secondary" className="h-5 px-1.5 text-xs">
-                  {activeCount}
-                </Badge>
+                <Badge variant="secondary" className="h-5 px-1.5 text-xs">{activeCount}</Badge>
               )}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-64 space-y-4 p-4" align="end">
             <div className="space-y-1.5">
               <p className="text-sm font-medium">Status</p>
-              <StatusFilterField
-                value={status}
-                onChange={(value) => onFilterChange("status", value)}
-                className="w-full"
-              />
+              <StatusFilterField value={status} onChange={(v) => onFilterChange("status", v)} className="w-full" />
             </div>
             <div className="space-y-1.5">
               <p className="text-sm font-medium">Priority</p>
-              <PriorityFilterField
-                value={priority}
-                onChange={(value) => onFilterChange("priority", value)}
-                className="w-full"
-              />
+              <PriorityFilterField value={priority} onChange={(v) => onFilterChange("priority", v)} className="w-full" />
             </div>
             <div className="space-y-1.5">
               <p className="text-sm font-medium">Project</p>
-              <ProjectFilterField
-                value={projectId}
-                onChange={(value) => onFilterChange("projectId", value)}
-                projects={projects}
-                className="w-full"
-              />
+              <ProjectFilterField value={projectId} onChange={(v) => onFilterChange("projectId", v)} projects={projects} className="w-full" />
             </div>
             <div className="space-y-1.5">
               <p className="text-sm font-medium">Due date</p>
-              <DueDateFilterField
-                value={dueDate}
-                onChange={(value) => onFilterChange("dueDate", value)}
-                className="w-full"
-              />
+              <DueDateFilterField value={dueDate} onChange={(v) => onFilterChange("dueDate", v)} className="w-full" />
             </div>
             <div className="space-y-1.5">
               <p className="text-sm font-medium">Tag</p>
-              <TagFilterField
-                value={tag}
-                onChange={(value) => onFilterChange("tag", value)}
-                tags={tags}
-                className="w-full"
-              />
+              <TagFilterField value={tag} onChange={(v) => onFilterChange("tag", v)} tags={tags} className="w-full" />
             </div>
+          </PopoverContent>
+        </Popover>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="h-10 shrink-0 gap-2 border-border/90 bg-card px-4 shadow-sm">
+              <ArrowUpDown className="h-4 w-4" />
+              Sort
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-48 p-2" align="end">
+            {SORT_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => onFilterChange("sort", option.value === "updatedAt" ? null : option.value)}
+                className={`w-full text-left px-3 py-1.5 rounded-sm text-sm hover:bg-muted transition-colors ${
+                  sort === option.value || (option.value === "updatedAt" && !sort)
+                    ? "font-medium text-foreground"
+                    : "text-muted-foreground"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
           </PopoverContent>
         </Popover>
       </div>

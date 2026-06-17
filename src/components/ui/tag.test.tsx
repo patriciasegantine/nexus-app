@@ -1,16 +1,17 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { Tag, getTagColor } from '@/components/ui/tag'
+import { Tag } from '@/components/ui/tag'
 
 describe('Tag', () => {
-  it('uses a stable color for the same label', () => {
-    expect(getTagColor('frontend')).toBe(getTagColor('frontend'))
+  it('renders with # prefix', () => {
+    render(<Tag label="frontend" />)
+    expect(screen.getByText('#frontend')).toBeInTheDocument()
   })
 
   it('supports an interactive tag', () => {
     const onClick = jest.fn()
 
     render(<Tag label="frontend" onClick={onClick} />)
-    fireEvent.click(screen.getByRole('button', { name: 'frontend' }))
+    fireEvent.click(screen.getByRole('button', { name: '#frontend' }))
 
     expect(onClick).toHaveBeenCalledTimes(1)
   })

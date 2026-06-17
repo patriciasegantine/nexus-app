@@ -6,6 +6,8 @@ export const TASKS_PER_PAGE = 12
 
 export type DueDateFilter = 'overdue' | 'today' | 'this_week' | 'no_due_date'
 
+export type TaskSortOption = "updatedAt" | "dueDate" | "title"
+
 export interface GetTasksFilters {
   status?: TaskStatus
   priority?: TaskPriority
@@ -14,6 +16,7 @@ export interface GetTasksFilters {
   dueDate?: DueDateFilter
   dueDateExact?: string
   tag?: string
+  sort?: TaskSortOption
   page?: number
 }
 
@@ -59,10 +62,18 @@ export async function getTasks(filters?: GetTasksFilters): Promise<{ tasks: Task
     ...(filters?.tag && { tags: { has: filters.tag } }),
   }
 
+  const sort = filters?.sort
+  const orderBy =
+    sort === "dueDate"
+      ? [{ dueDate: "asc" as const }, { updatedAt: "desc" as const }]
+      : sort === "title"
+      ? { title: "asc" as const }
+      : { updatedAt: "desc" as const }
+
   const [tasks, total] = await db.$transaction([
     db.task.findMany({
       where,
-      orderBy: { updatedAt: "desc" },
+      orderBy,
       include: { project: { select: { id: true, name: true } } },
       skip,
       take: TASKS_PER_PAGE,

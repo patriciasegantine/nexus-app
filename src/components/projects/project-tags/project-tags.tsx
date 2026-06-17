@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, useTransition } from "react"
 import { Loader2, Plus } from "lucide-react"
-import { addTaskTag, removeTaskTag } from "@/actions/tasks"
+import { updateProjectTag } from "@/actions/projects"
 import { MAX_TAG_LENGTH, MAX_TAGS } from "@/constants/tags"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -23,34 +23,13 @@ import {
 const TAG_GAP = 4
 const OVERFLOW_TRIGGER_WIDTH = 32
 
-interface TaskTagsProps {
-  taskId: string
+interface ProjectTagsProps {
+  projectId: string
   tags: string[]
   onTagClick?: (tag: string) => void
 }
 
-export function getVisibleTagCount(tagWidths: number[], availableWidth: number) {
-  const allTagsWidth = tagWidths.reduce(
-    (total, width, index) => total + width + (index > 0 ? TAG_GAP : 0),
-    0,
-  )
-
-  if (allTagsWidth <= availableWidth) return tagWidths.length
-
-  let usedWidth = OVERFLOW_TRIGGER_WIDTH
-  let visibleCount = 0
-
-  for (const width of tagWidths) {
-    const nextWidth = usedWidth + width + TAG_GAP
-    if (nextWidth > availableWidth) break
-    usedWidth = nextWidth
-    visibleCount += 1
-  }
-
-  return visibleCount
-}
-
-export function TaskTags({ taskId, tags, onTagClick }: TaskTagsProps) {
+export function ProjectTags({ projectId, tags, onTagClick }: ProjectTagsProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const measurementRef = useRef<HTMLDivElement>(null)
   const [currentTags, setCurrentTags] = useState(tags)
@@ -70,18 +49,30 @@ export function TaskTags({ taskId, tags, onTagClick }: TaskTagsProps) {
     if (!container || !measurement) return
 
     const tagWidths = Array.from(measurement.children).map(
-      (element) => element.getBoundingClientRect().width,
+      (el) => el.getBoundingClientRect().width,
     )
-    setVisibleCount(getVisibleTagCount(tagWidths, container.clientWidth))
+
+    const allWidth = tagWidths.reduce((total, w, i) => total + w + (i > 0 ? TAG_GAP : 0), 0)
+    if (allWidth <= container.clientWidth) {
+      setVisibleCount(tagWidths.length)
+      return
+    }
+
+    let used = OVERFLOW_TRIGGER_WIDTH
+    let count = 0
+    for (const w of tagWidths) {
+      if (used + w + TAG_GAP > container.clientWidth) break
+      used += w + TAG_GAP
+      count++
+    }
+    setVisibleCount(count)
   }, [])
 
   useLayoutEffect(() => {
     updateVisibleCount()
-
-    const resizeObserver = new ResizeObserver(updateVisibleCount)
-    if (containerRef.current) resizeObserver.observe(containerRef.current)
-
-    return () => resizeObserver.disconnect()
+    const ro = new ResizeObserver(updateVisibleCount)
+    if (containerRef.current) ro.observe(containerRef.current)
+    return () => ro.disconnect()
   }, [currentTags, updateVisibleCount])
 
   const hiddenCount = currentTags.length - visibleCount
@@ -94,7 +85,7 @@ export function TaskTags({ taskId, tags, onTagClick }: TaskTagsProps) {
 
   function handleRemoveTag(tag: string) {
     startTransition(async () => {
-      const result = await removeTaskTag(taskId, tag)
+      const result = await updateProjectTag(projectId, tag, "remove")
       if (!result.success) {
         toast({ title: result.error, variant: "destructive" })
         return
@@ -108,12 +99,11 @@ export function TaskTags({ taskId, tags, onTagClick }: TaskTagsProps) {
     if (!tag) return
 
     startTransition(async () => {
-      const result = await addTaskTag(taskId, tag)
+      const result = await updateProjectTag(projectId, tag, "add")
       if (!result.success) {
         toast({ title: result.error, variant: "destructive" })
         return
       }
-
       setCurrentTags(result.data)
       setTagInput("")
       setAddOpen(false)
@@ -152,12 +142,9 @@ export function TaskTags({ taskId, tags, onTagClick }: TaskTagsProps) {
               <div className="flex gap-2">
                 <Input
                   value={tagInput}
-                  onChange={(event) => setTagInput(event.target.value)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      event.preventDefault()
-                      handleAddTag()
-                    }
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") { e.preventDefault(); handleAddTag() }
                   }}
                   placeholder="Tag name"
                   maxLength={MAX_TAG_LENGTH}
@@ -171,26 +158,19 @@ export function TaskTags({ taskId, tags, onTagClick }: TaskTagsProps) {
                   disabled={!tagInput.trim() || isPending}
                   aria-label="Save tag"
                 >
-                  {isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Plus className="h-4 w-4" />
-                  )}
+                  {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
                 </Button>
               </div>
             </PopoverContent>
           </Popover>
         )}
 
-        <div
-          ref={containerRef}
-          className="flex min-w-0 flex-1 items-center gap-1"
-        >
+        <div ref={containerRef} className="flex min-w-0 flex-1 items-center gap-1">
           {currentTags.slice(0, visibleCount).map((tag) => (
             <Tag
               key={tag}
               label={tag}
-              onClick={onTagClick ? (event) => { event.stopPropagation(); handleTagClick(tag) } : undefined}
+              onClick={onTagClick ? (e) => { e.stopPropagation(); handleTagClick(tag) } : undefined}
               onRemove={() => handleRemoveTag(tag)}
               removePosition="corner"
               className="max-w-[110px] shrink-0"

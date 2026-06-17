@@ -208,7 +208,7 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={() => handleOpenChange(false)}
               disabled={isPending}
             >
               Cancel
