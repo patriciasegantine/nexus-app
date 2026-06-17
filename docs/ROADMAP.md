@@ -53,10 +53,10 @@ This document captures what the project currently does, what it needs to feel co
 Small gaps that matter for a finished feel.
 
 - [ ] **Drag-and-drop Kanban** — `@hello-pangea/dnd` is already installed; wire it up to `updateTaskStatus`
-- [ ] **Change password in settings** — email/password users have no way to update their password
-- [ ] **Delete account** — Danger Zone clears data but does not remove the user record
-- [ ] **Task sorting** — currently fixed to `updatedAt desc`; expose sort options in the UI
-- [ ] **Project search** — the projects list has no search or filter
+- [x] **Change password in settings** — email/password users have no way to update their password
+- [x] **Delete account** — Danger Zone clears data but does not remove the user record
+- [x] **Task sorting** — currently fixed to `updatedAt desc`; expose sort options in the UI
+- [x] **Project search** — the projects list has no search or filter
 - [ ] **Granular loading skeletons** — `loading.tsx` files exist but pages load as a unit; add per-component Skeleton
 
 ---
