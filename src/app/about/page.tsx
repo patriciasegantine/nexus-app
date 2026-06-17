@@ -55,7 +55,7 @@ export default function AboutPage() {
             Your central hub for projects and tasks
           </h1>
           <p className="text-muted-foreground text-base">
-            Nexus helps you organize work, track progress, and stay on top of everything — all in one place.
+            Nexus helps you organize work, track progress, and stay on top of everything. All in one place.
           </p>
         </section>
 
@@ -87,8 +87,8 @@ export default function AboutPage() {
 
           <p className="text-xs text-muted-foreground max-w-xs leading-relaxed">
             Want to sign in with Google?{" "}
-            <strong className="text-foreground font-medium">Open this link in your browser</strong>{" "}
-            — LinkedIn&apos;s in-app browser doesn&apos;t support Google authentication.
+            <strong className="text-foreground font-medium">Open this link in your browser.</strong>{" "}
+            Some in-app browsers don&apos;t support Google authentication.
           </p>
         </section>
       </main>
