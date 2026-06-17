@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { TaskCard } from "@/components/tasks/task-card/task-card"
 import { TaskDialog } from "@/components/tasks/task-dialog/task-dialog"
-import { ProjectDialog } from "@/components/projects/project-dialog"
+import { ProjectDialog } from "@/components/projects/project-dialog/project-dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {

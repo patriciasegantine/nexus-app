@@ -1,12 +1,23 @@
-import { getBoardData } from "@/lib/data/projects"
-import { ProjectCard } from "@/components/projects/project-card"
+import { getBoardData, getProjectTags } from "@/lib/data/projects"
 import { NewProjectButton } from "@/components/projects/new-project-button"
 import { PageHeader } from "@/components/ui/page-header"
-import { EmptyState } from "@/components/ui/empty-state"
-import { FolderKanban } from "lucide-react"
+import { ProjectsPageClient } from "@/components/projects/projects-page-client"
 
-export default async function ProjectsPage() {
-  const projects = await getBoardData()
+interface ProjectsPageProps {
+  searchParams: Promise<{ search?: string; tag?: string; sort?: string }>
+}
+
+export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
+  const { search, tag, sort } = await searchParams
+
+  const validSort = sort === "name" || sort === "progress" ? sort : "createdAt"
+
+  const [projects, tags] = await Promise.all([
+    getBoardData({ search, tag, sort: validSort }),
+    getProjectTags(),
+  ])
+
+  const hasFilters = Boolean(search || tag)
 
   return (
     <div className="space-y-6">
@@ -16,20 +27,11 @@ export default async function ProjectsPage() {
         action={<NewProjectButton iconOnlyOnMobile />}
       />
 
-      {projects.length === 0 ? (
-        <EmptyState
-          icon={FolderKanban}
-          title="No projects yet. Create your first one."
-          action={<NewProjectButton />}
-          className="py-24"
-        />
-      ) : (
-        <div className="space-y-4">
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </div>
-      )}
+      <ProjectsPageClient
+        projects={projects}
+        tags={tags}
+        hasFilters={hasFilters}
+      />
     </div>
   )
 }

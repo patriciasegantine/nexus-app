@@ -1,4 +1,5 @@
 export { addTaskTag } from "./add-task-tag/add-task-tag"
+export { removeTaskTag } from "./remove-task-tag/remove-task-tag"
 export { createTask } from "./create-task/create-task"
 export { deleteTask } from "./delete-task/delete-task"
 export { duplicateTask } from "./duplicate-task/duplicate-task"

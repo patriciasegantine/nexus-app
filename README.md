@@ -38,7 +38,7 @@ A full-stack project management application built with Next.js, featuring authen
 
 ```bash
 git clone https://github.com/patriciasegantine/nexus-app.git
-cd nexus-dashboard
+cd nexus-app
 npm install
 ```
 

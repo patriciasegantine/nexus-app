@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Plus } from "lucide-react"
 import { PageHeaderAction } from "@/components/ui/page-header"
-import { ProjectDialog } from "./project-dialog"
+import { ProjectDialog } from "./project-dialog/project-dialog"
 
 interface NewProjectButtonProps {
   iconOnlyOnMobile?: boolean

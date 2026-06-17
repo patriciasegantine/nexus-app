@@ -53,13 +53,38 @@ export async function getProject(slug: string) {
   })
 }
 
-export async function getBoardData(): Promise<ProjectBoardItem[]> {
+export async function getProjectTags(): Promise<string[]> {
   const session = await auth()
   if (!session?.user?.id) return []
 
   const projects = await db.project.findMany({
     where: { userId: session.user.id },
-    orderBy: { createdAt: "desc" },
+    select: { tags: true },
+  })
+
+  const all = projects.flatMap((p) => p.tags)
+  return [...new Set(all)].sort()
+}
+
+export interface GetBoardDataParams {
+  search?: string
+  tag?: string
+  sort?: "createdAt" | "name" | "progress"
+}
+
+export async function getBoardData(params: GetBoardDataParams = {}): Promise<ProjectBoardItem[]> {
+  const session = await auth()
+  if (!session?.user?.id) return []
+
+  const { search, tag, sort = "createdAt" } = params
+
+  const projects = await db.project.findMany({
+    where: {
+      userId: session.user.id,
+      ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
+      ...(tag ? { tags: { has: tag } } : {}),
+    },
+    orderBy: sort === "name" ? { name: "asc" } : { createdAt: "desc" },
     select: {
       id: true,
       name: true,
@@ -73,7 +98,7 @@ export async function getBoardData(): Promise<ProjectBoardItem[]> {
     },
   })
 
-  return projects.map((project) => {
+  const mapped = projects.map((project) => {
     const total = project.tasks.length
     const done = project.tasks.filter((t) => t.status === "DONE").length
     const inProgress = project.tasks.filter((t) => t.status === "IN_PROGRESS").length
@@ -99,4 +124,8 @@ export async function getBoardData(): Promise<ProjectBoardItem[]> {
       overdue,
     }
   })
+
+  return sort === "progress"
+    ? mapped.sort((a, b) => b.progress - a.progress)
+    : mapped
 }

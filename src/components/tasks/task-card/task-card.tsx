@@ -149,7 +149,7 @@ export function TaskCard({
         </div>
 
         {/* Footer: tags */}
-        <div className="mt-auto flex min-h-[30px] items-end pt-2">
+        <div className="mt-auto flex w-full py-2">
           <TaskTags taskId={task.id} tags={task.tags} onTagClick={onTagClick} />
         </div>
 
