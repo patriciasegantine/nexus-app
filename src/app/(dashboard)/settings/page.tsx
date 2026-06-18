@@ -9,9 +9,11 @@ export default async function SettingsPage() {
   const user = session?.user?.id
     ? await db.user.findUnique({
         where: { id: session.user.id },
-        select: { password: true },
+        select: { password: true, accounts: { select: { provider: true } } },
       })
     : null
+
+  const providers = user?.accounts.map((a) => a.provider) ?? []
 
   return (
     <div className="space-y-6">
@@ -21,7 +23,7 @@ export default async function SettingsPage() {
       />
 
       <Separator />
-      <SettingsTabs hasPassword={Boolean(user?.password)} />
+      <SettingsTabs hasPassword={Boolean(user?.password)} providers={providers} />
     </div>
   )
 }

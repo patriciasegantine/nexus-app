@@ -2,11 +2,11 @@
 
 import { useState } from "react"
 import { SlidersHorizontal, Shield, User } from "lucide-react"
-import { DangerZone } from "@/components/settings/danger-zone"
-import { PreferencesSettings } from "@/components/settings/preferences-settings"
-import { ProfileSettings } from "@/components/settings/profile-settings"
-import { SecuritySettings } from "@/components/settings/security-settings"
-import { ThemeSettings } from "@/components/settings/theme-settings"
+import { DangerZone } from "@/components/settings/account/danger-zone/danger-zone"
+import { PreferencesSettings } from "@/components/settings/preferences/preferences-settings"
+import { ProfileSettings } from "@/components/settings/profile/profile-settings"
+import { SecuritySettings } from "@/components/settings/account/security/security-settings"
+import { ThemeSettings } from "@/components/settings/preferences/theme-settings"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
@@ -20,9 +20,10 @@ type SettingsTab = (typeof SETTINGS_TABS)[number]["value"]
 
 interface SettingsTabsProps {
   hasPassword: boolean
+  providers: string[]
 }
 
-export function SettingsTabs({ hasPassword }: SettingsTabsProps) {
+export function SettingsTabs({ hasPassword, providers }: SettingsTabsProps) {
   const [activeTab, setActiveTab] = useState<SettingsTab>("profile")
 
   return (
@@ -83,7 +84,7 @@ export function SettingsTabs({ hasPassword }: SettingsTabsProps) {
           aria-labelledby="settings-tab-account"
           className="space-y-6"
         >
-          <SecuritySettings hasPassword={hasPassword} />
+          <SecuritySettings hasPassword={hasPassword} providers={providers} />
           <Separator />
           <DangerZone />
         </div>
