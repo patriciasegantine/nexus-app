@@ -10,7 +10,10 @@ import { sendWelcomeEmail } from "@/lib/mail"
 export const { handlers, auth, signIn } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(db),
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    maxAge: 7 * 24 * 60 * 60,
+  },
   providers: [
     ...authConfig.providers,
     Credentials({

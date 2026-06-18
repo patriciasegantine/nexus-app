@@ -1,10 +1,20 @@
 import { Separator } from '@/components/ui/separator'
-import { DangerZone } from '@/components/settings/danger-zone'
-import { ProfileSettings } from '@/components/settings/profile-settings'
-import { ThemeSettings } from '@/components/settings/theme-settings'
+import { SettingsTabs } from '@/components/settings/settings-tabs'
 import { PageHeader } from '@/components/ui/page-header'
+import { auth } from '@/auth'
+import { db } from '@/lib/db'
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const session = await auth()
+  const user = session?.user?.id
+    ? await db.user.findUnique({
+        where: { id: session.user.id },
+        select: { password: true, accounts: { select: { provider: true } } },
+      })
+    : null
+
+  const providers = user?.accounts.map((a) => a.provider) ?? []
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -13,11 +23,7 @@ export default function SettingsPage() {
       />
 
       <Separator />
-      <ProfileSettings />
-      <Separator />
-      <ThemeSettings />
-      <Separator />
-      <DangerZone />
+      <SettingsTabs hasPassword={Boolean(user?.password)} providers={providers} />
     </div>
   )
 }
