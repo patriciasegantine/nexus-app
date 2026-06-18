@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from "react"
+import { useEffect, useState, useTransition } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { ClipboardList, Loader2, Plus } from "lucide-react"
 import { format } from "date-fns"
@@ -16,6 +16,14 @@ import { duplicateTask, deleteTask } from "@/actions/tasks"
 import { toast } from "@/hooks/use-toast"
 import type { TaskListItem } from "@/types/task"
 import type { Project } from "@/types/project"
+import {
+  DEFAULT_TASK_PAGE_SIZE,
+  DEFAULT_TASK_SORT,
+  TASK_PAGE_SIZE_PREFERENCE_KEY,
+  TASK_SORT_OPTIONS,
+  TASK_SORT_PREFERENCE_KEY,
+  isTaskPageSizeOption,
+} from "@/constants/preferences"
 
 interface TasksPageClientProps {
   tasks: TaskListItem[]
@@ -35,6 +43,35 @@ export function TasksPageClient({ tasks, total, projects, tags, page, perPage, h
   const [selectedTask, setSelectedTask] = useState<TaskListItem | null>(null)
   const [taskToDelete, setTaskToDelete] = useState<TaskListItem | null>(null)
   const [isDuplicating, startDuplicate] = useTransition()
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    let shouldReplace = false
+
+    if (!params.has("sort")) {
+      const preferredSort = window.localStorage.getItem(TASK_SORT_PREFERENCE_KEY)
+      const hasPreferredSort = TASK_SORT_OPTIONS.some((option) => option.value === preferredSort)
+
+      if (preferredSort && hasPreferredSort && preferredSort !== DEFAULT_TASK_SORT) {
+        params.set("sort", preferredSort)
+        shouldReplace = true
+      }
+    }
+
+    if (!params.has("pageSize")) {
+      const preferredPageSize = Number(window.localStorage.getItem(TASK_PAGE_SIZE_PREFERENCE_KEY))
+
+      if (isTaskPageSizeOption(preferredPageSize) && preferredPageSize !== DEFAULT_TASK_PAGE_SIZE) {
+        params.set("pageSize", String(preferredPageSize))
+        params.delete("page")
+        shouldReplace = true
+      }
+    }
+
+    if (shouldReplace) {
+      router.replace(`${pathname}?${params.toString()}`)
+    }
+  }, [pathname, router, searchParams])
 
   function handleNewTask() {
     setSelectedTask(null)

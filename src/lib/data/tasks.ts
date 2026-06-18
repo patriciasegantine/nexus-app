@@ -1,8 +1,9 @@
 import { auth } from "@/auth"
+import { DEFAULT_TASK_PAGE_SIZE } from "@/constants/preferences"
 import { db } from "@/lib/db"
 import type { TaskStatus, TaskPriority, TaskListItem } from "@/types/task"
 
-export const TASKS_PER_PAGE = 12
+export const TASKS_PER_PAGE = DEFAULT_TASK_PAGE_SIZE
 
 export type DueDateFilter = 'overdue' | 'today' | 'this_week' | 'no_due_date'
 
@@ -18,6 +19,7 @@ export interface GetTasksFilters {
   tag?: string
   sort?: TaskSortOption
   page?: number
+  perPage?: number
 }
 
 function buildDueDateWhere(dueDate: DueDateFilter) {
@@ -49,7 +51,8 @@ export async function getTasks(filters?: GetTasksFilters): Promise<{ tasks: Task
   if (!session?.user?.id) return { tasks: [], total: 0 }
 
   const page = filters?.page ?? 1
-  const skip = (page - 1) * TASKS_PER_PAGE
+  const perPage = filters?.perPage ?? TASKS_PER_PAGE
+  const skip = (page - 1) * perPage
 
   const where = {
     userId: session.user.id,
@@ -76,7 +79,7 @@ export async function getTasks(filters?: GetTasksFilters): Promise<{ tasks: Task
       orderBy,
       include: { project: { select: { id: true, name: true } } },
       skip,
-      take: TASKS_PER_PAGE,
+      take: perPage,
     }),
     db.task.count({ where }),
   ])

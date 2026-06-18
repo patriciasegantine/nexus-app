@@ -1,8 +1,5 @@
 import { Separator } from '@/components/ui/separator'
-import { DangerZone } from '@/components/settings/danger-zone'
-import { ProfileSettings } from '@/components/settings/profile-settings'
-import { SecuritySettings } from '@/components/settings/security-settings'
-import { ThemeSettings } from '@/components/settings/theme-settings'
+import { SettingsTabs } from '@/components/settings/settings-tabs'
 import { PageHeader } from '@/components/ui/page-header'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
@@ -24,13 +21,7 @@ export default async function SettingsPage() {
       />
 
       <Separator />
-      <ProfileSettings />
-      <Separator />
-      <ThemeSettings />
-      <Separator />
-      <SecuritySettings hasPassword={Boolean(user?.password)} />
-      <Separator />
-      <DangerZone />
+      <SettingsTabs hasPassword={Boolean(user?.password)} />
     </div>
   )
 }

@@ -1,8 +1,9 @@
-import { getTasks, getTaskTags, TASKS_PER_PAGE } from "@/lib/data/tasks"
+import { getTasks, getTaskTags } from "@/lib/data/tasks"
 import { getProjects } from "@/lib/data/projects"
 import { TasksPageClient } from "@/components/tasks/tasks-page-client"
 import type { TaskStatus, TaskPriority } from "@/types/task"
 import type { DueDateFilter, TaskSortOption } from "@/lib/data/tasks"
+import { DEFAULT_TASK_PAGE_SIZE, isTaskPageSizeOption } from "@/constants/preferences"
 
 const VALID_STATUSES = new Set<TaskStatus>(['TODO', 'IN_PROGRESS', 'DONE'])
 const VALID_PRIORITIES = new Set<TaskPriority>(['LOW', 'MEDIUM', 'HIGH'])
@@ -34,6 +35,7 @@ export default async function TasksPage({ searchParams }: PageProps) {
   const tag = typeof params.tag === 'string' && params.tag ? params.tag : undefined
   const rawSort = typeof params.sort === 'string' ? params.sort : undefined
   const page = Math.max(1, parseInt(typeof params.page === 'string' ? params.page : '1') || 1)
+  const rawPageSize = Number(typeof params.pageSize === 'string' ? params.pageSize : DEFAULT_TASK_PAGE_SIZE)
 
   const status = rawStatus && VALID_STATUSES.has(rawStatus as TaskStatus) ? (rawStatus as TaskStatus) : undefined
   const priority = rawPriority && VALID_PRIORITIES.has(rawPriority as TaskPriority) ? (rawPriority as TaskPriority) : undefined
@@ -44,11 +46,12 @@ export default async function TasksPage({ searchParams }: PageProps) {
     ? (rawDueDate as DueDateFilter)
     : undefined
   const sort = rawSort && VALID_SORTS.has(rawSort as TaskSortOption) ? (rawSort as TaskSortOption) : undefined
+  const perPage = isTaskPageSizeOption(rawPageSize) ? rawPageSize : DEFAULT_TASK_PAGE_SIZE
 
   const hasFilters = Boolean(status || priority || search || projectId || dueDate || dueDateExact || tag)
 
   const [{ tasks, total }, projects, tags] = await Promise.all([
-    getTasks({ status, priority, search, projectId, dueDate, dueDateExact, tag, sort, page }),
+    getTasks({ status, priority, search, projectId, dueDate, dueDateExact, tag, sort, page, perPage }),
     getProjects(),
     getTaskTags(),
   ])
@@ -60,7 +63,7 @@ export default async function TasksPage({ searchParams }: PageProps) {
       projects={projects}
       tags={tags}
       page={page}
-      perPage={TASKS_PER_PAGE}
+      perPage={perPage}
       hasFilters={hasFilters}
     />
   )
