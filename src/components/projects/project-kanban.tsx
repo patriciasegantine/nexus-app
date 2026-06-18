@@ -194,6 +194,7 @@ export function ProjectKanban({ project }: ProjectKanbanProps) {
               value={deleteConfirm}
               onChange={(e) => setDeleteConfirm(e.target.value)}
               placeholder={project.slug}
+              className="placeholder:text-muted-foreground/60"
               disabled={isPending}
             />
           </div>

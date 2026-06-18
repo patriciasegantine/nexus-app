@@ -2,9 +2,9 @@ import { TASK_STATUS_NAMES } from '@/constants/task'
 import type { TaskStatus } from '@/types/task'
 
 const STATUS_BG: Record<TaskStatus, string> = {
-  TODO: 'bg-slate-400/20 dark:bg-slate-400/40',
-  IN_PROGRESS: 'bg-blue-500/20 dark:bg-blue-500/40',
-  DONE: 'bg-green-500/20 dark:bg-green-500/40',
+  TODO: 'bg-[hsl(var(--status-todo)/0.15)]',
+  IN_PROGRESS: 'bg-[hsl(var(--status-in-progress)/0.15)]',
+  DONE: 'bg-[hsl(var(--status-done)/0.15)]',
 }
 
 interface StatusBadgeProps {

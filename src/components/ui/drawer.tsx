@@ -33,7 +33,7 @@ const DrawerContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed inset-x-0 bottom-0 z-50 flex max-h-[90vh] flex-col rounded-t-2xl border bg-background shadow-lg outline-none",
+        "fixed inset-x-0 bottom-0 z-50 flex max-h-[90vh] flex-col rounded-t-2xl border bg-card shadow-xl outline-none",
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
         className,
       )}
@@ -70,7 +70,7 @@ const DrawerFooter = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("flex gap-2 border-t bg-background px-5 py-4", className)} {...props} />
+  <div className={cn("flex gap-2 border-t bg-card px-5 py-4", className)} {...props} />
 )
 DrawerFooter.displayName = "DrawerFooter"
 

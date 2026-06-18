@@ -30,7 +30,7 @@ export function RecentProjects({ projects }: RecentProjectsProps) {
               <Link
                 key={project.id}
                 href={`${AppRoutes.DASHBOARD.PROJECTS}/${project.slug}`}
-                className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 dark:border-gray-800 last:border-0 hover:bg-muted transition-colors cursor-pointer group"
+                className="flex items-center gap-3 px-6 py-4 border-b border-border last:border-0 hover:bg-muted transition-colors cursor-pointer group"
               >
                 <div className="rounded-md h-8 w-8 flex items-center justify-center shrink-0" style={{ backgroundColor: project.color }}>
                   <span className="text-white text-sm font-semibold">
