@@ -10,7 +10,7 @@ interface NavigationSectionProps {
 export function NavigationSection({ pathname, isCollapsed, onItemSelect }: NavigationSectionProps) {
   return (
     <div className="flex flex-col flex-1 py-4 overflow-hidden">
-      <div className="flex-1 px-3">
+      <div className="px-3">
         <nav className="space-y-1">
           {MAIN_NAV_ITEMS.map((item) => (
             <NavigationItem

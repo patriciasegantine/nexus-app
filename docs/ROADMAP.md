@@ -36,7 +36,9 @@ This document captures what the project currently does, what it needs to feel co
 ### Settings
 - Edit display name
 - Theme toggle (light / dark / system)
-- Danger zone: clear all data (requires typing "DELETE")
+- Preferences: default task sort and tasks per page (persisted in localStorage)
+- Security: read-only email, change password (email accounts), connected OAuth providers
+- Danger zone: clear all data / delete account (both require typed confirmation)
 
 ### Technical foundation
 - Next.js 15 App Router with Server Components + Server Actions
@@ -58,6 +60,7 @@ Small gaps that matter for a finished feel.
 - [x] **Task sorting** — currently fixed to `updatedAt desc`; expose sort options in the UI
 - [x] **Project search** — the projects list has no search or filter
 - [ ] **Granular loading skeletons** — `loading.tsx` files exist but pages load as a unit; add per-component Skeleton
+- [ ] **Unit tests for critical actions** — projects (create, update, delete) and tasks (create, update, delete, duplicate) have zero test coverage; auth and settings actions are already covered
 
 ---
 
@@ -89,7 +92,8 @@ Everything needed to go from a personal tool to a multi-user product.
 - [ ] **Task attachments** — file uploads (images, docs) linked to a task; requires object storage (S3 or equivalent)
 
 ### Auth & compliance
-- [ ] **Email verification** — verify address before accessing the workspace
+- [ ] **Email verification on sign-up** — require users to confirm their email before accessing the workspace
+- [ ] **Verified email change flow** — allow changing account email only after reauthentication and confirmation through the new email address
 - [ ] **Social login expansion** — add GitHub provider
 - [ ] **SSO / SAML** — for enterprise plans
 - [ ] **GDPR compliance** — data export (JSON/CSV) + full account deletion
