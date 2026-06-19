@@ -23,7 +23,7 @@ export function RecentTasksTableView({ tasks, onSelect }: RecentTasksTableViewPr
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="bg-muted hover:bg-muted">
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                <TableHead key={header.id} className="text-xs uppercase tracking-wider text-muted-foreground">
                   {flexRender(header.column.columnDef.header, header.getContext())}
                 </TableHead>
               ))}

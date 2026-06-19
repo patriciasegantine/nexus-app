@@ -39,7 +39,7 @@ export function UserAvatar({ src, name, size = 'md', className }: UserAvatarProp
           className="h-full w-full object-cover"
         />
       ) : (
-        <div className="h-full w-full flex items-center justify-center bg-zinc-600">
+        <div className="h-full w-full flex items-center justify-center bg-[hsl(var(--avatar-bg))]">
           <span className="text-white font-medium leading-none select-none">{initial}</span>
         </div>
       )}
