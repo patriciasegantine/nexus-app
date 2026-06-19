@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
+import { SettingsSection } from "@/components/settings/settings-section"
 import type { TaskSortOption } from "@/lib/data/tasks"
 
 export function PreferencesSettings() {
@@ -51,13 +52,8 @@ export function PreferencesSettings() {
   }
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h2 className="text-lg font-semibold">Preferences</h2>
-        <p className="text-sm text-muted-foreground">Choose your default task view.</p>
-      </div>
-
-      <div className="grid max-w-xl gap-4 sm:grid-cols-2">
+    <SettingsSection title="Preferences" description="Choose your default task view.">
+      <div className="grid max-w-sm gap-4 sm:grid-cols-2">
         <div className="space-y-1">
           <Label htmlFor="default-task-sort">Default task sort</Label>
           <Select value={defaultSort} onValueChange={handleSortChange}>
@@ -90,6 +86,6 @@ export function PreferencesSettings() {
           </Select>
         </div>
       </div>
-    </div>
+    </SettingsSection>
   )
 }

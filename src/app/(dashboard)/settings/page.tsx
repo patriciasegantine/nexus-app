@@ -1,4 +1,3 @@
-import { Separator } from '@/components/ui/separator'
 import { SettingsTabs } from '@/components/settings/settings-tabs'
 import { PageHeader } from '@/components/ui/page-header'
 import { auth } from '@/auth'
@@ -21,8 +20,6 @@ export default async function SettingsPage() {
         title="Settings"
         description="Manage your account and workspace preferences."
       />
-
-      <Separator />
       <SettingsTabs hasPassword={Boolean(user?.password)} providers={providers} />
     </div>
   )
