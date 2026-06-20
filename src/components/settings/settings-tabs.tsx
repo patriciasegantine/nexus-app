@@ -27,11 +27,11 @@ export function SettingsTabs({ hasPassword, providers }: SettingsTabsProps) {
   const [activeTab, setActiveTab] = useState<SettingsTab>("profile")
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-3xl space-y-5">
       <div
         role="tablist"
         aria-label="Settings sections"
-        className="flex w-full gap-1 overflow-x-auto rounded-md border bg-card p-1 sm:w-fit"
+        className="flex gap-1 border-b"
       >
         {SETTINGS_TABS.map(({ value, label, icon: Icon }) => (
           <button
@@ -43,11 +43,11 @@ export function SettingsTabs({ hasPassword, providers }: SettingsTabsProps) {
             id={`settings-tab-${value}`}
             onClick={() => setActiveTab(value)}
             className={cn(
-              "inline-flex h-9 items-center justify-center gap-2 rounded-sm px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-              activeTab === value && "bg-background text-foreground shadow-sm"
+              "inline-flex items-center gap-2 border-b-2 border-transparent px-3 pb-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none",
+              activeTab === value && "border-foreground text-foreground"
             )}
           >
-            <Icon className="h-4 w-4" />
+            <Icon className="h-4 w-4 shrink-0" />
             {label}
           </button>
         ))}
@@ -82,7 +82,7 @@ export function SettingsTabs({ hasPassword, providers }: SettingsTabsProps) {
           role="tabpanel"
           id="settings-panel-account"
           aria-labelledby="settings-tab-account"
-          className="space-y-6"
+          className="space-y-8"
         >
           <SecuritySettings hasPassword={hasPassword} providers={providers} />
           <Separator />

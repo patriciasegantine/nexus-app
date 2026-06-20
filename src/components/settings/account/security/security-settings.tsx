@@ -2,7 +2,8 @@
 
 import { useSession } from "next-auth/react"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+import { SettingsSection } from "@/components/settings/settings-section"
 import { ConnectedAccounts } from "./connected-accounts"
 import { ChangePasswordForm } from "./change-password-form"
 
@@ -15,28 +16,35 @@ export function SecuritySettings({ hasPassword, providers }: SecuritySettingsPro
   const { data: session } = useSession()
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h2 className="text-lg font-semibold">Security</h2>
-        <p className="text-sm text-muted-foreground">Manage your sign-in details.</p>
-      </div>
+    <div className="space-y-8">
+      <SettingsSection title="Email" description="Your sign-in address.">
+        <Input
+          id="account-email"
+          aria-label="Email address"
+          value={session?.user?.email ?? ""}
+          readOnly
+          disabled
+          className="h-9 max-w-sm cursor-not-allowed bg-muted/30 text-foreground disabled:opacity-100"
+        />
+      </SettingsSection>
 
-      <div className="max-w-xl space-y-6">
-        <div className="space-y-1">
-          <Label htmlFor="account-email">Email</Label>
-          <Input
-            id="account-email"
-            value={session?.user?.email ?? ""}
-            readOnly
-            disabled
-            className="h-9 cursor-not-allowed bg-muted/30 text-foreground disabled:opacity-100"
-          />
-          <p className="text-xs text-muted-foreground">Email cannot be changed.</p>
-        </div>
+      <Separator />
 
+      <SettingsSection
+        title="Connected accounts"
+        description="Sign-in methods linked to your account."
+      >
         <ConnectedAccounts hasPassword={hasPassword} providers={providers} />
+      </SettingsSection>
+
+      <Separator />
+
+      <SettingsSection
+        title="Password"
+        description="Change your password or set one for email sign-in."
+      >
         <ChangePasswordForm hasPassword={hasPassword} />
-      </div>
+      </SettingsSection>
     </div>
   )
 }

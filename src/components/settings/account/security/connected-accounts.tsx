@@ -24,34 +24,31 @@ interface ConnectedAccountsProps {
 
 export function ConnectedAccounts({ hasPassword, providers }: ConnectedAccountsProps) {
   return (
-    <div className="space-y-3 border-t pt-5">
-      <h3 className="text-sm font-semibold">Connected accounts</h3>
-      <div className="space-y-2">
-        {hasPassword && (
-          <div className="flex items-center gap-3 rounded-md border bg-muted/20 px-4 py-3">
-            <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
-            <span className="flex-1 text-sm">Email &amp; password</span>
+    <div className="space-y-2">
+      {hasPassword && (
+        <div className="flex items-center gap-3 rounded-md border bg-muted/20 px-4 py-3">
+          <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
+          <span className="flex-1 text-sm">Email &amp; password</span>
+          <span className="flex items-center gap-1 text-xs text-emerald-600">
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            Active
+          </span>
+        </div>
+      )}
+      {providers.map((provider) => {
+        const meta = PROVIDER_META[provider]
+        if (!meta) return null
+        return (
+          <div key={provider} className="flex items-center gap-3 rounded-md border bg-muted/20 px-4 py-3">
+            {meta.icon}
+            <span className="flex-1 text-sm">{meta.label}</span>
             <span className="flex items-center gap-1 text-xs text-emerald-600">
               <CheckCircle2 className="h-3.5 w-3.5" />
-              Active
+              Connected
             </span>
           </div>
-        )}
-        {providers.map((provider) => {
-          const meta = PROVIDER_META[provider]
-          if (!meta) return null
-          return (
-            <div key={provider} className="flex items-center gap-3 rounded-md border bg-muted/20 px-4 py-3">
-              {meta.icon}
-              <span className="flex-1 text-sm">{meta.label}</span>
-              <span className="flex items-center gap-1 text-xs text-emerald-600">
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                Connected
-              </span>
-            </div>
-          )
-        })}
-      </div>
+        )
+      })}
     </div>
   )
 }

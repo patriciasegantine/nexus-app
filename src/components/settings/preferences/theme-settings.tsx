@@ -4,6 +4,7 @@ import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { Moon, Sun, Monitor } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { SettingsSection } from '@/components/settings/settings-section'
 import { cn } from '@/lib/utils'
 
 const THEMES = [
@@ -21,12 +22,7 @@ export function ThemeSettings() {
   }, [])
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h2 className="text-lg font-semibold">Theme</h2>
-        <p className="text-sm text-muted-foreground">Choose how Nexus looks for you.</p>
-      </div>
-
+    <SettingsSection title="Theme" description="Choose how Nexus looks for you.">
       <div className="flex gap-3">
         {THEMES.map(({ value, label, icon: Icon }) => (
           <Button
@@ -43,6 +39,6 @@ export function ThemeSettings() {
           </Button>
         ))}
       </div>
-    </div>
+    </SettingsSection>
   )
 }

@@ -89,15 +89,11 @@ export function ChangePasswordForm({ hasPassword }: ChangePasswordFormProps) {
   }
 
   return (
-    <div className="space-y-3 border-t pt-5">
-      <h3 className="text-sm font-semibold">Password</h3>
-
+    <div className="space-y-3">
       {!hasPassword ? (
-        <div className="rounded-md border bg-muted/40 px-4 py-3">
-          <p className="text-sm text-muted-foreground">
-            Password changes are only available for email/password accounts.
-          </p>
-        </div>
+        <p className="text-sm text-muted-foreground">
+          Only available for email/password accounts.
+        </p>
       ) : (
         <>
           <div className="space-y-1">
