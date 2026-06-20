@@ -4,6 +4,7 @@ import { auth } from "@/auth"
 import { AppRoutes } from "@/constants/routes"
 import { MAX_TAG_LENGTH, MAX_TAGS } from "@/constants/tags"
 import { db } from "@/lib/db"
+import { DEMO_ERROR, isDemoUser } from "@/lib/demo-guard"
 import type { ActionResult } from "@/types/actions"
 import { revalidatePath } from "next/cache"
 
@@ -17,6 +18,9 @@ export async function updateProjectTag(
   const session = await auth()
   if (!session?.user?.id) {
     return { success: false, error: "Unauthorized" }
+  }
+  if (isDemoUser(session.user.email)) {
+    return { success: false, error: DEMO_ERROR }
   }
 
   const tag = value.trim().toLowerCase()

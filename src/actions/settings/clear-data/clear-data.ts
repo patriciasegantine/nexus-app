@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache"
 import { AppRoutes } from "@/constants/routes"
 import { CLEAR_DATA_CONFIRMATION } from "@/constants/settings"
 import type { ActionResult } from "@/types/actions"
+import { isDemoUser, DEMO_ERROR } from "@/lib/demo-guard"
 
 const clearAllDataSchema = z.object({
   confirmation: z.literal(CLEAR_DATA_CONFIRMATION, {
@@ -18,6 +19,10 @@ export async function clearAllData(formData: FormData): Promise<ActionResult> {
   const session = await auth()
   if (!session?.user?.id) {
     return { success: false, error: "Unauthorized" }
+  }
+
+  if (isDemoUser(session.user.email)) {
+    return { success: false, error: DEMO_ERROR }
   }
 
   const parsed = clearAllDataSchema.safeParse({

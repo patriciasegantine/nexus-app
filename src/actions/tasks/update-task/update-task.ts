@@ -9,6 +9,7 @@ import {
   revalidateTaskPaths,
   type ActionResult,
 } from "../shared"
+import { isDemoUser, DEMO_ERROR } from "@/lib/demo-guard"
 
 export async function updateTask(
   taskId: string,
@@ -17,6 +18,10 @@ export async function updateTask(
   const session = await auth()
   if (!session?.user?.id) {
     return { success: false, error: "Unauthorized" }
+  }
+
+  if (isDemoUser(session.user.email)) {
+    return { success: false, error: DEMO_ERROR }
   }
 
   const tags = parseTags(formData)
@@ -78,6 +83,10 @@ export async function updateTaskStatus(
   const session = await auth()
   if (!session?.user?.id) {
     return { success: false, error: "Unauthorized" }
+  }
+
+  if (isDemoUser(session.user.email)) {
+    return { success: false, error: DEMO_ERROR }
   }
 
   const parsed = updateTaskStatusSchema.safeParse({

@@ -5,6 +5,7 @@ import { auth } from "@/auth"
 import { DELETE_ACCOUNT_CONFIRMATION } from "@/constants/settings"
 import { db } from "@/lib/db"
 import type { ActionResult } from "@/types/actions"
+import { isDemoUser, DEMO_ERROR } from "@/lib/demo-guard"
 
 const deleteAccountSchema = z.object({
   confirmation: z.literal(DELETE_ACCOUNT_CONFIRMATION, {
@@ -16,6 +17,10 @@ export async function deleteAccount(formData: FormData): Promise<ActionResult> {
   const session = await auth()
   if (!session?.user?.id) {
     return { success: false, error: "Unauthorized" }
+  }
+
+  if (isDemoUser(session.user.email)) {
+    return { success: false, error: DEMO_ERROR }
   }
 
   const parsed = deleteAccountSchema.safeParse({

@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth"
 import { db } from "@/lib/db"
+import { DEMO_ERROR, isDemoUser } from "@/lib/demo-guard"
 import { revalidateTaskPaths, type ActionResult } from "../shared"
 
 export async function duplicateTask(
@@ -10,6 +11,9 @@ export async function duplicateTask(
   const session = await auth()
   if (!session?.user?.id) {
     return { success: false, error: "Unauthorized" }
+  }
+  if (isDemoUser(session.user.email)) {
+    return { success: false, error: DEMO_ERROR }
   }
 
   const existing = await db.task.findUnique({

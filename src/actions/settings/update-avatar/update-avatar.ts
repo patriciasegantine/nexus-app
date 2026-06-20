@@ -4,6 +4,7 @@ import { put } from '@vercel/blob'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
+import { DEMO_ERROR, isDemoUser } from '@/lib/demo-guard'
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 const MAX_SIZE = 5 * 1024 * 1024 // 5MB
@@ -11,6 +12,7 @@ const MAX_SIZE = 5 * 1024 * 1024 // 5MB
 export async function updateAvatar(formData: FormData) {
   const session = await auth()
   if (!session?.user?.id) return { success: false, error: 'Unauthorized' }
+  if (isDemoUser(session.user.email)) return { success: false, error: DEMO_ERROR }
 
   const file = formData.get('avatar') as File
   if (!file || file.size === 0) return { success: false, error: 'No file provided' }

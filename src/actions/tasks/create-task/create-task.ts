@@ -6,6 +6,7 @@ import { AppRoutes } from "@/constants/routes"
 import { db } from "@/lib/db"
 import { createTaskSchema } from "@/validations/task"
 import { parseDatetime, parseTags, type ActionResult } from "../shared"
+import { isDemoUser, DEMO_ERROR } from "@/lib/demo-guard"
 
 export async function createTask(
   formData: FormData
@@ -13,6 +14,10 @@ export async function createTask(
   const session = await auth()
   if (!session?.user?.id) {
     return { success: false, error: "Unauthorized" }
+  }
+
+  if (isDemoUser(session.user.email)) {
+    return { success: false, error: DEMO_ERROR }
   }
 
   const raw = {

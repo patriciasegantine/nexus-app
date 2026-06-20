@@ -3,6 +3,7 @@
 import { auth } from "@/auth"
 import { db } from "@/lib/db"
 import { revalidateTaskPaths, type ActionResult } from "../shared"
+import { isDemoUser, DEMO_ERROR } from "@/lib/demo-guard"
 
 export async function deleteTask(
   taskId: string
@@ -10,6 +11,10 @@ export async function deleteTask(
   const session = await auth()
   if (!session?.user?.id) {
     return { success: false, error: "Unauthorized" }
+  }
+
+  if (isDemoUser(session.user.email)) {
+    return { success: false, error: DEMO_ERROR }
   }
 
   const existing = await db.task.findUnique({
