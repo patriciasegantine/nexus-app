@@ -5,8 +5,8 @@ import { useTransition, useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { UserAvatar } from '@/components/ui/user-avatar'
 import { SettingsSection } from '@/components/settings/settings-section'
+import { AvatarUpload } from '@/components/settings/profile/avatar-upload'
 import { updateProfile } from '@/actions/settings'
 
 export function ProfileSettings() {
@@ -43,7 +43,11 @@ export function ProfileSettings() {
   return (
     <SettingsSection title="Profile" description="Manage your personal information.">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-5">
-        <UserAvatar src={session?.user?.image} name={name || session?.user?.name || 'U'} size="xl" className="shrink-0" />
+        <AvatarUpload
+          src={session?.user?.image}
+          name={name || session?.user?.name || 'U'}
+          onSave={async (url) => { await update({ image: url }) }}
+        />
 
         <div className="min-w-0 flex-1 space-y-1">
           <Label htmlFor="profile-name">Name</Label>
