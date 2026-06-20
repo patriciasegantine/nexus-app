@@ -1,9 +1,8 @@
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { AppRoutes } from "@/constants/routes"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
-import { CopyLinkButton } from "@/components/about/copy-link-button"
-import { LayoutDashboard, FolderKanban, ListTodo } from "lucide-react"
+import { AboutActions, DemoCallToAction } from "@/components/about/about-actions"
+import { FeatureCards } from "@/components/about/feature-cards"
+import { Github, Globe } from "lucide-react"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -17,23 +16,9 @@ export const metadata: Metadata = {
   },
 }
 
-const features = [
-  {
-    icon: FolderKanban,
-    title: "Projects",
-    description: "Organize your work into projects with custom tags and priorities.",
-  },
-  {
-    icon: ListTodo,
-    title: "Tasks",
-    description: "Track progress with deadlines, filters, and status updates.",
-  },
-  {
-    icon: LayoutDashboard,
-    title: "Dashboard",
-    description: "Get a clear overview of everything happening across your workspace.",
-  },
-]
+const PORTFOLIO_URL = "https://patriciasegantine.vercel.app/"
+const GITHUB_PROFILE_URL = "https://github.com/patriciasegantine"
+const SOURCE_URL = "https://github.com/patriciasegantine/nexus-app"
 
 export default function AboutPage() {
   return (
@@ -45,15 +30,34 @@ export default function AboutPage() {
           </div>
           <span className="font-semibold text-sm">Nexus</span>
         </div>
-        <ThemeToggle />
+        <div className="flex items-center gap-2">
+          <Link
+            href={PORTFOLIO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View Patricia Segantine's portfolio"
+            title="View portfolio"
+            className="flex items-center justify-center h-9 w-9 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+          >
+            <Globe size={18} />
+          </Link>
+          <Link
+            href={GITHUB_PROFILE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View Patricia Segantine's GitHub profile"
+            title="View GitHub profile"
+            className="flex items-center justify-center h-9 w-9 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+          >
+            <Github size={18} />
+          </Link>
+          <ThemeToggle />
+        </div>
       </header>
 
-      <main className="flex-1 flex flex-col items-center justify-center px-6 py-16 gap-16">
+      <main className="flex flex-1 flex-col items-center justify-center gap-10 px-6 py-16">
         {/* Hero */}
-        <section className="text-center max-w-lg space-y-4">
-          <span className="inline-block text-xs font-medium px-3 py-1 rounded-full border text-muted-foreground">
-            Work in progress
-          </span>
+        <section className="order-1 max-w-lg space-y-4 text-center">
           <h1 className="text-3xl md:text-4xl font-light tracking-tight">
             Your central hub for projects and tasks
           </h1>
@@ -62,42 +66,22 @@ export default function AboutPage() {
           </p>
         </section>
 
-        {/* Features */}
-        <section className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-2xl">
-          {features.map(({ icon: Icon, title, description }) => (
-            <div
-              key={title}
-              className="rounded-xl border bg-card p-5 space-y-2"
-            >
-              <div className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center">
-                <Icon size={18} className="text-foreground" />
-              </div>
-              <h2 className="font-medium text-sm">{title}</h2>
-              <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>
-            </div>
-          ))}
-        </section>
-
-        {/* CTA */}
-        <section className="flex flex-col items-center gap-4 text-center">
-          <Button asChild size="lg" className="h-11 px-8">
-            <Link href={AppRoutes.AUTH.LOGIN}>Open Nexus</Link>
-          </Button>
-
-          <div className="flex items-center gap-3">
-            <CopyLinkButton />
-          </div>
-
-          <p className="text-xs text-muted-foreground max-w-xs leading-relaxed">
-            Want to sign in with Google?{" "}
-            <strong className="text-foreground font-medium">Open this link in your browser.</strong>{" "}
-            Some in-app browsers don&apos;t support Google authentication.
-          </p>
-        </section>
+        <DemoCallToAction className="order-2" />
+        <FeatureCards className="order-3" />
+        <AboutActions className="order-4" sourceUrl={SOURCE_URL} />
       </main>
 
       <footer className="text-center py-6 text-xs text-muted-foreground border-t">
-        © {new Date().getFullYear()} Nexus. Built with Next.js.
+        © {new Date().getFullYear()} Nexus. Built by{" "}
+        <Link
+          href={PORTFOLIO_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-foreground transition-colors hover:text-muted-foreground"
+        >
+          Patricia Segantine
+        </Link>
+        .
       </footer>
     </div>
   )
