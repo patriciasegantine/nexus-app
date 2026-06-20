@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { getCroppedBlob } from '@/lib/crop-image'
+import { updateAvatar } from '@/actions/settings'
 
 type AvatarCropModalProps = {
   open: boolean
@@ -33,8 +34,24 @@ export function AvatarCropModal({ open, imageSrc, onClose, onSave }: AvatarCropM
   }, [])
 
   function handleSave() {
-    alert('Saving avatar...')
+    if (!croppedAreaPixels) return
     setError('')
+
+    startTransition(async () => {
+      const blob = await getCroppedBlob(imageSrc, croppedAreaPixels)
+      const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' })
+      const formData = new FormData()
+      formData.set('avatar', file)
+
+      const result = await updateAvatar(formData)
+      if (!result.success) {
+        setError(result.error ?? 'Upload failed')
+        return
+      }
+
+      onSave(result.url!)
+      onClose()
+    })
   }
 
   function handleOpenChange(open: boolean) {
@@ -79,12 +96,11 @@ export function AvatarCropModal({ open, imageSrc, onClose, onSave }: AvatarCropM
             value={zoom}
             onChange={(e) => setZoom(Number(e.target.value))}
             aria-label="Zoom"
-            className="w-full cursor-pointer appearance-none bg-transparent
-              [&::-webkit-slider-runnable-track]:h-[3px] [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-border
-              [&::-webkit-slider-thumb]:mt-[-5px] [&::-webkit-slider-thumb]:h-[13px] [&::-webkit-slider-thumb]:w-[13px] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-foreground
-              [&::-moz-range-track]:h-[3px] [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-border
-              [&::-moz-range-thumb]:h-[13px] [&::-moz-range-thumb]:w-[13px] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-foreground
-              [&::-moz-range-progress]:bg-transparent"
+            className="h-1.5 w-full cursor-pointer appearance-none rounded-full
+              [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-muted
+              [&::-webkit-slider-thumb]:mt-[-3px] [&::-webkit-slider-thumb]:h-[14px] [&::-webkit-slider-thumb]:w-[14px] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-foreground
+              [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-muted
+              [&::-moz-range-thumb]:h-[14px] [&::-moz-range-thumb]:w-[14px] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-foreground"
           />
           <button
             type="button"
