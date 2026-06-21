@@ -33,6 +33,7 @@ import { AppRoutes } from "@/constants/routes"
 import { deleteProject } from "@/actions/projects"
 import type { TaskStatus, TaskCard as TaskCardType } from "@/types/task"
 import type { ProjectWithTasks } from "@/types/project"
+import { toast } from "@/hooks/use-toast"
 
 interface ProjectKanbanProps {
   project: ProjectWithTasks
@@ -69,7 +70,11 @@ export function ProjectKanban({ project }: ProjectKanbanProps) {
 
   function handleDelete() {
     startTransition(async () => {
-      await deleteProject(project.id)
+      const result = await deleteProject(project.id)
+      if (!result.success) {
+        toast({ variant: "destructive", description: result.error })
+        return
+      }
       router.push(AppRoutes.DASHBOARD.PROJECTS)
     })
   }

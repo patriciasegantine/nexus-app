@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils"
 import { taskFormSchema as taskSchema, type TaskFormValues } from "@/validations/task"
 import { format } from "date-fns"
 import type { TaskCard } from "@/types/task"
+import { toast } from "@/hooks/use-toast"
 
 interface TaskDialogProps {
   open: boolean
@@ -29,7 +30,6 @@ interface TaskDialogProps {
 
 export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogProps) {
   const isEditing = !!task
-  const [serverError, setServerError] = useState("")
   const [isPending, startTransition] = useTransition()
   const [projects, setProjects] = useState<{ id: string; name: string }[]>([])
   const [tags, setTags] = useState<string[]>([])
@@ -53,7 +53,6 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
         description: task?.description ?? "",
         projectId: projectId ?? "",
       })
-      setServerError("")
       setTags(task?.tags ?? [])
       setTagInput("")
       setPriority(task?.priority || "MEDIUM")
@@ -76,14 +75,13 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
     formData.set("tags", JSON.stringify(tags))
     formData.set("dueDate", dueDate ? format(dueDate, "yyyy-MM-dd") : "")
 
-    setServerError("")
     startTransition(async () => {
       const result = isEditing
         ? await updateTask(task.id, formData)
         : await createTask(formData)
 
       if (!result.success) {
-        setServerError(result.error)
+        toast({ variant: "destructive", description: result.error })
         return
       }
 
@@ -199,10 +197,6 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
             inputValue={tagInput}
             onInputChange={setTagInput}
           />
-
-          {serverError && (
-            <p className="text-sm text-destructive">{serverError}</p>
-          )}
 
           <DialogFooter className="pt-2">
             <Button

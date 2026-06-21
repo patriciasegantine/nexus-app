@@ -10,6 +10,7 @@ import { usePasswordRules } from "@/hooks/use-password-rules"
 import { changePassword } from "@/actions/settings"
 import { INVALID_INPUT_CLASS } from "@/lib/form-styles"
 import { cn } from "@/lib/utils"
+import { toast } from "@/hooks/use-toast"
 
 function PasswordToggle({
   visible,
@@ -43,8 +44,6 @@ export function ChangePasswordForm({ hasPassword }: ChangePasswordFormProps) {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [error, setError] = useState("")
-  const [saved, setSaved] = useState(false)
   const [isPending, startTransition] = useTransition()
   const { showRules, setShowRules, passwordRules } = usePasswordRules(newPassword)
 
@@ -69,9 +68,6 @@ export function ChangePasswordForm({ hasPassword }: ChangePasswordFormProps) {
   }
 
   function handleSave() {
-    setError("")
-    setSaved(false)
-
     const formData = new FormData()
     formData.set("currentPassword", currentPassword)
     formData.set("newPassword", newPassword)
@@ -80,11 +76,11 @@ export function ChangePasswordForm({ hasPassword }: ChangePasswordFormProps) {
     startTransition(async () => {
       const result = await changePassword(formData)
       if (!result.success) {
-        setError(result.error)
+        toast({ variant: "destructive", description: result.error })
         return
       }
       resetForm()
-      setSaved(true)
+      toast({ description: "Password updated." })
     })
   }
 
@@ -103,7 +99,7 @@ export function ChangePasswordForm({ hasPassword }: ChangePasswordFormProps) {
                 id="current-password"
                 type={showCurrentPassword ? "text" : "password"}
                 value={currentPassword}
-                onChange={(event) => { setCurrentPassword(event.target.value); setSaved(false) }}
+                onChange={(event) => setCurrentPassword(event.target.value)}
                 autoComplete="current-password"
                 className="h-9 pr-11"
               />
@@ -122,7 +118,7 @@ export function ChangePasswordForm({ hasPassword }: ChangePasswordFormProps) {
                 id="new-password"
                 type={showNewPassword ? "text" : "password"}
                 value={newPassword}
-                onChange={(event) => { setNewPassword(event.target.value); setSaved(false) }}
+                onChange={(event) => setNewPassword(event.target.value)}
                 onFocus={() => setShowRules(true)}
                 onBlur={() => setShowRules(newPassword.length > 0)}
                 autoComplete="new-password"
@@ -149,7 +145,7 @@ export function ChangePasswordForm({ hasPassword }: ChangePasswordFormProps) {
                 id="confirm-new-password"
                 type={showConfirmPassword ? "text" : "password"}
                 value={confirmPassword}
-                onChange={(event) => { setConfirmPassword(event.target.value); setSaved(false) }}
+                onChange={(event) => setConfirmPassword(event.target.value)}
                 autoComplete="new-password"
                 className={cn("h-9 pr-11", passwordMismatch && INVALID_INPUT_CLASS)}
               />
@@ -161,9 +157,6 @@ export function ChangePasswordForm({ hasPassword }: ChangePasswordFormProps) {
             </div>
             {passwordMismatch && <p className="text-sm text-destructive">Passwords don&apos;t match</p>}
           </div>
-
-          {error && <p className="text-sm text-destructive">{error}</p>}
-          {saved && <p className="text-sm text-emerald-600">Password updated.</p>}
 
           <Button onClick={handleSave} disabled={isPending || !canSubmit} size="sm" className="h-9">
             {isPending ? "Updating..." : "Update password"}

@@ -8,12 +8,11 @@ import { Button } from '@/components/ui/button'
 import { SettingsSection } from '@/components/settings/settings-section'
 import { AvatarUpload } from '@/components/settings/profile/avatar-upload'
 import { updateProfile } from '@/actions/settings'
+import { toast } from '@/hooks/use-toast'
 
 export function ProfileSettings() {
   const { data: session, update } = useSession()
   const [name, setName] = useState('')
-  const [error, setError] = useState('')
-  const [saved, setSaved] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
@@ -24,19 +23,17 @@ export function ProfileSettings() {
   const isValid = name.trim().length >= 2
 
   function handleSave() {
-    setError('')
-    setSaved(false)
     const formData = new FormData()
     formData.set('name', name)
 
     startTransition(async () => {
       const result = await updateProfile(formData)
       if (!result.success) {
-        setError(result.error)
+        toast({ variant: 'destructive', description: result.error })
         return
       }
       await update({ name: name.trim() })
-      setSaved(true)
+      toast({ description: 'Name updated.' })
     })
   }
 
@@ -55,7 +52,7 @@ export function ProfileSettings() {
             <Input
               id="profile-name"
               value={name}
-              onChange={(e) => { setName(e.target.value); setSaved(false) }}
+              onChange={(e) => setName(e.target.value)}
               placeholder="Your name"
               className="h-9"
             />
@@ -67,10 +64,6 @@ export function ProfileSettings() {
             >
               {isPending ? 'Saving…' : 'Save'}
             </Button>
-          </div>
-          <div className="min-h-5">
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            {saved && <p className="text-sm text-emerald-600">Name updated.</p>}
           </div>
         </div>
       </div>
