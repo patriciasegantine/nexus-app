@@ -2,6 +2,7 @@ import Link from "next/link"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { AboutActions, DemoCallToAction } from "@/components/about/about-actions"
 import { FeatureCards } from "@/components/about/feature-cards"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Github, Globe } from "lucide-react"
 import type { Metadata } from "next"
 
@@ -30,29 +31,43 @@ export default function AboutPage() {
           </div>
           <span className="font-semibold text-sm">Nexus</span>
         </div>
-        <div className="flex items-center gap-2">
-          <Link
-            href={PORTFOLIO_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="View Patricia Segantine's portfolio"
-            title="View portfolio"
-            className="flex items-center justify-center h-9 w-9 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-          >
-            <Globe size={18} />
-          </Link>
-          <Link
-            href={GITHUB_PROFILE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="View Patricia Segantine's GitHub profile"
-            title="View GitHub profile"
-            className="flex items-center justify-center h-9 w-9 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-          >
-            <Github size={18} />
-          </Link>
-          <ThemeToggle />
-        </div>
+        <TooltipProvider delayDuration={300}>
+          <div className="flex items-center gap-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href={PORTFOLIO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="View Patricia Segantine's portfolio"
+                  className="flex items-center justify-center h-9 w-9 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                >
+                  <Globe size={18} />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="pointer-events-none">
+                View portfolio
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href={GITHUB_PROFILE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="View Patricia Segantine's GitHub profile"
+                  className="flex items-center justify-center h-9 w-9 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                >
+                  <Github size={18} />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="pointer-events-none">
+                View GitHub profile
+              </TooltipContent>
+            </Tooltip>
+            <ThemeToggle showTooltip />
+          </div>
+        </TooltipProvider>
       </header>
 
       <main className="flex flex-1 flex-col items-center justify-center gap-10 px-6 py-16">
