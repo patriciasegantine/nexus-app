@@ -2,6 +2,7 @@ import path from "node:path";
 import { defineConfig } from "prisma/config";
 import { config as loadEnv } from "dotenv";
 
+loadEnv({ path: path.resolve(__dirname, ".env.local") });
 loadEnv({ path: path.resolve(__dirname, ".env") });
 
 function getDatabaseUrl(): string {

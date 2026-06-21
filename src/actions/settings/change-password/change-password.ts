@@ -8,11 +8,15 @@ import { db } from "@/lib/db"
 import type { ActionResult } from "@/types/actions"
 import { changePasswordSchema } from "@/validations/auth"
 import { revalidatePath } from "next/cache"
+import { DEMO_ERROR, isDemoUser } from "@/lib/demo-guard"
 
 export async function changePassword(formData: FormData): Promise<ActionResult> {
   const session = await auth()
   if (!session?.user?.id) {
     return { success: false, error: "Unauthorized" }
+  }
+  if (isDemoUser(session.user.email)) {
+    return { success: false, error: DEMO_ERROR }
   }
 
   const parsed = changePasswordSchema.safeParse({

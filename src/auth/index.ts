@@ -33,6 +33,25 @@ export const { handlers, auth, signIn } = NextAuth({
         return { id: user.id, name: user.name, email: user.email, image: user.image }
       },
     }),
+    Credentials({
+      id: "demo",
+      credentials: { secret: {} },
+      authorize: async (credentials) => {
+        const secret = process.env.DEMO_LOGIN_SECRET
+        if (!secret || credentials?.secret !== secret) return null
+
+        const demoEmail = process.env.DEMO_USER_EMAIL
+        if (!demoEmail) return null
+
+        const user = await db.user.findUnique({
+          where: { email: demoEmail.trim().toLowerCase() },
+          select: { id: true, name: true, email: true, image: true },
+        })
+
+        if (!user) return null
+        return { id: user.id, name: user.name, email: user.email, image: user.image }
+      },
+    }),
   ],
   callbacks: {
     jwt({ token, user, trigger, session: sessionData }) {

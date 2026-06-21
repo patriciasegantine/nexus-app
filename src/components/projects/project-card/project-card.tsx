@@ -28,6 +28,7 @@ import { AppRoutes } from "@/constants/routes"
 import { deleteProject } from "@/actions/projects"
 import { ProjectDialog } from "../project-dialog/project-dialog"
 import type { ProjectBoardItem } from "@/types/project"
+import { toast } from "@/hooks/use-toast"
 
 export interface ProjectCardProps {
   project: ProjectBoardItem
@@ -39,23 +40,20 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState("")
-  const [deleteError, setDeleteError] = useState("")
   const [isDeleting, startDelete] = useTransition()
 
   function handleDeleteOpenChange(open: boolean) {
     setDeleteOpen(open)
     if (!open) {
       setDeleteConfirm("")
-      setDeleteError("")
     }
   }
 
   function handleDelete() {
-    setDeleteError("")
     startDelete(async () => {
       const result = await deleteProject(project.id)
       if (!result.success) {
-        setDeleteError(result.error)
+        toast({ variant: "destructive", description: result.error })
         return
       }
       setDeleteOpen(false)
@@ -180,7 +178,6 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
               disabled={isDeleting}
             />
           </div>
-          {deleteError && <p className="text-sm text-destructive">{deleteError}</p>}
           <DialogFooter className="pt-2">
             <Button variant="outline" onClick={() => handleDeleteOpenChange(false)} disabled={isDeleting}>
               Cancel

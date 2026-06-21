@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { Sidebar } from "@/components/sidebar/sidebar"
 import { Header } from "@/components/header/header"
 import { Footer } from "@/components/footer/footer"
+import { DemoBanner } from "@/components/dashboard/demo-banner"
 import React from "react"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -13,6 +14,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen bg-background pt-16 flex flex-col">
       <Header />
+      <DemoBanner />
       <div className="flex flex-1">
         <Sidebar />
         <main

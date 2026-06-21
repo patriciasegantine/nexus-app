@@ -3,22 +3,36 @@ import { PrismaPg } from '@prisma/adapter-pg'
 import * as dotenv from 'dotenv'
 import { generateSlug } from '../src/lib/slug'
 
+dotenv.config({ path: '.env.local' })
 dotenv.config()
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
 const prisma = new PrismaClient({ adapter })
 
 const SEED_USER_EMAIL = process.env.SEED_USER_EMAIL
+const DEMO_USER_EMAIL = process.env.DEMO_USER_EMAIL
 
 async function main() {
-  if (!SEED_USER_EMAIL) {
-    throw new Error('SEED_USER_EMAIL environment variable is required')
+  const targetEmail = DEMO_USER_EMAIL ?? SEED_USER_EMAIL
+
+  if (!targetEmail) {
+    throw new Error('Set SEED_USER_EMAIL (existing user) or DEMO_USER_EMAIL (creates demo account if needed)')
   }
 
-  const user = await prisma.user.findUnique({ where: { email: SEED_USER_EMAIL } })
+  const email = targetEmail.trim().toLowerCase()
+  const isDemo = email === DEMO_USER_EMAIL?.trim().toLowerCase()
+
+  let user = await prisma.user.findUnique({ where: { email } })
 
   if (!user) {
-    throw new Error(`User not found for email: ${SEED_USER_EMAIL}`)
+    if (isDemo) {
+      user = await prisma.user.create({
+        data: { name: 'Demo User', email },
+      })
+      console.log(`Created demo user: ${email}`)
+    } else {
+      throw new Error(`User not found for email: ${email}`)
+    }
   }
 
   console.log(`Seeding data for user: ${user.name ?? user.email}`)

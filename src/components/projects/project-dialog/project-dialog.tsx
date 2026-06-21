@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils"
 import { INVALID_INPUT_CLASS } from "@/lib/form-styles"
 import { projectFormSchema as projectSchema, type ProjectFormValues } from "@/validations/project"
 import { PROJECT_COLORS, DEFAULT_PROJECT_COLOR } from "../project-card/project-card.utils"
+import { toast } from "@/hooks/use-toast"
 
 interface ProjectDialogProps {
   open: boolean
@@ -23,7 +24,6 @@ interface ProjectDialogProps {
 
 export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProps) {
   const isEditing = !!project
-  const [serverError, setServerError] = useState("")
   const [isPending, startTransition] = useTransition()
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState("")
@@ -42,7 +42,6 @@ export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProp
       setTags(project?.tags ?? [])
       setTagInput("")
       setColor(project?.color ?? DEFAULT_PROJECT_COLOR)
-      setServerError("")
     }
   }, [open, project, reset])
 
@@ -53,14 +52,13 @@ export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProp
     formData.set("tags", JSON.stringify(tags))
     formData.set("color", color)
 
-    setServerError("")
     startTransition(async () => {
       const result = isEditing
         ? await updateProject(project.id, formData)
         : await createProject(formData)
 
       if (!result.success) {
-        setServerError(result.error)
+        toast({ variant: "destructive", description: result.error })
         return
       }
 
@@ -126,10 +124,6 @@ export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProp
             inputValue={tagInput}
             onInputChange={setTagInput}
           />
-
-          {serverError && (
-            <p className="text-sm text-destructive">{serverError}</p>
-          )}
 
           <DialogFooter className="pt-2">
             <Button

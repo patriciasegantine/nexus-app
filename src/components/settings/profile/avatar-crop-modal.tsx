@@ -14,6 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { getCroppedBlob } from '@/lib/crop-image'
 import { updateAvatar } from '@/actions/settings'
+import { toast } from '@/hooks/use-toast'
 
 type AvatarCropModalProps = {
   open: boolean
@@ -26,7 +27,6 @@ export function AvatarCropModal({ open, imageSrc, onClose, onSave }: AvatarCropM
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
-  const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
 
   const onCropComplete = useCallback((_: Area, pixels: Area) => {
@@ -35,7 +35,6 @@ export function AvatarCropModal({ open, imageSrc, onClose, onSave }: AvatarCropM
 
   function handleSave() {
     if (!croppedAreaPixels) return
-    setError('')
 
     startTransition(async () => {
       const blob = await getCroppedBlob(imageSrc, croppedAreaPixels)
@@ -45,7 +44,7 @@ export function AvatarCropModal({ open, imageSrc, onClose, onSave }: AvatarCropM
 
       const result = await updateAvatar(formData)
       if (!result.success) {
-        setError(result.error ?? 'Upload failed')
+        toast({ variant: 'destructive', description: result.error ?? 'Upload failed' })
         return
       }
 
@@ -111,8 +110,6 @@ export function AvatarCropModal({ open, imageSrc, onClose, onSave }: AvatarCropM
             <ZoomIn className="h-4 w-4" />
           </button>
         </div>
-
-        {error && <p className="text-sm text-destructive">{error}</p>}
 
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={isPending}>
