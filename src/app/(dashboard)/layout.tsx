@@ -14,7 +14,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen bg-background pt-16 flex flex-col">
       <Header />
-      <DemoBanner />
       <div className="flex flex-1">
         <Sidebar />
         <main
@@ -25,6 +24,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               : "md:ml-[180px]"
           )}
         >
+          <DemoBanner />
           <div className="container mx-auto p-4 md:p-6 flex-1">{children}</div>
           <Footer />
         </main>
