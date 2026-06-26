@@ -3,11 +3,28 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
-import { Button } from "@/components/ui/button"
+import { Button, type ButtonProps } from "@/components/ui/button"
 import { demoLogin } from "@/actions/demo/demo-login"
 import { LoaderCircle, Play } from "lucide-react"
+import { cn } from "@/lib/utils"
 
-export function DemoLoginButton() {
+type DemoLoginButtonProps = {
+  label?: string
+  loadingLabel?: string
+  className?: string
+  containerClassName?: string
+  variant?: ButtonProps["variant"]
+  size?: ButtonProps["size"]
+}
+
+export function DemoLoginButton({
+  label = "View live demo",
+  loadingLabel = "Opening demo...",
+  className,
+  containerClassName,
+  variant,
+  size = "lg",
+}: DemoLoginButtonProps) {
   const router = useRouter()
   const { update } = useSession()
   const [isPending, setIsPending] = useState(false)
@@ -35,16 +52,17 @@ export function DemoLoginButton() {
   }
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className={cn("flex flex-col items-center gap-2", containerClassName)}>
       <Button
-        size="lg"
-        className="h-11 px-8 gap-2"
+        size={size}
+        variant={variant}
+        className={cn("h-11 px-8 gap-2", className)}
         onClick={handleClick}
         disabled={isPending}
         aria-busy={isPending}
       >
         {isPending ? <LoaderCircle className="animate-spin" /> : <Play />}
-        {isPending ? "Opening demo..." : "View live demo"}
+        {isPending ? loadingLabel : label}
       </Button>
       {error && <p className="text-sm text-destructive">{error}</p>}
     </div>

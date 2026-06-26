@@ -17,7 +17,7 @@ export function DemoBanner() {
   }
 
   return (
-    <div className="border-b border-yellow-300 bg-yellow-200 px-4 py-3 text-center text-sm text-red-700">
+    <div className="sticky top-16 z-30 border-b border-yellow-300 bg-yellow-200 px-4 py-3 text-center text-sm text-red-700">
       You&apos;re viewing a demo. Feel free to explore. Changes won&apos;t be saved.{" "}
       <button
         type="button"

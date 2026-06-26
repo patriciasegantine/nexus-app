@@ -25,7 +25,10 @@ export async function demoLogin(): Promise<DemoLoginResult> {
   const demoEmail = process.env.DEMO_USER_EMAIL
 
   if (!secret || !demoEmail) {
-    console.error("demo_login_not_configured")
+    console.error("demo_login_not_configured", {
+      hasDemoLoginSecret: Boolean(secret),
+      hasDemoUserEmail: Boolean(demoEmail),
+    })
     return { success: false, error: "The demo is temporarily unavailable. Please try again later." }
   }
 

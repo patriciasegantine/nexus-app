@@ -15,6 +15,7 @@ import { INVALID_INPUT_CLASS } from "@/lib/form-styles"
 import { isValidEmail, normalizeEmail } from "@/lib/validators/email"
 import { AuthFormShell } from "@/components/auth/auth-form-shell"
 import { GoogleSignInButton } from "@/components/auth/google-sign-in-button"
+import { DemoLoginButton } from "@/components/about/demo-login-button"
 
 const initialState = { success: false, error: undefined }
 
@@ -99,6 +100,21 @@ export default function LoginPage() {
 
         {/* Google */}
         <GoogleSignInButton />
+
+        {/* Demo */}
+        <div className="space-y-2">
+          <DemoLoginButton
+            label="Continue as demo"
+            loadingLabel="Opening demo..."
+            variant="secondary"
+            size="default"
+            className="h-10 w-full"
+            containerClassName="w-full"
+          />
+          <p className="text-center text-xs text-muted-foreground">
+            No signup required
+          </p>
+        </div>
 
         <div className="text-center">
           <Link
