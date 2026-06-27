@@ -34,7 +34,7 @@ export function UserAvatar({ src, name, size = 'md', className }: UserAvatarProp
   const showImage = src && !imgError
 
   return (
-    <div className={cn('rounded-full shrink-0 overflow-hidden', SIZE_CLASSES[size], className)}>
+    <div className={cn('rounded-full shrink-0 overflow-hidden ring-2 ring-black/40 dark:ring-white/40', SIZE_CLASSES[size], className)}>
       {showImage ? (
         <Image
           src={src}

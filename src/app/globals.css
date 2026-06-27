@@ -173,3 +173,19 @@
   from { width: 100%; }
   to { width: 0%; }
 }
+
+.avatar-photo-bg {
+  background-color: theme('colors.zinc.100');
+  background-image:
+    linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.dark .avatar-photo-bg {
+  background-color: theme('colors.zinc.950');
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}

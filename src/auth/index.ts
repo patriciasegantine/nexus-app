@@ -58,13 +58,13 @@ export const { handlers, auth, signIn } = NextAuth({
       if (user) token.id = user.id
       if (trigger === 'update' && sessionData) {
         if (sessionData.name) token.name = sessionData.name as string
-        if (sessionData.image) token.picture = sessionData.image as string
+        if ('image' in sessionData) token.picture = sessionData.image as string | null
       }
       return token
     },
     session({ session, token }) {
       if (token.id) session.user.id = token.id as string
-      if (token.picture) session.user.image = token.picture as string
+      session.user.image = (token.picture as string | null | undefined) ?? null
       return session
     },
   },
