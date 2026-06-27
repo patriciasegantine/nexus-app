@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     default: 'Nexus',
     template: '%s | Nexus'
   },
-  description: 'Connect and organize your workflow with Nexus - The central hub for your board and projects.',
+  description: 'A focused command center for projects, tasks, and progress.',
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',

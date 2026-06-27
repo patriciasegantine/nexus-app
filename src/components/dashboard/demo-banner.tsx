@@ -17,13 +17,13 @@ export function DemoBanner() {
   }
 
   return (
-    <div className="sticky top-16 z-30 border-b border-yellow-300 bg-yellow-200 px-4 py-3 text-center text-sm text-red-700">
+    <div className="sticky top-16 z-40 border-b border-slate-300 bg-slate-200 px-4 py-3 text-center text-sm text-slate-700 backdrop-blur dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
       You&apos;re viewing a demo. Feel free to explore. Changes won&apos;t be saved.{" "}
       <button
         type="button"
         onClick={handleSignUp}
         disabled={isLeavingDemo}
-        className="font-medium underline underline-offset-2 transition-colors hover:text-red-900 disabled:cursor-wait disabled:opacity-70"
+        className="font-semibold underline underline-offset-2 transition-opacity hover:opacity-70 disabled:cursor-wait disabled:opacity-40"
       >
         {isLeavingDemo ? "Opening sign up..." : "Sign up free"}
       </button>{" "}

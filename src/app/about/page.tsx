@@ -5,14 +5,15 @@ import { FeatureCards } from "@/components/about/feature-cards"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Github, Globe } from "lucide-react"
 import type { Metadata } from "next"
+import { BrandMark } from "@/components/brand/brand-mark"
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL ?? "http://localhost:3000"),
   title: "About",
-  description: "Nexus — Connect and organize your workflow. The central hub for your boards and projects.",
+  description: "Nexus — A focused command center for projects, tasks, and progress.",
   openGraph: {
-    title: "Nexus — Your central hub for projects and tasks",
-    description: "Organize work, track progress, and stay on top of everything — all in one place.",
+    title: "Nexus — Projects, tasks, and progress in motion",
+    description: "Plan work, track movement, and keep momentum across every project.",
     images: [{ url: "/preview.png" }],
   },
 }
@@ -25,12 +26,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="flex items-center justify-between px-6 h-16 border-b">
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-foreground flex items-center justify-center">
-            <span className="text-background text-sm font-bold">N</span>
-          </div>
-          <span className="font-semibold text-sm">Nexus</span>
-        </div>
+        <BrandMark />
         <TooltipProvider delayDuration={300}>
           <div className="flex items-center gap-2">
             <Tooltip>
@@ -74,10 +70,10 @@ export default function AboutPage() {
         {/* Hero */}
         <section className="order-1 max-w-lg space-y-4 text-center">
           <h1 className="text-3xl md:text-4xl font-light tracking-tight">
-            Your central hub for projects and tasks
+            A focused command center for projects and tasks
           </h1>
           <p className="text-muted-foreground text-base">
-            Nexus helps you organize work, track progress, and stay on top of everything. All in one place.
+            Plan work, track movement, and keep momentum across every project.
           </p>
         </section>
 

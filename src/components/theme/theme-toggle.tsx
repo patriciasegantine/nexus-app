@@ -5,12 +5,14 @@ import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useEffect, useState } from 'react'
+import { cn } from '@/lib/utils'
 
 type ThemeToggleProps = {
   showTooltip?: boolean
+  className?: string
 }
 
-export function ThemeToggle({ showTooltip = false }: ThemeToggleProps) {
+export function ThemeToggle({ showTooltip = false, className }: ThemeToggleProps) {
   const [mounted, setMounted] = useState(false)
   const {theme, setTheme} = useTheme()
   
@@ -27,7 +29,7 @@ export function ThemeToggle({ showTooltip = false }: ThemeToggleProps) {
     <Button
       variant="ghost"
       size="icon"
-      className="h-9 w-9"
+      className={cn("h-9 w-9", className)}
       aria-label={label}
       title={showTooltip ? undefined : label}
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}

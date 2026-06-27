@@ -1,6 +1,7 @@
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { LegalFooter } from "@/components/footer/legal-footer"
 import { BackButton } from "@/components/footer/back-button"
+import { BrandMark } from "@/components/brand/brand-mark"
 import React from "react"
 
 export default function LegalLayout({ children }: { children: React.ReactNode }) {
@@ -10,12 +11,7 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
         <div className="flex items-center gap-4">
           <BackButton />
           <div className="h-4 w-px bg-border" />
-          <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded bg-foreground flex items-center justify-center">
-              <span className="text-background text-xs font-bold">N</span>
-            </div>
-            <span className="font-medium text-sm">Nexus</span>
-          </div>
+          <BrandMark size="sm" />
         </div>
         <ThemeToggle />
       </header>
