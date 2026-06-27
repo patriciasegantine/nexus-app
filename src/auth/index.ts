@@ -54,12 +54,24 @@ export const { handlers, auth, signIn } = NextAuth({
     }),
   ],
   callbacks: {
-    jwt({ token, user, trigger, session: sessionData }) {
+    async jwt({ token, user, trigger, session: sessionData }) {
       if (user) token.id = user.id
+
       if (trigger === 'update' && sessionData) {
         if (sessionData.name) token.name = sessionData.name as string
         if ('image' in sessionData) token.picture = sessionData.image as string | null
+        return token
       }
+
+      // Always sync image from DB so changes reflect across all devices/browsers
+      if (token.id) {
+        const fresh = await db.user.findUnique({
+          where: { id: token.id as string },
+          select: { image: true },
+        })
+        if (fresh) token.picture = fresh.image
+      }
+
       return token
     },
     session({ session, token }) {
