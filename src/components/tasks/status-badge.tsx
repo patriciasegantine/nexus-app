@@ -10,7 +10,7 @@ export function StatusBadge({ status, onClick }: StatusBadgeProps) {
   const base = 'inline-flex items-center gap-1.5 whitespace-nowrap text-xs font-medium text-muted-foreground'
   const content = (
     <>
-      <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: TASK_STATUS_COLORS[status] }} />
+      <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: TASK_STATUS_COLORS[status] }} />
       {TASK_STATUS_NAMES[status]}
     </>
   )

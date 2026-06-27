@@ -10,7 +10,7 @@ export function PriorityBadge({ priority, onClick }: PriorityBadgeProps) {
   const content = (
     <>
       <div
-        className="h-2 w-2 shrink-0 rounded-full"
+        className="h-2 w-2 shrink-0 rounded-[1px]"
         style={{ backgroundColor: TASK_PRIORITIES_COLORS[priority] }}
       />
       <span>{TASK_PRIORITY_NAMES[priority]}</span>

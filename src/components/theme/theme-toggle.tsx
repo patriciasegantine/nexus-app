@@ -16,7 +16,6 @@ export function ThemeToggle({ showTooltip = false, className }: ThemeToggleProps
   const [mounted, setMounted] = useState(false)
   const {theme, setTheme} = useTheme()
   
-  // Evita hidratação incorreta
   useEffect(() => {
     setMounted(true)
   }, [])

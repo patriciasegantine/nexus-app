@@ -1,4 +1,7 @@
+'use client'
+
 import Image from 'next/image'
+import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
 type AvatarSize = 'sm' | 'md' | 'lg' | 'xl'
@@ -25,18 +28,21 @@ const SIZE_PX: Record<AvatarSize, number> = {
 }
 
 export function UserAvatar({ src, name, size = 'md', className }: UserAvatarProps) {
+  const [imgError, setImgError] = useState(false)
   const initial = name.trim()[0]?.toUpperCase() ?? 'U'
   const px = SIZE_PX[size]
+  const showImage = src && !imgError
 
   return (
     <div className={cn('rounded-full shrink-0 overflow-hidden', SIZE_CLASSES[size], className)}>
-      {src ? (
+      {showImage ? (
         <Image
           src={src}
           alt={name}
           width={px}
           height={px}
           className="h-full w-full object-cover"
+          onError={() => setImgError(true)}
         />
       ) : (
         <div className="h-full w-full flex items-center justify-center bg-[hsl(var(--avatar-bg))]">
