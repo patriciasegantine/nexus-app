@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { StatusBadge } from "@/components/tasks/status-badge"
 import { PriorityBadge } from "@/components/tasks/priority-badge"
 import { TaskTags } from "@/components/tasks/task-tags/task-tags"
+import { TASK_STATUS_COLORS } from "@/constants/task"
 import {
   Tooltip,
   TooltipContent,
@@ -46,10 +47,12 @@ export function TaskCard({
 }: TaskCardProps) {
   const dueDate = task.dueDate ? new Date(task.dueDate) : null
   const isOverdue = dueDate != null && task.status !== 'DONE' && isBefore(dueDate, startOfToday())
+  const statusColor = TASK_STATUS_COLORS[task.status]
 
   return (
     <Card
-      className="group h-full border border-border bg-card shadow-sm transition-all duration-200 hover:shadow-md"
+      className="group h-full border-l-4 bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgb(15_23_42/0.12)] dark:hover:shadow-[0_14px_30px_rgb(0_0_0/0.32)]"
+      style={{ borderLeftColor: statusColor }}
     >
       <CardContent className="p-4 flex flex-col h-full gap-3">
 

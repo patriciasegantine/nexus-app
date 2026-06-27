@@ -22,11 +22,11 @@ export function NavigationItem({ item, isActive, isCollapsed, onItemSelect }: Na
         <TooltipTrigger asChild>
           <Button
             asChild
-            variant={isActive ? 'secondary' : 'ghost'}
+            variant="ghost"
             className={cn(
               'w-full justify-start overflow-hidden transition-all duration-200',
-              'hover:translate-x-0.5 hover:bg-muted/80',
-              isActive && 'bg-muted',
+              'text-muted-foreground hover:translate-x-0.5 hover:bg-secondary hover:text-foreground',
+              isActive && 'bg-secondary text-foreground',
               isCollapsed && 'justify-center px-2 gap-0'
             )}
           >

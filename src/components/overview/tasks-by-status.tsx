@@ -3,7 +3,7 @@
 import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartContainer, ChartTooltip, type ChartConfig } from '@/components/ui/chart'
-import { TASK_STATUS_COLORS, TASK_STATUS_NAMES } from "@/constants/task"
+import { TASK_STATUS_COLORS, TASK_STATUS_COLUMNS, TASK_STATUS_NAMES } from "@/constants/task"
 import { BarChart2 } from 'lucide-react'
 import { EmptyState } from "@/components/ui/empty-state"
 
@@ -19,10 +19,10 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function TasksByStatus({ byStatus }: TasksByStatusProps) {
-  const data = Object.entries(byStatus).map(([status, value]) => ({
+  const data = TASK_STATUS_COLUMNS.map((status) => ({
     status,
-    label: TASK_STATUS_NAMES[status as keyof typeof TASK_STATUS_NAMES] ?? status,
-    value,
+    label: TASK_STATUS_NAMES[status],
+    value: byStatus[status] ?? 0,
   }))
 
   const isEmpty = data.length === 0

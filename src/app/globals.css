@@ -3,156 +3,158 @@
 @tailwind utilities;
 @layer base {
     :root {
-        /* Base Colours — Zinc */
-        --background: 240 4.8% 96%;
-        --foreground: 240 10% 3.9%;
+        /* Base Colours — cool graphite light */
+        --background: 214 26% 96%;
+        --foreground: 216 19% 9%;
 
         /* App Chrome Colours */
-        --chrome: 240 4.8% 97%;
+        --chrome: 0 0% 100%;
 
         /* Neutral White */
-        --neutral-white: 0 0% 95%;
+        --neutral-white: 0 0% 100%;
 
-        /* Card Colours — white cards on a subtle zinc background */
+        /* Card Colours */
         --card: 0 0% 100%;
-        --card-foreground: 240 10% 3.9%;
+        --card-foreground: 216 19% 9%;
 
         /* Popover Colours */
         --popover: 0 0% 100%;
-        --popover-foreground: 240 10% 3.9%;
+        --popover-foreground: 216 19% 9%;
 
         /* Primary Colours */
-        --primary: 240 5.9% 10%;
-        --primary-foreground: 0 0% 98%;
+        --primary: 222 47% 11%;
+        --primary-foreground: 0 0% 100%;
+        --primary-hover: 217 32% 17%;
 
         /* Secondary Colours */
-        --secondary: 240 4.8% 95.9%;
-        --secondary-foreground: 240 5.9% 10%;
+        --secondary: 214 22% 94%;
+        --secondary-foreground: 216 19% 9%;
 
         /* Muted Colours */
-        --muted: 240 4.8% 95.9%;
-        --muted-foreground: 240 3.8% 46.1%;
+        --muted: 214 22% 94%;
+        --muted-foreground: 215 16% 36%;
 
         /* Accent Colours */
-        --accent: 240 4.8% 95.9%;
-        --accent-foreground: 240 5.9% 10%;
+        --accent: 214 22% 92%;
+        --accent-foreground: 216 19% 9%;
 
         /* Destructive Colours */
-        --destructive: 0 72.2% 50.6%;
-        --destructive-foreground: 0 0% 98%;
+        --destructive: 354 100% 65%;
+        --destructive-foreground: 39 31% 94%;
 
         /* Border and Input Colours */
-        --border: 240 5.9% 84%;
-        --input: 240 5.9% 82%;
+        --border: 214 18% 84%;
+        --input: 214 18% 76%;
 
         /* Ring Colour */
-        --ring: 240 5.9% 10%;
+        --ring: 222 47% 11%;
 
         /* Chart Colours */
-        --chart-1: 240 5% 40%;
-        --chart-2: 240 5% 35%;
-        --chart-3: 240 5% 30%;
-        --chart-4: 240 5% 25%;
-        --chart-5: 240 5% 20%;
+        --chart-1: 243 91% 69%;
+        --chart-2: 39 100% 56%;
+        --chart-3: 224 100% 65%;
+        --chart-4: 354 100% 65%;
+        --chart-5: 147 56% 49%;
 
         /* Avatar fallback background — must contrast with white text */
-        --avatar-bg: 240 5% 34%;
+        --avatar-bg: 216 19% 18%;
 
         /* Radius */
         --radius: 0.5rem;
 
         /* Status Colors */
-        --status-done: 142 76% 36%;
-        --status-in-progress: 221 83% 53%;
-        --status-todo: 215 16% 47%;
+        --status-done: 147 56% 49%;
+        --status-in-progress: 224 100% 65%;
+        --status-todo: 215 14% 55%;
 
         /* Priority Colors */
-        --priority-high: 0 84% 60%;
-        --priority-medium: 48 97% 53%;
-        --priority-low: 142 76% 36%;
+        --priority-high: 354 100% 65%;
+        --priority-medium: 39 100% 56%;
+        --priority-low: 147 56% 49%;
 
         /* Velocity Colors */
         --velocity-planned: 271 60% 60%;
         --velocity-completed: 155 50% 35%;
 
         /* Burndown Colors */
-        --burndown-remain: 220 10% 40%;
-        --burndown-ideal: 180 76% 41%;
+        --burndown-remain: 215 14% 42%;
+        --burndown-ideal: 243 91% 69%;
     }
 
     .dark {
-        /* Base Colours — Zinc dark */
-        --background: 240 10% 3.9%;
-        --foreground: 0 0% 98%;
+        /* Base Colours — graphite dark */
+        --background: 216 19% 5%;
+        --foreground: 39 31% 94%;
 
         /* App Chrome Colours */
-        --chrome: 240 7% 7%;
+        --chrome: 218 20% 8%;
 
         /* Neutral White */
         --neutral-white: 0 0% 95%;
 
         /* Card Colours — elevated above bg for visual separation */
-        --card: 240 6% 12%;
-        --card-foreground: 0 0% 98%;
+        --card: 218 16% 10%;
+        --card-foreground: 39 31% 94%;
 
         /* Popover Colours */
-        --popover: 240 6% 10%;
-        --popover-foreground: 0 0% 98%;
+        --popover: 218 16% 10%;
+        --popover-foreground: 39 31% 94%;
 
         /* Primary Colours */
-        --primary: 0 0% 98%;
-        --primary-foreground: 240 5.9% 10%;
+        --primary: 0 0% 100%;
+        --primary-foreground: 222 47% 11%;
+        --primary-hover: 214 32% 91%;
 
         /* Secondary Colours */
-        --secondary: 240 3.7% 15.9%;
-        --secondary-foreground: 0 0% 98%;
+        --secondary: 218 16% 13%;
+        --secondary-foreground: 39 31% 94%;
 
         /* Muted Colours */
-        --muted: 240 3.7% 15.9%;
-        --muted-foreground: 240 5% 64.9%;
+        --muted: 218 16% 13%;
+        --muted-foreground: 215 14% 65%;
 
         /* Accent Colours */
-        --accent: 240 3.7% 15.9%;
-        --accent-foreground: 0 0% 98%;
+        --accent: 218 16% 16%;
+        --accent-foreground: 39 31% 94%;
 
         /* Destructive Colours */
-        --destructive: 0 72% 55%;
-        --destructive-foreground: 0 0% 98%;
+        --destructive: 354 100% 65%;
+        --destructive-foreground: 39 31% 94%;
 
         /* Border and Input Colours */
-        --border: 240 3.7% 24%;
-        --input: 240 3.7% 28%;
+        --border: 215 20% 27%;
+        --input: 215 20% 32%;
 
         /* Avatar fallback background — same as light, must contrast with white text */
-        --avatar-bg: 240 5% 34%;
+        --avatar-bg: 216 19% 18%;
 
         /* Ring Colour */
-        --ring: 240 4.9% 83.9%;
+        --ring: 0 0% 100%;
 
         /* Chart Colours */
-        --chart-1: 240 5% 40%;
-        --chart-2: 240 5% 30%;
-        --chart-3: 240 5% 25%;
-        --chart-4: 240 5% 20%;
-        --chart-5: 240 5% 15%;
+        --chart-1: 243 91% 72%;
+        --chart-2: 39 100% 56%;
+        --chart-3: 224 100% 65%;
+        --chart-4: 354 100% 65%;
+        --chart-5: 147 56% 49%;
 
         /* Status Colors */
-        --status-done: 142 55% 45%;
-        --status-in-progress: 221 70% 60%;
-        --status-todo: 215 16% 60%;
+        --status-done: 147 56% 49%;
+        --status-in-progress: 224 100% 65%;
+        --status-todo: 215 14% 65%;
 
         /* Priority Colors */
-        --priority-high: 0 72% 58%;
-        --priority-medium: 48 85% 55%;
-        --priority-low: 142 55% 45%;
+        --priority-high: 354 100% 65%;
+        --priority-medium: 39 100% 56%;
+        --priority-low: 147 56% 49%;
 
         /* Velocity Colors */
         --velocity-planned: 271 60% 60%;
         --velocity-completed: 155 50% 35%;
 
         /* Burndown Colors */
-        --burndown-remain: 220 15% 55%;
-        --burndown-ideal: 180 60% 50%;
+        --burndown-remain: 215 14% 65%;
+        --burndown-ideal: 243 91% 72%;
     }
 
 }

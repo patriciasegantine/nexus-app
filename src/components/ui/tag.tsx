@@ -35,9 +35,9 @@ const InlineRemoveButton = ({ label, onRemove }: { label: string; onRemove: () =
 
 export function Tag({ label, onRemove, removePosition = "inline", onClick, active = false, className }: TagProps) {
   const base = cn(
-    'group relative inline-flex max-w-full items-center gap-1 rounded-full border border-border/60 bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground',
+    'group relative inline-flex max-w-full items-center gap-1 rounded-full border border-border bg-secondary px-2 py-0.5 text-xs font-semibold text-foreground/75 shadow-sm',
     'transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
-    active && 'border-foreground/20 bg-muted/80 text-foreground',
+    active && 'border-[hsl(var(--primary)/0.45)] bg-[hsl(var(--primary)/0.14)] text-foreground',
     className,
   )
 

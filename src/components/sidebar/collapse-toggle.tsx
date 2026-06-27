@@ -20,7 +20,7 @@ export function CollapseToggle({ isCollapsed, onToggle }: CollapseToggleProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="hidden h-9 w-9 md:inline-flex"
+            className="hidden h-9 w-9 text-muted-foreground hover:bg-secondary hover:text-foreground md:inline-flex"
             onClick={onToggle}
             aria-label={label}
           >
