@@ -15,7 +15,7 @@ type AvatarUploadProps = {
   src: string | null | undefined
   name: string
   onSave: (url: string) => void
-  onRemove: () => void
+  onRemove?: () => void
 }
 
 type Mode = 'view' | 'crop' | 'confirm-remove'
@@ -103,7 +103,7 @@ export function AvatarUpload({ src, name, onSave, onRemove }: AvatarUploadProps)
   }
 
   function handleRemoveConfirm() {
-    onRemove()
+    onRemove?.()
     handleClose()
   }
 
