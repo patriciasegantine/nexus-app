@@ -26,9 +26,8 @@ export async function updateAvatar(formData: FormData) {
   }
 
   const ext = file.type.split('/')[1]
-  const blob = await put(`avatars/${session.user.id}.${ext}`, file, {
+  const blob = await put(`avatars/${session.user.id}-${Date.now()}.${ext}`, file, {
     access: 'public',
-    allowOverwrite: true,
   })
 
   await db.user.update({

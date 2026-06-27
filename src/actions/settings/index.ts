@@ -1,5 +1,6 @@
 export { updateProfile } from "./update-profile/update-profile"
 export { updateAvatar } from "./update-avatar/update-avatar"
+export { removeAvatar } from "./remove-avatar/remove-avatar"
 export { clearAllData } from "./clear-data/clear-data"
 export { deleteAccount } from "./delete-account/delete-account"
 export { changePassword } from "./change-password/change-password"

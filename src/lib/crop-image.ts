@@ -1,6 +1,6 @@
 import type { Area } from 'react-easy-crop'
 
-const OUTPUT_SIZE = 300
+const OUTPUT_SIZE = 600
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
