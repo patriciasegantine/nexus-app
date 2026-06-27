@@ -49,6 +49,7 @@ export function UserNav({ user }: UserNavProps) {
     ],
     [
       { type: 'action', icon: Keyboard, label: 'Keyboard shortcuts', onSelect: openShortcuts, opensDialog: true },
+      { type: 'action', icon: UserPlus, label: 'Invite someone', onSelect: () => setInviteOpen(true), opensDialog: true },
     ],
     [
       { type: 'action', icon: LogOut, label: 'Log out', onSelect: () => signOut({ callbackUrl: '/login' }) },

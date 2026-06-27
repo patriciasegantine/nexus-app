@@ -11,6 +11,8 @@ export const AppRoutes = {
     TASKS: '/tasks',
     SETTINGS: '/settings',
     SETTINGS_PROFILE: '/settings#profile',
+    SETTINGS_PREFERENCES: '/settings#preferences',
+    SETTINGS_ACCOUNT: '/settings#account',
   },
   ABOUT: '/about',
 } as const

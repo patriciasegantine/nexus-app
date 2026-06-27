@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { SlidersHorizontal, Shield, User } from "lucide-react"
 import { DangerZone } from "@/components/settings/account/danger-zone/danger-zone"
 import { PreferencesSettings } from "@/components/settings/preferences/preferences-settings"
@@ -23,8 +23,28 @@ interface SettingsTabsProps {
   providers: string[]
 }
 
+function getTabFromHash(): SettingsTab {
+  const hash = typeof window !== 'undefined' ? window.location.hash.slice(1) : ''
+  return (SETTINGS_TABS.map(t => t.value) as string[]).includes(hash)
+    ? (hash as SettingsTab)
+    : 'profile'
+}
+
 export function SettingsTabs({ hasPassword, providers }: SettingsTabsProps) {
-  const [activeTab, setActiveTab] = useState<SettingsTab>("profile")
+  const [activeTab, setActiveTab] = useState<SettingsTab>(getTabFromHash)
+
+  useEffect(() => {
+    function onHashChange() {
+      setActiveTab(getTabFromHash())
+    }
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+
+  function handleTabChange(tab: SettingsTab) {
+    window.location.hash = tab
+    setActiveTab(tab)
+  }
 
   return (
     <div className="max-w-3xl space-y-5">
@@ -41,7 +61,7 @@ export function SettingsTabs({ hasPassword, providers }: SettingsTabsProps) {
             aria-selected={activeTab === value}
             aria-controls={`settings-panel-${value}`}
             id={`settings-tab-${value}`}
-            onClick={() => setActiveTab(value)}
+            onClick={() => handleTabChange(value)}
             className={cn(
               "inline-flex items-center gap-2 border-b-2 border-transparent px-3 pb-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none",
               activeTab === value && "border-foreground text-foreground"

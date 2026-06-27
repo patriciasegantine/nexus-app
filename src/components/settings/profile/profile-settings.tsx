@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { SettingsSection } from '@/components/settings/settings-section'
 import { AvatarUpload } from '@/components/settings/profile/avatar-upload'
-import { updateProfile } from '@/actions/settings'
+import { updateProfile, removeAvatar } from '@/actions/settings'
 import { toast } from '@/hooks/use-toast'
 
 export function ProfileSettings() {
@@ -37,6 +37,18 @@ export function ProfileSettings() {
     })
   }
 
+  function handleRemoveAvatar() {
+    startTransition(async () => {
+      const result = await removeAvatar()
+      if (!result.success) {
+        toast({ variant: 'destructive', description: result.error })
+        return
+      }
+      await update({ image: null })
+      toast({ description: 'Avatar removed.' })
+    })
+  }
+
   return (
     <SettingsSection title="Profile" description="Manage your personal information.">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-5">
@@ -44,6 +56,7 @@ export function ProfileSettings() {
           src={session?.user?.image}
           name={name || session?.user?.name || 'U'}
           onSave={async (url) => { await update({ image: url }) }}
+          onRemove={handleRemoveAvatar}
         />
 
         <div className="min-w-0 flex-1 space-y-1">
