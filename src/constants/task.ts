@@ -31,3 +31,9 @@ export const TASK_PRIORITY_BADGE_STYLES: Record<TaskPriority, string> = {
   MEDIUM: `bg-[${TASK_PRIORITIES_COLORS.MEDIUM}]/16 text-foreground`,
   HIGH: `bg-[${TASK_PRIORITIES_COLORS.HIGH}]/16 text-foreground`,
 } as const
+
+export const TASK_STATUS_PILL_STYLES: Record<TaskStatus, string> = {
+  TODO: 'bg-slate-100 text-slate-600 dark:bg-slate-500/15 dark:text-slate-300',
+  IN_PROGRESS: 'bg-blue-50 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300',
+  DONE: 'bg-green-50 text-green-700 dark:bg-green-500/15 dark:text-green-300',
+} as const

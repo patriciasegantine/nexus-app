@@ -51,7 +51,7 @@ describe('TaskCard filters', () => {
     fireEvent.click(screen.getByText('Prepare launch notes'))
     fireEvent.click(screen.getByRole('button', { name: 'In Progress' }))
     fireEvent.click(screen.getByRole('button', { name: 'High' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Jun 13' }))
+    fireEvent.click(screen.getByRole('button', { name: /Jun 13/ }))
 
     expect(onEdit).not.toHaveBeenCalled()
     expect(onStatusClick).toHaveBeenCalledWith('IN_PROGRESS')

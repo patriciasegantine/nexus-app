@@ -77,7 +77,7 @@ export async function getTasks(filters?: GetTasksFilters): Promise<{ tasks: Task
     db.task.findMany({
       where,
       orderBy,
-      include: { project: { select: { id: true, name: true } } },
+      include: { project: { select: { id: true, name: true, slug: true } } },
       skip,
       take: perPage,
     }),

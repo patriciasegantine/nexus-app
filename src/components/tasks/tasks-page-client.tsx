@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { ClipboardList, Loader2, Plus } from "lucide-react"
+import { ClipboardList, LayoutGrid, List, Loader2, Plus } from "lucide-react"
 import { format } from "date-fns"
 import { TasksList } from "@/components/tasks/tasks-list"
 import { TaskDialog } from "@/components/tasks/task-dialog/task-dialog"
@@ -19,9 +19,12 @@ import type { Project } from "@/types/project"
 import {
   DEFAULT_TASK_PAGE_SIZE,
   DEFAULT_TASK_SORT,
+  DEFAULT_TASK_VIEW,
   TASK_PAGE_SIZE_PREFERENCE_KEY,
   TASK_SORT_OPTIONS,
   TASK_SORT_PREFERENCE_KEY,
+  TASK_VIEW_PREFERENCE_KEY,
+  TaskViewOption,
   isTaskPageSizeOption,
 } from "@/constants/preferences"
 
@@ -43,6 +46,7 @@ export function TasksPageClient({ tasks, total, projects, tags, page, perPage, h
   const [selectedTask, setSelectedTask] = useState<TaskListItem | null>(null)
   const [taskToDelete, setTaskToDelete] = useState<TaskListItem | null>(null)
   const [isDuplicating, startDuplicate] = useTransition()
+  const [view, setView] = useState<TaskViewOption>(DEFAULT_TASK_VIEW)
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString())
@@ -68,10 +72,20 @@ export function TasksPageClient({ tasks, total, projects, tags, page, perPage, h
       }
     }
 
+    const savedView = window.localStorage.getItem(TASK_VIEW_PREFERENCE_KEY)
+    if (savedView === "cards" || savedView === "list") {
+      setView(savedView)
+    }
+
     if (shouldReplace) {
       router.replace(`${pathname}?${params.toString()}`)
     }
   }, [pathname, router, searchParams])
+
+  function handleViewChange(newView: TaskViewOption) {
+    setView(newView)
+    window.localStorage.setItem(TASK_VIEW_PREFERENCE_KEY, newView)
+  }
 
   function handleNewTask() {
     setSelectedTask(null)
@@ -139,9 +153,29 @@ export function TasksPageClient({ tasks, total, projects, tags, page, perPage, h
       <hr className="border-border/60 -mt-2" />
 
       {total > 0 && (
-        <p className="text-sm text-muted-foreground -mt-2">
-          {total} {total === 1 ? "task" : "tasks"}
-        </p>
+        <div className="flex items-center justify-between -mt-2">
+          <p className="text-sm text-muted-foreground">
+            {total} {total === 1 ? "task" : "tasks"}
+          </p>
+          <div className="flex items-center gap-1 rounded-md border border-border/60 p-0.5">
+            <button
+              type="button"
+              aria-label="Card view"
+              onClick={() => handleViewChange("cards")}
+              className={`rounded p-1.5 transition-colors ${view === "cards" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              aria-label="List view"
+              onClick={() => handleViewChange("list")}
+              className={`rounded p-1.5 transition-colors ${view === "list" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              <List className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       )}
 
       <div className="flex-1 relative">
@@ -164,6 +198,7 @@ export function TasksPageClient({ tasks, total, projects, tags, page, perPage, h
         ) : (
           <TasksList
             tasks={tasks}
+            view={view}
             onEdit={handleEditTask}
             onDuplicate={handleDuplicate}
             onDelete={setTaskToDelete}
