@@ -3,20 +3,14 @@
 import { TaskTags } from "@/components/tasks/task-tags/task-tags"
 import { TASK_PRIORITIES_COLORS, TASK_STATUS_COLORS, TASK_STATUS_NAMES, TASK_PRIORITY_NAMES } from "@/constants/task"
 import { TableCell, TableRow } from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { TaskActionsMenu } from "@/components/tasks/task-actions-menu"
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { AlertTriangle, CalendarDays, Copy, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
+import { AlertTriangle, CalendarDays, Copy, Pencil, Trash2 } from "lucide-react"
 import { format, isBefore, startOfToday } from "date-fns"
 import type { TaskCard as TaskCardType } from "@/types/task"
 
@@ -137,40 +131,7 @@ export function TaskListRow({
           <>
             {/* Below lg: dropdown */}
             <div className="lg:hidden flex justify-center">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    type="button"
-                    aria-label="Task options"
-                    className="rounded p-1.5 text-muted-foreground/60 hover:bg-muted hover:text-foreground transition-colors"
-                  >
-                    <MoreHorizontal className="h-4 w-4" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-36">
-                  {onEdit && (
-                    <DropdownMenuItem onClick={onEdit} className="cursor-pointer">
-                      <Pencil className="h-3.5 w-3.5 mr-2" />
-                      Edit
-                    </DropdownMenuItem>
-                  )}
-                  {onDuplicate && (
-                    <DropdownMenuItem onClick={onDuplicate} className="cursor-pointer">
-                      <Copy className="h-3.5 w-3.5 mr-2" />
-                      Duplicate
-                    </DropdownMenuItem>
-                  )}
-                  {onDelete && (
-                    <>
-                      {(onEdit || onDuplicate) && <DropdownMenuSeparator />}
-                      <DropdownMenuItem onClick={onDelete} className="cursor-pointer text-destructive focus:text-destructive">
-                        <Trash2 className="h-3.5 w-3.5 mr-2" />
-                        Delete
-                      </DropdownMenuItem>
-                    </>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <TaskActionsMenu onEdit={onEdit} onDuplicate={onDuplicate} onDelete={onDelete} />
             </div>
 
             {/* lg+: individual buttons with tooltips */}

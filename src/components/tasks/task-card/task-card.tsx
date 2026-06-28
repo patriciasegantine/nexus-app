@@ -1,30 +1,12 @@
 'use client'
 
 import { Card, CardContent } from "@/components/ui/card"
-import { TaskTags } from "@/components/tasks/task-tags/task-tags"
-import {
-  TASK_STATUS_COLORS,
-  TASK_STATUS_NAMES,
-  TASK_PRIORITIES_COLORS,
-  TASK_PRIORITY_NAMES,
-} from "@/constants/task"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { AlertTriangle, CalendarDays, Copy, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
-import Link from "next/link"
-import { AppRoutes } from "@/constants/routes"
-import { format, isBefore, startOfToday } from "date-fns"
+import { TASK_STATUS_COLORS, TASK_PRIORITIES_COLORS } from "@/constants/task"
+import { TaskActionsMenu } from "@/components/tasks/task-actions-menu"
+import { TaskCardMeta } from "@/components/tasks/task-card/task-card-meta"
+import { TaskCardStatus } from "@/components/tasks/task-card/task-card-status"
+import { TaskCardProject } from "@/components/tasks/task-card/task-card-project"
+import { isBefore, startOfToday } from "date-fns"
 import type { TaskCard as TaskCardType } from "@/types/task"
 
 interface TaskCardProps {
@@ -62,152 +44,35 @@ export function TaskCard({
     >
       <CardContent className="p-3 flex flex-col h-full gap-2">
 
-        {/* Title + menu */}
         <div className="flex items-start justify-between gap-2">
           <p className="font-bold text-sm leading-snug tracking-tight line-clamp-2 text-foreground flex-1 min-w-0">
             {task.title}
           </p>
-
-          <DropdownMenu>
-            <TooltipProvider delayDuration={300}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      className="-mr-1 -mt-1 shrink-0 rounded p-1 text-muted-foreground/60 hover:bg-muted hover:text-foreground transition-colors"
-                      aria-label="Task options"
-                    >
-                      <MoreHorizontal className="h-4 w-4" />
-                    </button>
-                  </DropdownMenuTrigger>
-                </TooltipTrigger>
-                <TooltipContent side="top">Task options</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <DropdownMenuContent align="end" className="w-36">
-              {onEdit && (
-                <DropdownMenuItem onClick={onEdit} className="cursor-pointer">
-                  <Pencil className="h-3.5 w-3.5 mr-2" />
-                  Edit
-                </DropdownMenuItem>
-              )}
-              {onDuplicate && (
-                <DropdownMenuItem onClick={onDuplicate} className="cursor-pointer">
-                  <Copy className="h-3.5 w-3.5 mr-2" />
-                  Duplicate
-                </DropdownMenuItem>
-              )}
-              {onDelete && (
-                <>
-                  {(onEdit || onDuplicate) && <DropdownMenuSeparator />}
-                  <DropdownMenuItem
-                    onClick={onDelete}
-                    className="cursor-pointer text-destructive focus:text-destructive"
-                  >
-                    <Trash2 className="h-3.5 w-3.5 mr-2" />
-                    Delete
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <TaskActionsMenu
+            onEdit={onEdit}
+            onDuplicate={onDuplicate}
+            onDelete={onDelete}
+            triggerClassName="-mr-1 -mt-1 shrink-0 rounded p-1 text-muted-foreground/60 hover:bg-muted hover:text-foreground transition-colors"
+          />
         </div>
-         
-         {/* Status — plain coloured text, no pill */}
-        {onStatusClick ? (
-          <button
-            type="button"
-            onClick={() => onStatusClick(task.status)}
-            className="text-xs font-semibold w-fit hover:opacity-75 transition-opacity"
-            style={{ color: statusColor }}
-          >
-            {TASK_STATUS_NAMES[task.status]}
-          </button>
-        ) : (
-          <span className="text-xs font-semibold" style={{ color: statusColor }}>
-            {TASK_STATUS_NAMES[task.status]}
-          </span>
-        )}
 
-        {/* Project */}
+        <TaskCardStatus status={task.status} color={statusColor} onClick={onStatusClick} />
+
         {showProject && task.project && (
-          task.project.slug ? (
-            <Link
-              href={`${AppRoutes.DASHBOARD.PROJECTS}/${task.project.slug}`}
-              className="text-xs text-muted-foreground/80 truncate hover:text-foreground transition-colors w-fit"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {task.project.name}
-            </Link>
-          ) : (
-            <p className="text-xs text-muted-foreground/80 truncate">{task.project.name}</p>
-          )
+          <TaskCardProject project={task.project} />
         )}
 
-        {/* Metadata — auto-pushed to bottom */}
-        <div className="mt-auto flex flex-col gap-1 pt-2 border-t border-border/40">
-
-          {/* Date + Priority na mesma linha */}
-          <div className="flex items-center justify-between gap-2">
-            {dueDate && (
-              isOverdue ? (
-                onDueDateClick ? (
-                  <button
-                    type="button"
-                    onClick={() => onDueDateClick(dueDate)}
-                    className="flex items-center gap-1 text-xs text-amber-600 dark:text-amber-500 hover:opacity-75 transition-opacity"
-                  >
-                    <AlertTriangle className="h-3 w-3 shrink-0" />
-                    <span>Overdue · {format(dueDate, 'MMM d')}</span>
-                  </button>
-                ) : (
-                  <div className="flex items-center gap-1 text-xs text-amber-600 dark:text-amber-500">
-                    <AlertTriangle className="h-3 w-3 shrink-0" />
-                    <span>Overdue · {format(dueDate, 'MMM d')}</span>
-                  </div>
-                )
-              ) : (
-                onDueDateClick ? (
-                  <button
-                    type="button"
-                    onClick={() => onDueDateClick(dueDate)}
-                    className="flex items-center gap-1 text-xs text-muted-foreground/80 hover:text-foreground transition-colors"
-                  >
-                    <CalendarDays className="h-3 w-3 shrink-0" />
-                    <span>{format(dueDate, 'MMM d')}</span>
-                  </button>
-                ) : (
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground/80">
-                    <CalendarDays className="h-3 w-3 shrink-0" />
-                    <span>{format(dueDate, 'MMM d')}</span>
-                  </div>
-                )
-              )
-            )}
-
-            {/* Priority — coloured square + label */}
-            {onPriorityClick ? (
-              <button
-                type="button"
-                onClick={() => onPriorityClick(task.priority)}
-                className="flex items-center gap-1.5 text-xs text-muted-foreground/80 hover:text-foreground transition-colors ml-auto"
-              >
-                <span className="h-2.5 w-2.5 shrink-0 rounded-[2px]" style={{ backgroundColor: priorityColor }} />
-                {TASK_PRIORITY_NAMES[task.priority]}
-              </button>
-            ) : (
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground/80 ml-auto">
-                <span className="h-2.5 w-2.5 shrink-0 rounded-[2px]" style={{ backgroundColor: priorityColor }} />
-                {TASK_PRIORITY_NAMES[task.priority]}
-              </div>
-            )}
-          </div>
-
-          <div className="pt-0.5">
-            <TaskTags taskId={task.id} tags={task.tags} onTagClick={onTagClick} />
-          </div>
-
-        </div>
+        <TaskCardMeta
+          taskId={task.id}
+          tags={task.tags}
+          priority={task.priority}
+          priorityColor={priorityColor}
+          dueDate={dueDate}
+          isOverdue={isOverdue}
+          onTagClick={onTagClick}
+          onPriorityClick={onPriorityClick}
+          onDueDateClick={onDueDateClick}
+        />
 
       </CardContent>
     </Card>
