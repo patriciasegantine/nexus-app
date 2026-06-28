@@ -30,5 +30,5 @@ export interface RecentTask {
 }
 
 export interface TaskListItem extends TaskCard {
-  project: { id: string; name: string } | null
+  project: { id: string; name: string; slug: string } | null
 }
