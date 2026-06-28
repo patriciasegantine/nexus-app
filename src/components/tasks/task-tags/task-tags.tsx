@@ -27,6 +27,7 @@ interface TaskTagsProps {
   taskId: string
   tags: string[]
   onTagClick?: (tag: string) => void
+  showAll?: boolean
 }
 
 export function getVisibleTagCount(tagWidths: number[], availableWidth: number) {
@@ -50,7 +51,7 @@ export function getVisibleTagCount(tagWidths: number[], availableWidth: number) 
   return visibleCount
 }
 
-export function TaskTags({ taskId, tags, onTagClick }: TaskTagsProps) {
+export function TaskTags({ taskId, tags, onTagClick, showAll = false }: TaskTagsProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const measurementRef = useRef<HTMLDivElement>(null)
   const [currentTags, setCurrentTags] = useState(tags)
@@ -84,7 +85,7 @@ export function TaskTags({ taskId, tags, onTagClick }: TaskTagsProps) {
     return () => resizeObserver.disconnect()
   }, [currentTags, updateVisibleCount])
 
-  const hiddenCount = currentTags.length - visibleCount
+  const hiddenCount = showAll ? 0 : currentTags.length - visibleCount
   const canAddTag = currentTags.length < MAX_TAGS
 
   function handleTagClick(tag: string) {
@@ -123,7 +124,7 @@ export function TaskTags({ taskId, tags, onTagClick }: TaskTagsProps) {
 
   return (
     <>
-      <div className="flex min-w-0 flex-1 items-center gap-1">
+      <div className={showAll ? "flex flex-wrap items-center gap-1" : "flex min-w-0 flex-1 items-center gap-1"}>
         {canAddTag && (
           <Popover open={addOpen} onOpenChange={setAddOpen}>
             <TooltipProvider delayDuration={300}>
@@ -184,9 +185,9 @@ export function TaskTags({ taskId, tags, onTagClick }: TaskTagsProps) {
 
         <div
           ref={containerRef}
-          className="flex min-w-0 flex-1 items-center gap-1"
+          className={showAll ? "flex flex-wrap items-center gap-1" : "flex min-w-0 flex-1 items-center gap-1"}
         >
-          {currentTags.slice(0, visibleCount).map((tag) => (
+          {currentTags.slice(0, showAll ? currentTags.length : visibleCount).map((tag) => (
             <Tag
               key={tag}
               label={tag}
