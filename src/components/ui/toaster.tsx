@@ -13,7 +13,7 @@ import {
 
 const DURATION = 5000
 
-function ToastItem({ id, title, description, action, dismiss, ...props }: {
+function ToastItem({ title, description, action, dismiss, ...props }: {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode
