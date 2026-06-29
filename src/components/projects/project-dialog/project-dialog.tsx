@@ -1,20 +1,24 @@
 'use client'
 
-import { useEffect, useState, useTransition } from "react"
+import { useEffect, useRef, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { TagsInput } from "@/components/ui/tags-input"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { createProject, updateProject } from "@/actions/projects"
-import { cn } from "@/lib/utils"
-import { INVALID_INPUT_CLASS } from "@/lib/form-styles"
 import { projectFormSchema as projectSchema, type ProjectFormValues } from "@/validations/project"
-import { PROJECT_COLORS, DEFAULT_PROJECT_COLOR } from "../project-card/project-card.utils"
+import { DEFAULT_PROJECT_COLOR } from "../project-card/project-card.utils"
 import { toast } from "@/hooks/use-toast"
+import { ProjectDialogForm } from "./project-dialog-form"
 
 interface ProjectDialogProps {
   open: boolean
@@ -28,22 +32,58 @@ export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProp
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState("")
   const [color, setColor] = useState<string>(DEFAULT_PROJECT_COLOR)
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<ProjectFormValues>({
+  const initialColor = useRef(DEFAULT_PROJECT_COLOR)
+  const initialTags = useRef<string[]>([])
+
+  const { register, handleSubmit, formState: { errors, isDirty }, reset } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
   })
 
   useEffect(() => {
     if (open) {
+      const initColor = project?.color ?? DEFAULT_PROJECT_COLOR
+      const initTags = project?.tags ?? []
+
       reset({
         name: project?.name ?? "",
         description: project?.description ?? "",
       })
-      setTags(project?.tags ?? [])
+      setTags(initTags)
       setTagInput("")
-      setColor(project?.color ?? DEFAULT_PROJECT_COLOR)
+      setColor(initColor)
+      initialColor.current = initColor
+      initialTags.current = initTags
     }
   }, [open, project, reset])
+
+  function isControlledDirty() {
+    return (
+      color !== initialColor.current ||
+      tags.join(",") !== initialTags.current.join(",")
+    )
+  }
+
+  function handleOpenChange(val: boolean) {
+    if (!val) {
+      if (showDiscardConfirm) return
+      if (isDirty || isControlledDirty()) {
+        setShowDiscardConfirm(true)
+        return
+      }
+      setTimeout(() => { document.body.style.pointerEvents = '' }, 0)
+      onOpenChange(false)
+      return
+    }
+    onOpenChange(val)
+  }
+
+  function handleDiscard() {
+    setShowDiscardConfirm(false)
+    setTimeout(() => { document.body.style.pointerEvents = '' }, 0)
+    onOpenChange(false)
+  }
 
   function onSubmit(data: ProjectFormValues) {
     const formData = new FormData()
@@ -67,79 +107,48 @@ export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProp
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{isEditing ? "Edit project" : "New project"}</DialogTitle>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent
+          className="gap-0 p-0 sm:max-w-3xl sm:overflow-hidden sm:p-0"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
+          <DialogHeader className="px-6 pb-4 pt-6">
+            <DialogTitle>{isEditing ? "Edit project" : "New project"}</DialogTitle>
+          </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              placeholder="Project name"
-              className={cn(errors.name && INVALID_INPUT_CLASS)}
-              {...register("name")}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <ProjectDialogForm
+              register={register}
+              errors={errors}
+              isPending={isPending}
+              isEditing={isEditing}
+              tags={tags}
+              onTagsChange={setTags}
+              tagInput={tagInput}
+              onTagInputChange={setTagInput}
+              color={color}
+              onColorChange={setColor}
+              onCancel={() => handleOpenChange(false)}
             />
-            {errors.name && (
-              <p className="text-xs text-destructive">{errors.name.message}</p>
-            )}
-          </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              placeholder="Optional description"
-              rows={3}
-              {...register("description")}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Color</Label>
-            <div className="flex gap-2">
-              {PROJECT_COLORS.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => setColor(c)}
-                  className={cn(
-                    "h-7 w-7 rounded-full transition-all",
-                    color === c
-                      ? "ring-2 ring-offset-2 ring-offset-background scale-110"
-                      : "hover:scale-110 opacity-70 hover:opacity-100"
-                  )}
-                  style={{ backgroundColor: c, ...(color === c ? { '--tw-ring-color': c } as React.CSSProperties : {}) }}
-                  aria-label={c}
-                />
-              ))}
-            </div>
-          </div>
-
-          <TagsInput
-            value={tags}
-            onChange={setTags}
-            inputValue={tagInput}
-            onInputChange={setTagInput}
-          />
-
-          <DialogFooter className="pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isPending}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Saving..." : isEditing ? "Save changes" : "Create project"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <AlertDialog open={showDiscardConfirm} onOpenChange={setShowDiscardConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Discard changes?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have unsaved changes. If you leave now, they will be lost.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep editing</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDiscard}>Discard</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }

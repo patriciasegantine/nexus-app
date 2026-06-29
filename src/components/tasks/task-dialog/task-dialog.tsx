@@ -96,6 +96,7 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
 
   function handleOpenChange(val: boolean) {
     if (!val) {
+      if (showDiscardConfirm) return
       if (isDirty || isControlledDirty()) {
         setShowDiscardConfirm(true)
         return
