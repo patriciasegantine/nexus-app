@@ -8,6 +8,8 @@ import { TaskListRowTitle } from "@/components/tasks/task-list-row/task-list-row
 import { TaskListRowPriority } from "@/components/tasks/task-list-row/task-list-row-priority"
 import { TaskListRowDueDate } from "@/components/tasks/task-list-row/task-list-row-due-date"
 import { TaskListRowActions } from "@/components/tasks/task-list-row/task-list-row-actions"
+import { StatusBadge } from "@/components/tasks/status-badge"
+import { PriorityBadge } from "@/components/tasks/priority-badge"
 import { isBefore, startOfToday } from "date-fns"
 import type { TaskCard as TaskCardType } from "@/types/task"
 
@@ -45,28 +47,30 @@ export function TaskListRow({
         <TaskListRowTitle
           title={task.title}
           project={task.project}
-          dueDate={dueDate}
-          isOverdue={isOverdue}
         />
+        <div className="sm:hidden flex items-center gap-2 mt-1">
+          <StatusBadge status={task.status} onClick={onStatusClick ? () => onStatusClick(task.status) : undefined} />
+          <PriorityBadge priority={task.priority} onClick={onPriorityClick ? () => onPriorityClick(task.priority) : undefined} />
+        </div>
       </TableCell>
 
       <TableCell className="hidden xl:table-cell w-48">
         <TaskTags taskId={task.id} tags={task.tags} onTagClick={onTagClick} showAll />
       </TableCell>
 
-      <TableCell className="w-28 whitespace-nowrap">
+      <TableCell className="hidden sm:table-cell w-28 whitespace-nowrap">
         <TaskCardStatus status={task.status} color={statusColor} onClick={onStatusClick} />
       </TableCell>
 
-      <TableCell className="w-28 whitespace-nowrap">
+      <TableCell className="hidden sm:table-cell w-28 whitespace-nowrap">
         <TaskListRowPriority priority={task.priority} color={priorityColor} onClick={onPriorityClick} />
       </TableCell>
 
-      <TableCell className="hidden sm:table-cell w-28 whitespace-nowrap text-right">
+      <TableCell className="w-28 whitespace-nowrap text-right">
         <TaskListRowDueDate dueDate={dueDate} isOverdue={isOverdue} onClick={onDueDateClick} />
       </TableCell>
 
-      <TableCell className="w-10 lg:w-28 text-center lg:text-right">
+      <TableCell className="w-14 lg:w-28 text-center lg:text-right">
         <TaskListRowActions onEdit={onEdit} onDuplicate={onDuplicate} onDelete={onDelete} />
       </TableCell>
 
