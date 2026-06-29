@@ -1,25 +1,26 @@
 'use client'
 
-import { useEffect, useState, useTransition } from "react"
+import { useEffect, useRef, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { TagsInput } from "@/components/ui/tags-input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { DatePicker } from "@/components/ui/date-picker"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { createTask, updateTask } from "@/actions/tasks"
 import { fetchProjects } from "@/actions/projects"
-import { TASK_PRIORITY_NAMES, TASK_STATUS_NAMES } from "@/constants/task"
-import { INVALID_INPUT_CLASS } from "@/lib/form-styles"
-import { cn } from "@/lib/utils"
 import { taskFormSchema as taskSchema, type TaskFormValues } from "@/validations/task"
 import { format } from "date-fns"
 import type { TaskCard } from "@/types/task"
 import { toast } from "@/hooks/use-toast"
+import { TaskDialogForm } from "./task-dialog-form"
 
 interface TaskDialogProps {
   open: boolean
@@ -34,13 +35,19 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
   const [projects, setProjects] = useState<{ id: string; name: string }[]>([])
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState("")
-  const [priority, setPriority] = useState<string>(task?.priority || "MEDIUM")
-  const [status, setStatus] = useState<string>(task?.status || "TODO")
-  const [dueDate, setDueDate] = useState<Date | undefined>(
-    task?.dueDate ? new Date(task.dueDate) : undefined
-  )
+  const [priority, setPriority] = useState("MEDIUM")
+  const [status, setStatus] = useState("TODO")
+  const [dueDate, setDueDate] = useState<Date | undefined>(undefined)
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<TaskFormValues>({
+  const initialControlled = useRef({
+    priority: "MEDIUM",
+    status: "TODO",
+    dueDate: undefined as Date | undefined,
+    tags: [] as string[],
+  })
+
+  const { register, handleSubmit, formState: { errors, isDirty }, reset, setValue, watch } = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
   })
 
@@ -48,22 +55,63 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
 
   useEffect(() => {
     if (open) {
+      const initPriority = task?.priority || "MEDIUM"
+      const initStatus = task?.status || "TODO"
+      const initDueDate = task?.dueDate ? new Date(task.dueDate) : undefined
+      const initTags = task?.tags ?? []
+
       reset({
         title: task?.title ?? "",
         description: task?.description ?? "",
         projectId: projectId ?? "",
       })
-      setTags(task?.tags ?? [])
+      setTags(initTags)
       setTagInput("")
-      setPriority(task?.priority || "MEDIUM")
-      setStatus(task?.status || "TODO")
-      setDueDate(task?.dueDate ? new Date(task.dueDate) : undefined)
+      setPriority(initPriority)
+      setStatus(initStatus)
+      setDueDate(initDueDate)
+
+      initialControlled.current = {
+        priority: initPriority,
+        status: initStatus,
+        dueDate: initDueDate,
+        tags: initTags,
+      }
 
       if (isEditing || !projectId) {
         fetchProjects().then(setProjects)
       }
     }
   }, [open, task, projectId, isEditing, reset])
+
+  function isControlledDirty() {
+    const init = initialControlled.current
+    return (
+      priority !== init.priority ||
+      status !== init.status ||
+      dueDate?.getTime() !== init.dueDate?.getTime() ||
+      tags.join(",") !== init.tags.join(",")
+    )
+  }
+
+  function handleOpenChange(val: boolean) {
+    if (!val) {
+      if (isDirty || isControlledDirty()) {
+        setShowDiscardConfirm(true)
+        return
+      }
+      setTimeout(() => { document.body.style.pointerEvents = '' }, 0)
+      onOpenChange(false)
+      return
+    }
+    onOpenChange(val)
+  }
+
+  function handleDiscard() {
+    setShowDiscardConfirm(false)
+    setTimeout(() => { document.body.style.pointerEvents = '' }, 0)
+    onOpenChange(false)
+  }
 
   function onSubmit(data: TaskFormValues) {
     const formData = new FormData()
@@ -89,130 +137,57 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
     })
   }
 
-  function handleOpenChange(val: boolean) {
-    if (!val) {
-      setTimeout(() => {
-        document.body.style.pointerEvents = ''
-      }, 0)
-    }
-    onOpenChange(val)
-  }
-
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{isEditing ? "Edit task" : "New task"}</DialogTitle>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent
+          className="gap-0 p-0 sm:max-w-5xl sm:overflow-hidden sm:p-0"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
+          <DialogHeader className="px-6 pb-4 pt-6">
+            <DialogTitle>{isEditing ? "Edit task" : "New task"}</DialogTitle>
+          </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input
-              id="title"
-              placeholder="Task title"
-              className={cn(errors.title && INVALID_INPUT_CLASS)}
-              {...register("title")}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <TaskDialogForm
+              register={register}
+              errors={errors}
+              setValue={setValue}
+              isPending={isPending}
+              isEditing={isEditing}
+              projectId={projectId}
+              projects={projects}
+              selectedProjectId={selectedProjectId}
+              tags={tags}
+              onTagsChange={setTags}
+              tagInput={tagInput}
+              onTagInputChange={setTagInput}
+              priority={priority}
+              onPriorityChange={setPriority}
+              status={status}
+              onStatusChange={setStatus}
+              dueDate={dueDate}
+              onDueDateChange={setDueDate}
+              onCancel={() => handleOpenChange(false)}
             />
-            {errors.title && (
-              <p className="text-xs text-destructive">{errors.title.message}</p>
-            )}
-          </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              placeholder="Optional description"
-              {...register("description")}
-            />
-          </div>
-
-          {(isEditing || !projectId) && (
-            <div className="space-y-2">
-              <Label htmlFor="project">Project</Label>
-              <Select
-                value={selectedProjectId}
-                onValueChange={(value) => setValue("projectId", value, { shouldValidate: true })}
-              >
-                <SelectTrigger id="project" className={cn(errors.projectId && INVALID_INPUT_CLASS)}>
-                  <SelectValue placeholder="Select a project" />
-                </SelectTrigger>
-                <SelectContent>
-                  {projects.map((project) => (
-                    <SelectItem key={project.id} value={project.id}>
-                      {project.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.projectId && (
-                <p className="text-xs text-destructive">{errors.projectId.message}</p>
-              )}
-            </div>
-          )}
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="priority">Priority</Label>
-              <Select value={priority} onValueChange={setPriority}>
-                <SelectTrigger id="priority">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="LOW">{TASK_PRIORITY_NAMES.LOW}</SelectItem>
-                  <SelectItem value="MEDIUM">{TASK_PRIORITY_NAMES.MEDIUM}</SelectItem>
-                  <SelectItem value="HIGH">{TASK_PRIORITY_NAMES.HIGH}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="status">Status</Label>
-              <Select value={status} onValueChange={setStatus}>
-                <SelectTrigger id="status">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="TODO">{TASK_STATUS_NAMES.TODO}</SelectItem>
-                  <SelectItem value="IN_PROGRESS">{TASK_STATUS_NAMES.IN_PROGRESS}</SelectItem>
-                  <SelectItem value="DONE">{TASK_STATUS_NAMES.DONE}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Due date</Label>
-            <DatePicker
-              value={dueDate}
-              onChange={setDueDate}
-              placeholder="Pick a due date"
-            />
-          </div>
-
-          <TagsInput
-            value={tags}
-            onChange={setTags}
-            inputValue={tagInput}
-            onInputChange={setTagInput}
-          />
-
-          <DialogFooter className="pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleOpenChange(false)}
-              disabled={isPending}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Saving..." : isEditing ? "Save changes" : "Create task"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <AlertDialog open={showDiscardConfirm} onOpenChange={setShowDiscardConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Discard changes?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have unsaved changes. If you leave now, they will be lost.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep editing</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDiscard}>Discard</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }
