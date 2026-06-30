@@ -22,6 +22,20 @@ import type { TaskCard } from "@/types/task"
 import { toast } from "@/hooks/use-toast"
 import { TaskDialogForm } from "./task-dialog-form"
 
+export interface TaskFormData {
+  priority: string
+  status: string
+  dueDate: Date | undefined
+}
+
+export type SetTaskFormField = <K extends keyof TaskFormData>(key: K, value: TaskFormData[K]) => void
+
+const DEFAULT_TASK_FORM_DATA: TaskFormData = {
+  priority: "MEDIUM",
+  status: "TODO",
+  dueDate: undefined,
+}
+
 interface TaskDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -35,17 +49,11 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
   const [projects, setProjects] = useState<{ id: string; name: string }[]>([])
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState("")
-  const [priority, setPriority] = useState("MEDIUM")
-  const [status, setStatus] = useState("TODO")
-  const [dueDate, setDueDate] = useState<Date | undefined>(undefined)
+  const [taskFormData, setTaskFormData] = useState<TaskFormData>(DEFAULT_TASK_FORM_DATA)
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
 
-  const initialControlled = useRef({
-    priority: "MEDIUM",
-    status: "TODO",
-    dueDate: undefined as Date | undefined,
-    tags: [] as string[],
-  })
+  const initialTaskFormData = useRef<TaskFormData>(DEFAULT_TASK_FORM_DATA)
+  const initialTags = useRef<string[]>([])
 
   const { register, handleSubmit, formState: { errors, isDirty }, reset, setValue, watch } = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
@@ -55,28 +63,19 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
 
   useEffect(() => {
     if (open) {
-      const initPriority = task?.priority || "MEDIUM"
-      const initStatus = task?.status || "TODO"
-      const initDueDate = task?.dueDate ? new Date(task.dueDate) : undefined
+      const initFormData: TaskFormData = {
+        priority: task?.priority || "MEDIUM",
+        status: task?.status || "TODO",
+        dueDate: task?.dueDate ? new Date(task.dueDate) : undefined,
+      }
       const initTags = task?.tags ?? []
 
-      reset({
-        title: task?.title ?? "",
-        description: task?.description ?? "",
-        projectId: projectId ?? "",
-      })
+      reset({ title: task?.title ?? "", description: task?.description ?? "", projectId: projectId ?? "" })
       setTags(initTags)
       setTagInput("")
-      setPriority(initPriority)
-      setStatus(initStatus)
-      setDueDate(initDueDate)
-
-      initialControlled.current = {
-        priority: initPriority,
-        status: initStatus,
-        dueDate: initDueDate,
-        tags: initTags,
-      }
+      setTaskFormData(initFormData)
+      initialTaskFormData.current = initFormData
+      initialTags.current = initTags
 
       if (isEditing || !projectId) {
         fetchProjects().then(setProjects)
@@ -84,13 +83,17 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
     }
   }, [open, task, projectId, isEditing, reset])
 
+  function setFormField<K extends keyof TaskFormData>(key: K, value: TaskFormData[K]) {
+    setTaskFormData((prev) => ({ ...prev, [key]: value }))
+  }
+
   function isControlledDirty() {
-    const init = initialControlled.current
+    const init = initialTaskFormData.current
     return (
-      priority !== init.priority ||
-      status !== init.status ||
-      dueDate?.getTime() !== init.dueDate?.getTime() ||
-      tags.join(",") !== init.tags.join(",")
+      taskFormData.priority !== init.priority ||
+      taskFormData.status !== init.status ||
+      taskFormData.dueDate?.getTime() !== init.dueDate?.getTime() ||
+      tags.join(",") !== initialTags.current.join(",")
     )
   }
 
@@ -115,19 +118,19 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
   }
 
   function onSubmit(data: TaskFormValues) {
-    const formData = new FormData()
-    formData.set("title", data.title)
-    formData.set("description", data.description ?? "")
-    formData.set("projectId", data.projectId)
-    formData.set("priority", priority)
-    formData.set("status", status)
-    formData.set("tags", JSON.stringify(tags))
-    formData.set("dueDate", dueDate ? format(dueDate, "yyyy-MM-dd") : "")
+    const payload = new FormData()
+    payload.set("title", data.title)
+    payload.set("description", data.description ?? "")
+    payload.set("projectId", data.projectId)
+    payload.set("priority", taskFormData.priority)
+    payload.set("status", taskFormData.status)
+    payload.set("tags", JSON.stringify(tags))
+    payload.set("dueDate", taskFormData.dueDate ? format(taskFormData.dueDate, "yyyy-MM-dd") : "")
 
     startTransition(async () => {
       const result = isEditing
-        ? await updateTask(task.id, formData)
-        : await createTask(formData)
+        ? await updateTask(task.id, payload)
+        : await createTask(payload)
 
       if (!result.success) {
         toast({ variant: "destructive", description: result.error })
@@ -163,12 +166,8 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
               onTagsChange={setTags}
               tagInput={tagInput}
               onTagInputChange={setTagInput}
-              priority={priority}
-              onPriorityChange={setPriority}
-              status={status}
-              onStatusChange={setStatus}
-              dueDate={dueDate}
-              onDueDateChange={setDueDate}
+              taskFormData={taskFormData}
+              onTaskFormDataChange={setFormField}
               onCancel={() => handleOpenChange(false)}
             />
           </form>
