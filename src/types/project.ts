@@ -1,4 +1,7 @@
 import type { TaskCard } from './task'
+import type { ProjectStatus, ProjectPriority } from '@/validations/project'
+
+export type { ProjectStatus, ProjectPriority }
 
 export interface Project {
   id: string
@@ -7,8 +10,14 @@ export interface Project {
   description?: string | null
   color: string
   tags: string[]
+  status: ProjectStatus
+  priority: ProjectPriority | null
+  startDate: Date | null
+  targetDate: Date | null
+  icon: string | null
   userId: string
   createdAt: Date
+  updatedAt: Date
 }
 
 export interface ProjectBoardItem extends Omit<Project, 'userId'> {
