@@ -2,15 +2,19 @@ import { getBoardData, getProjectTags } from "@/lib/data/projects"
 import { NewProjectButton } from "@/components/projects/new-project-button"
 import { PageHeader } from "@/components/ui/page-header"
 import { ProjectsPageClient } from "@/components/projects/projects-page-client"
+import { getStringParam, getValidatedParam, type SearchParams } from "@/lib/search-params"
+
+const VALID_SORTS = new Set(["name", "progress", "createdAt"] as const)
 
 interface ProjectsPageProps {
-  searchParams: Promise<{ search?: string; tag?: string; sort?: string }>
+  searchParams: Promise<SearchParams>
 }
 
 export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
-  const { search, tag, sort } = await searchParams
-
-  const validSort = sort === "name" || sort === "progress" ? sort : "createdAt"
+  const params = await searchParams
+  const search = getStringParam(params, "search")
+  const tag = getStringParam(params, "tag")
+  const validSort = getValidatedParam(params, "sort", VALID_SORTS) ?? "createdAt"
 
   const [projects, tags] = await Promise.all([
     getBoardData({ search, tag, sort: validSort }),
