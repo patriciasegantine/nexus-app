@@ -12,34 +12,53 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select"
 import { INVALID_INPUT_CLASS, DIALOG_PANEL_CLASS } from "@/lib/form-styles"
 import { cn } from "@/lib/utils"
 import type { ProjectFormValues, ProjectStatus, ProjectPriority } from "@/validations/project"
 import type { ProjectFormData, SetFormField } from "./project-dialog"
-import { PROJECT_COLORS } from "../project-card/project-card.utils"
-import { CalendarRange, Check, Flag, Palette, SlidersHorizontal, X } from "lucide-react"
+import {
+  PROJECT_COLORS,
+  PROJECT_PRIORITY_ACCENT,
+  PROJECT_PRIORITY_NAMES,
+  PROJECT_STATUS_COLORS,
+  PROJECT_STATUS_NAMES,
+} from "../project-card/project-card.utils"
+import {
+  Archive,
+  CalendarRange,
+  Check,
+  CheckCircle2,
+  CircleDashed,
+  Flag,
+  Palette,
+  PauseCircle,
+  PlayCircle,
+  SlidersHorizontal,
+  X,
+  type LucideIcon,
+} from "lucide-react"
 
-const STATUS_OPTIONS: { value: ProjectStatus; label: string }[] = [
-  { value: "PLANNING",  label: "Planning" },
-  { value: "ACTIVE",    label: "Active" },
-  { value: "ON_HOLD",   label: "On hold" },
-  { value: "COMPLETED", label: "Completed" },
-  { value: "ARCHIVED",  label: "Archived" },
+const STATUS_OPTIONS: ProjectStatus[] = [
+  "PLANNING",
+  "ACTIVE",
+  "ON_HOLD",
+  "COMPLETED",
+  "ARCHIVED",
 ]
 
-const PRIORITY_OPTIONS: { value: ProjectPriority; label: string }[] = [
-  { value: "LOW",    label: "Low" },
-  { value: "MEDIUM", label: "Medium" },
-  { value: "HIGH",   label: "High" },
+const PRIORITY_OPTIONS: ProjectPriority[] = [
+  "LOW",
+  "MEDIUM",
+  "HIGH",
 ]
 
-const priorityAccent: Record<ProjectPriority | "none", string> = {
-  none: "text-muted-foreground",
-  LOW: "text-emerald-600 dark:text-emerald-400",
-  MEDIUM: "text-amber-600 dark:text-amber-400",
-  HIGH: "text-rose-600 dark:text-rose-400",
+const PROJECT_STATUS_ICONS: Record<ProjectStatus, LucideIcon> = {
+  PLANNING: CircleDashed,
+  ACTIVE: PlayCircle,
+  ON_HOLD: PauseCircle,
+  COMPLETED: CheckCircle2,
+  ARCHIVED: Archive,
 }
 
 interface ProjectDialogFormProps {
@@ -57,6 +76,26 @@ interface ProjectDialogFormProps {
 }
 
 const panelTriggerClass = DIALOG_PANEL_CLASS
+
+function ProjectStatusSelectLabel({ status }: { status: ProjectStatus }) {
+  const StatusIcon = PROJECT_STATUS_ICONS[status]
+
+  return (
+    <span className="flex items-center gap-2">
+      <StatusIcon className="h-3.5 w-3.5" style={{ color: PROJECT_STATUS_COLORS[status] }} />
+      <span>{PROJECT_STATUS_NAMES[status]}</span>
+    </span>
+  )
+}
+
+function ProjectPrioritySelectLabel({ priority }: { priority: ProjectPriority | null }) {
+  return (
+    <span className="flex items-center gap-2">
+      <Flag className={cn("h-3.5 w-3.5", priority ? PROJECT_PRIORITY_ACCENT[priority] : "text-muted-foreground")} />
+      <span>{priority ? PROJECT_PRIORITY_NAMES[priority] : "No priority"}</span>
+    </span>
+  )
+}
 
 export function ProjectDialogForm({
   register,
@@ -165,17 +204,17 @@ export function ProjectDialogForm({
 
             {/* Status */}
             <div className="space-y-2">
-              <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <Label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Status
               </Label>
               <Select value={formData.status} onValueChange={(v) => onFormDataChange("status", v as ProjectStatus)}>
-                <SelectTrigger className={panelTriggerClass}>
-                  <SelectValue />
+                <SelectTrigger className={cn(panelTriggerClass, "[&>span]:!flex [&>span]:items-center")}>
+                  <ProjectStatusSelectLabel status={formData.status} />
                 </SelectTrigger>
                 <SelectContent>
-                  {STATUS_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
+                  {STATUS_OPTIONS.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      <ProjectStatusSelectLabel status={status} />
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -185,7 +224,7 @@ export function ProjectDialogForm({
             {/* Priority */}
             <div className="space-y-2">
               <Label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                <Flag className={cn("h-3 w-3", priorityAccent[formData.priority ?? "none"])} />
+                <Flag className={cn("h-3 w-3", formData.priority ? PROJECT_PRIORITY_ACCENT[formData.priority] : "text-muted-foreground")} />
                 Priority
               </Label>
               <Select
@@ -194,14 +233,16 @@ export function ProjectDialogForm({
                   onFormDataChange("priority", v === "none" ? null : (v as ProjectPriority))
                 }
               >
-                <SelectTrigger className={panelTriggerClass}>
-                  <SelectValue placeholder="No priority" />
+                <SelectTrigger className={cn(panelTriggerClass, "[&>span]:!flex [&>span]:items-center")}>
+                  <ProjectPrioritySelectLabel priority={formData.priority} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">No priority</SelectItem>
-                  {PRIORITY_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
+                  <SelectItem value="none">
+                    <ProjectPrioritySelectLabel priority={null} />
+                  </SelectItem>
+                  {PRIORITY_OPTIONS.map((priority) => (
+                    <SelectItem key={priority} value={priority}>
+                      <ProjectPrioritySelectLabel priority={priority} />
                     </SelectItem>
                   ))}
                 </SelectContent>
