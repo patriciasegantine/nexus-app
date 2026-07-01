@@ -66,7 +66,7 @@ export const PROJECT_PRIORITY_ACCENT: Record<ProjectPriority, string> = {
 }
 
 export function formatProjectDate(date: Date) {
-  return format(new Date(date), "MMM d, yyyy")
+  return format(new Date(date), "d MMM yy")
 }
 
 export function formatProjectTimeline(startDate: Date | null, targetDate: Date | null) {
