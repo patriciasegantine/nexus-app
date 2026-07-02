@@ -1,20 +1,20 @@
 'use client'
 
-import { useEffect, useState, useTransition } from "react"
+import { Suspense, useEffect, useState, useTransition } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { ClipboardList, LayoutGrid, List, Loader2, Plus } from "lucide-react"
+import { AlertTriangle, CheckCircle2, ClipboardList, Loader2, PlayCircle, Plus } from "lucide-react"
 import { format } from "date-fns"
 import { TasksList } from "@/components/tasks/tasks-list"
 import { TaskDialog } from "@/components/tasks/task-dialog/task-dialog"
 import { TaskFilters } from "@/components/tasks/filters/task-filters"
 import { TaskPagination } from "@/components/tasks/task-pagination"
 import { EmptyState } from "@/components/ui/empty-state"
-import { Button } from "@/components/ui/button"
+import { SummaryMetric } from "@/components/ui/summary-metric"
 import { TaskDeleteDialog } from "@/components/tasks/task-dialog/task-delete-dialog"
-import { PageHeader, PageHeaderAction } from "@/components/ui/page-header"
 import { duplicateTask, deleteTask } from "@/actions/tasks"
 import { toast } from "@/hooks/use-toast"
 import type { TaskListItem } from "@/types/task"
+import type { TaskStats } from "@/lib/data/tasks"
 import type { Project } from "@/types/project"
 import {
   DEFAULT_TASK_PAGE_SIZE,
@@ -27,10 +27,12 @@ import {
   TaskViewOption,
   isTaskPageSizeOption,
 } from "@/constants/preferences"
+import { NewTaskButton } from "./task-card/new-task-button"
 
 interface TasksPageClientProps {
   tasks: TaskListItem[]
   total: number
+  stats: TaskStats
   projects: Project[]
   tags: string[]
   page: number
@@ -38,7 +40,7 @@ interface TasksPageClientProps {
   hasFilters: boolean
 }
 
-export function TasksPageClient({ tasks, total, projects, tags, page, perPage, hasFilters }: TasksPageClientProps) {
+export function TasksPageClient({ tasks, total, stats, projects, tags, page, perPage, hasFilters }: TasksPageClientProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -87,10 +89,10 @@ export function TasksPageClient({ tasks, total, projects, tags, page, perPage, h
     window.localStorage.setItem(TASK_VIEW_PREFERENCE_KEY, newView)
   }
 
-  function handleNewTask() {
-    setSelectedTask(null)
-    setDialogOpen(true)
-  }
+  // function handleNewTask() {
+  //   setSelectedTask(null)
+  //   setDialogOpen(true)
+  // }
 
   function handleEditTask(task: TaskListItem) {
     setSelectedTask(task)
@@ -132,51 +134,27 @@ export function TasksPageClient({ tasks, total, projects, tags, page, perPage, h
   }
 
   return (
-    <div className="flex flex-col gap-6 min-h-[calc(100vh-8rem)]">
-      <PageHeader
-        title="Tasks"
-        description="All your tasks across projects"
-        action={
-          <PageHeaderAction
-            icon={Plus}
-            iconOnlyOnMobile
-            onClick={handleNewTask}
-            aria-label="New task"
-          >
-            New task
-          </PageHeaderAction>
-        }
-      />
+    <div className="space-y-5">
+      <div className="grid grid-cols-4 gap-2.5 sm:gap-4">
+        <SummaryMetric icon={ClipboardList} label="Tasks" value={stats.total} />
+        <SummaryMetric icon={PlayCircle} label="In progress" value={stats.inProgress} />
+        <SummaryMetric icon={AlertTriangle} label="Overdue" value={stats.overdue} tone={stats.overdue > 0 ? "danger" : "default"} />
+        <SummaryMetric icon={CheckCircle2} label="Completed" value={stats.completed} />
+      </div>
 
-      <TaskFilters projects={projects} tags={tags} />
+        <Suspense>
+          <TaskFilters projects={projects} tags={tags} view={view} onViewChange={handleViewChange} />
+        </Suspense>
 
-      <hr className="border-border/60 -mt-2" />
-
-      {total > 0 && (
-        <div className="flex items-center justify-between -mt-2">
+      <div className="border-t border-border/60 pt-4">
+        {total > 0 ? (
           <p className="text-sm text-muted-foreground">
             {total} {total === 1 ? "task" : "tasks"}
           </p>
-          <div className="flex items-center gap-1 rounded-md border border-border/60 p-0.5">
-            <button
-              type="button"
-              aria-label="Card view"
-              onClick={() => handleViewChange("cards")}
-              className={`rounded p-1.5 transition-colors ${view === "cards" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              <LayoutGrid className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              aria-label="List view"
-              onClick={() => handleViewChange("list")}
-              className={`rounded p-1.5 transition-colors ${view === "list" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              <List className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      )}
+        ) : (
+          <span />
+        )}
+      </div>
 
       <div className="flex-1 relative">
         {isDuplicating && (
@@ -188,12 +166,7 @@ export function TasksPageClient({ tasks, total, projects, tags, page, perPage, h
           <EmptyState
             icon={ClipboardList}
             title={hasFilters ? "No tasks match your filters." : "No tasks yet. Create your first one."}
-            action={!hasFilters && (
-              <Button size="sm" onClick={handleNewTask}>
-                <Plus className="h-4 w-4 mr-2" />
-                New task
-              </Button>
-            )}
+            action={!hasFilters && <NewTaskButton />}
           />
         ) : (
           <TasksList
