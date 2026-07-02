@@ -8,13 +8,16 @@ import { ActiveTaskFilters } from "@/components/tasks/filters/active-task-filter
 import { DesktopTaskFilters } from "@/components/tasks/filters/desktop-task-filters"
 import { MobileTaskFilters } from "@/components/tasks/filters/mobile-task-filters"
 import type { Project } from "@/types/project"
+import type { TaskViewOption } from "@/constants/preferences"
 
 interface TaskFiltersProps {
   projects: Project[]
   tags: string[]
+  view: TaskViewOption
+  onViewChange: (view: TaskViewOption) => void
 }
 
-export function TaskFilters({ projects, tags }: TaskFiltersProps) {
+export function TaskFilters({ projects, tags, view, onViewChange }: TaskFiltersProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -118,7 +121,9 @@ export function TaskFilters({ projects, tags }: TaskFiltersProps) {
           tags={tags}
           activeCount={activeCount}
           hasAnyFilter={hasAnyFilter}
+          view={view}
           onFilterChange={updateParam}
+          onViewChange={onViewChange}
           onClear={handleClearAll}
         />
       </div>

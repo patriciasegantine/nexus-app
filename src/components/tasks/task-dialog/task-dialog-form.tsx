@@ -9,9 +9,10 @@ import { TagsInput } from "@/components/ui/tags-input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DatePicker } from "@/components/ui/date-picker"
 import { TASK_PRIORITY_NAMES, TASK_STATUS_NAMES } from "@/constants/task"
-import { INVALID_INPUT_CLASS } from "@/lib/form-styles"
+import { INVALID_INPUT_CLASS, DIALOG_PANEL_CLASS } from "@/lib/form-styles"
 import { cn } from "@/lib/utils"
 import type { TaskFormValues } from "@/validations/task"
+import type { TaskFormData, SetTaskFormField } from "./task-dialog"
 import { CalendarDays, Check, Flag, FolderKanban, ListChecks, SlidersHorizontal, X } from "lucide-react"
 
 const priorityAccent: Record<string, string> = {
@@ -20,8 +21,7 @@ const priorityAccent: Record<string, string> = {
   HIGH: "text-rose-600 dark:text-rose-400",
 }
 
-const panelTriggerClass =
-  "h-10 border-border/80 bg-card shadow-none transition-colors hover:border-muted-foreground/35 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0"
+const panelTriggerClass = DIALOG_PANEL_CLASS
 
 interface TaskDialogFormProps {
   register: UseFormRegister<TaskFormValues>
@@ -36,12 +36,8 @@ interface TaskDialogFormProps {
   onTagsChange: (tags: string[]) => void
   tagInput: string
   onTagInputChange: (value: string) => void
-  priority: string
-  onPriorityChange: (value: string) => void
-  status: string
-  onStatusChange: (value: string) => void
-  dueDate: Date | undefined
-  onDueDateChange: (date: Date | undefined) => void
+  taskFormData: TaskFormData
+  onTaskFormDataChange: SetTaskFormField
   onCancel: () => void
 }
 
@@ -58,18 +54,14 @@ export function TaskDialogForm({
   onTagsChange,
   tagInput,
   onTagInputChange,
-  priority,
-  onPriorityChange,
-  status,
-  onStatusChange,
-  dueDate,
-  onDueDateChange,
+  taskFormData,
+  onTaskFormDataChange,
   onCancel,
 }: TaskDialogFormProps) {
   return (
     <>
-      <div className="grid sm:grid-cols-[1fr_300px]">
-        <div className="space-y-4 border-t border-border/70 p-6">
+      <div className="grid sm:grid-cols-[1fr_350px]">
+        <div className="space-y-4 border-t border-border/70 p-7">
           <div className="space-y-2">
             <Label htmlFor="title" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               Title
@@ -77,10 +69,7 @@ export function TaskDialogForm({
             <Input
               id="title"
               placeholder="Task title"
-              className={cn(
-                "border-border/80 bg-muted/35 hover:border-muted-foreground/35 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0",
-                errors.title && INVALID_INPUT_CLASS
-              )}
+              className={cn(errors.title && INVALID_INPUT_CLASS)}
               {...register("title")}
             />
             {errors.title && (
@@ -96,12 +85,12 @@ export function TaskDialogForm({
               id="description"
               placeholder="Add decisions, context, acceptance criteria, or a quick note."
               rows={4}
-              className="resize-none border-border/80 bg-muted/35 text-sm placeholder:text-muted-foreground/55 hover:border-muted-foreground/35 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0"
+              className="resize-none text-sm"
               {...register("description")}
             />
           </div>
 
-          <div className="border-t border-border/70 pt-3 [&_input]:border-border/80 [&_input]:bg-muted/35 [&_input]:hover:border-muted-foreground/35 [&_input]:focus-visible:ring-1 [&_input]:focus-visible:ring-ring [&_input]:focus-visible:ring-offset-0">
+          <div className="border-t border-border/70 pt-3">
             <TagsInput
               value={tags}
               onChange={onTagsChange}
@@ -111,7 +100,7 @@ export function TaskDialogForm({
           </div>
         </div>
 
-        <aside className="border-t border-border/70 bg-muted/50 p-6 sm:border-l">
+        <aside className="border-t border-border/70 bg-muted/50 px-7 py-10 sm:border-l">
           <div className="mb-6 flex items-center gap-2.5">
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-muted-foreground">
               <SlidersHorizontal className="h-3.5 w-3.5" />
@@ -155,7 +144,7 @@ export function TaskDialogForm({
                 <ListChecks className="h-3 w-3" />
                 Status
               </Label>
-              <Select value={status} onValueChange={onStatusChange}>
+              <Select value={taskFormData.status} onValueChange={(v) => onTaskFormDataChange("status", v)}>
                 <SelectTrigger id="status" className={panelTriggerClass}>
                   <SelectValue />
                 </SelectTrigger>
@@ -169,10 +158,10 @@ export function TaskDialogForm({
 
             <div className="space-y-1.5">
               <Label htmlFor="priority" className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                <Flag className={cn("h-3 w-3", priorityAccent[priority])} />
+                <Flag className={cn("h-3 w-3", priorityAccent[taskFormData.priority])} />
                 Priority
               </Label>
-              <Select value={priority} onValueChange={onPriorityChange}>
+              <Select value={taskFormData.priority} onValueChange={(v) => onTaskFormDataChange("priority", v)}>
                 <SelectTrigger id="priority" className={panelTriggerClass}>
                   <SelectValue />
                 </SelectTrigger>
@@ -190,10 +179,10 @@ export function TaskDialogForm({
                 Due date
               </Label>
               <DatePicker
-                value={dueDate}
-                onChange={onDueDateChange}
+                value={taskFormData.dueDate}
+                onChange={(v) => onTaskFormDataChange("dueDate", v)}
                 placeholder="Pick a due date"
-                className="h-10 border-border/80 bg-card shadow-none transition-colors hover:border-muted-foreground/35 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0"
+                className={DIALOG_PANEL_CLASS}
               />
             </div>
           </div>

@@ -24,7 +24,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ClipboardList, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react"
+import { CalendarRange, ClipboardList, Flag, ListChecks, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react"
 import { EmptyState } from "@/components/ui/empty-state"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -34,6 +34,14 @@ import { deleteProject } from "@/actions/projects"
 import type { TaskStatus, TaskCard as TaskCardType } from "@/types/task"
 import type { ProjectWithTasks } from "@/types/project"
 import { toast } from "@/hooks/use-toast"
+import { cn } from "@/lib/utils"
+import {
+  formatProjectTimeline,
+  PROJECT_PRIORITY_ACCENT,
+  PROJECT_PRIORITY_NAMES,
+  PROJECT_STATUS_NAMES,
+  PROJECT_STATUS_STYLES,
+} from "@/components/projects/project-card/project-card.utils"
 
 interface ProjectKanbanProps {
   project: ProjectWithTasks
@@ -52,6 +60,7 @@ export function ProjectKanban({ project }: ProjectKanbanProps) {
     acc[status] = project.tasks.filter((t) => t.status === status)
     return acc
   }, {} as Record<TaskStatus, typeof project.tasks>)
+  const timeline = formatProjectTimeline(project.startDate, project.targetDate)
 
   function handleNewTask() {
     setSelectedTask(null)
@@ -81,7 +90,7 @@ export function ProjectKanban({ project }: ProjectKanbanProps) {
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="space-y-5">
         <nav className="flex items-center gap-1.5 text-sm text-muted-foreground">
           <Link
             href={AppRoutes.DASHBOARD.PROJECTS}
@@ -93,10 +102,10 @@ export function ProjectKanban({ project }: ProjectKanbanProps) {
           <span className="text-foreground">{project.name}</span>
         </nav>
 
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 min-w-0">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex min-w-0 items-start gap-3">
             <div
-              className="rounded-md h-10 w-10 flex items-center justify-center shrink-0"
+              className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-md"
               style={{ backgroundColor: project.color }}
             >
               <span className="text-white text-base font-semibold">
@@ -105,10 +114,21 @@ export function ProjectKanban({ project }: ProjectKanbanProps) {
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold tracking-tight truncate">{project.name}</h1>
+                <button
+                  type="button"
+                  onClick={() => setEditProjectOpen(true)}
+                  className="min-w-0 text-left text-2xl font-bold tracking-tight underline-offset-4 transition-colors hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <span className="block truncate">{project.name}</span>
+                </button>
                 <DropdownMenu modal={false}>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground shrink-0">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 shrink-0 border-border/80 bg-background text-muted-foreground shadow-sm hover:bg-muted hover:text-foreground"
+                      aria-label="Project actions"
+                    >
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -130,14 +150,45 @@ export function ProjectKanban({ project }: ProjectKanbanProps) {
               {project.description && (
                 <p className="text-sm text-muted-foreground truncate">{project.description}</p>
               )}
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <Badge
+                  variant="secondary"
+                  className={cn("gap-1.5 rounded-full px-2.5 py-1", PROJECT_STATUS_STYLES[project.status])}
+                >
+                  <ListChecks className="h-3 w-3" />
+                  {PROJECT_STATUS_NAMES[project.status]}
+                </Badge>
+
+                {project.priority && (
+                  <Badge
+                    variant="secondary"
+                    className="gap-1.5 rounded-full bg-muted px-2.5 py-1 text-muted-foreground"
+                  >
+                    <Flag className={cn("h-3 w-3", PROJECT_PRIORITY_ACCENT[project.priority])} />
+                    {PROJECT_PRIORITY_NAMES[project.priority]}
+                  </Badge>
+                )}
+
+                {timeline && (
+                  <Badge
+                    variant="outline"
+                    className="gap-1.5 rounded-full border-border/80 bg-background px-2.5 py-1 text-muted-foreground"
+                  >
+                    <CalendarRange className="h-3 w-3" />
+                    {timeline}
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
 
           <div className="shrink-0">
-            <Button size="sm" onClick={handleNewTask}>
-              <Plus className="h-4 w-4 mr-2" />
-              New task
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button size="sm" onClick={handleNewTask}>
+                <Plus className="h-4 w-4 mr-2" />
+                New task
+              </Button>
+            </div>
           </div>
         </div>
 

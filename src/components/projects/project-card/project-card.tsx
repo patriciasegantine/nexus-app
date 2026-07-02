@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useTransition } from "react"
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"
+import { CalendarRange } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,18 +18,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { ProjectCardMenu } from "@/components/projects/project-card/project-card-menu"
 import { AppRoutes } from "@/constants/routes"
 import { deleteProject } from "@/actions/projects"
 import { ProjectDialog } from "../project-dialog/project-dialog"
 import type { ProjectBoardItem } from "@/types/project"
 import { toast } from "@/hooks/use-toast"
+import { formatProjectTimeline } from "@/components/projects/project-card/project-card.utils"
+import { ProjectPriorityMeta, ProjectStatusMeta } from "@/components/projects/project-meta"
 
 export interface ProjectCardProps {
   project: ProjectBoardItem
@@ -41,6 +38,7 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState("")
   const [isDeleting, startDelete] = useTransition()
+  const timeline = formatProjectTimeline(project.startDate, project.targetDate)
 
   function handleDeleteOpenChange(open: boolean) {
     setDeleteOpen(open)
@@ -66,7 +64,7 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
     <>
       <Card className="border border-border bg-card shadow-sm transition-all duration-200 hover:shadow-md">
         <CardContent className="p-4">
-          <div className="space-y-3">
+          <div className="space-y-4">
 
             {/* Header: avatar + name/description + menu */}
             <div className="flex items-start justify-between gap-3">
@@ -94,35 +92,25 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
                 </div>
               </div>
 
-              <DropdownMenu modal={false}>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    className="-mr-1 -mt-1 shrink-0 rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-                    aria-label="Project options"
-                  >
-                    <MoreHorizontal className="h-4 w-4" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-36">
-                  <DropdownMenuItem onClick={() => setEditOpen(true)} className="cursor-pointer">
-                    <Pencil className="mr-2 h-3.5 w-3.5" />
-                    Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => setDeleteOpen(true)}
-                    className="cursor-pointer text-destructive focus:text-destructive"
-                  >
-                    <Trash2 className="mr-2 h-3.5 w-3.5" />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <ProjectCardMenu onEdit={() => setEditOpen(true)} onDelete={() => setDeleteOpen(true)} />
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2.5">
+              <ProjectStatusMeta status={project.status} variant="tag" />
+              {project.priority && (
+                <ProjectPriorityMeta priority={project.priority} variant="tag" />
+              )}
+              {timeline && (
+                <Badge variant="outline" className="gap-1 rounded-full border-border/80 px-2 py-0.5 text-muted-foreground">
+                  <CalendarRange className="h-3 w-3" />
+                  {timeline}
+                </Badge>
+              )}
             </div>
 
             {/* Progress bar + stats */}
             <div className="space-y-3">
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+              <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
                 <div
                   className="h-full rounded-full bg-muted-foreground/40 transition-all"
                   style={{ width: `${project.progress}%` }}
@@ -135,7 +123,7 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
                 <span>{project.inProgress} in progress</span>
                 <span>{project.done} done</span>
                 {project.overdue > 0 && (
-                  <span className="text-destructive">{project.overdue} overdue</span>
+                  <span className="text-amber-600 dark:text-amber-500">{project.overdue} overdue</span>
                 )}
                 <span className="ml-auto font-medium text-foreground">{project.progress}%</span>
               </div>

@@ -1,4 +1,4 @@
-import { ArrowUpDown, SlidersHorizontal, X } from "lucide-react"
+import { ArrowUpDown, Grid2X2, List, SlidersHorizontal, X } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,6 +20,7 @@ interface DesktopProjectFiltersProps {
   tags: string[]
   activeCount: number
   hasAnyFilter: boolean
+  view: "list" | "cards"
   onFilterChange: (key: string, value: string | null) => void
   onClear: () => void
 }
@@ -30,6 +31,7 @@ export function DesktopProjectFilters({
   tags,
   activeCount,
   hasAnyFilter,
+  view,
   onFilterChange,
   onClear,
 }: DesktopProjectFiltersProps) {
@@ -95,6 +97,27 @@ export function DesktopProjectFilters({
             ))}
           </PopoverContent>
         </Popover>
+
+        <div className="h-6 w-px bg-border" />
+
+        <div className="flex items-center gap-1 rounded-md border border-border/60 bg-card p-0.5 shadow-sm">
+          <button
+            type="button"
+            aria-label="Card view"
+            onClick={() => onFilterChange("view", "cards")}
+            className={`rounded p-1.5 transition-colors ${view === "cards" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+          >
+            <Grid2X2 className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            aria-label="List view"
+            onClick={() => onFilterChange("view", null)}
+            className={`rounded p-1.5 transition-colors ${view === "list" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+          >
+            <List className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       {hasAnyFilter && (

@@ -20,6 +20,7 @@ export function ProjectFilters({ tags }: ProjectFiltersProps) {
   const currentSearch = searchParams.get("search") ?? ""
   const currentTag = searchParams.get("tag") ?? ""
   const currentSort = searchParams.get("sort") ?? "createdAt"
+  const currentView = searchParams.get("view") === "cards" ? "cards" : "list"
 
   const [searchValue, setSearchValue] = useState(currentSearch)
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
@@ -48,7 +49,10 @@ export function ProjectFilters({ tags }: ProjectFiltersProps) {
   }
 
   function handleClearAll() {
-    router.replace(pathname)
+    const params = new URLSearchParams()
+    const view = searchParams.get("view")
+    if (view) params.set("view", view)
+    router.replace(params.size > 0 ? `${pathname}?${params.toString()}` : pathname)
     setSearchValue("")
   }
 
@@ -92,6 +96,7 @@ export function ProjectFilters({ tags }: ProjectFiltersProps) {
           tags={tags}
           activeCount={activeCount}
           hasAnyFilter={hasAnyFilter}
+          view={currentView}
           onFilterChange={updateParam}
           onClear={handleClearAll}
         />

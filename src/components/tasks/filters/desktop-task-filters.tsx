@@ -1,4 +1,4 @@
-import { ArrowUpDown, SlidersHorizontal, X } from "lucide-react"
+import { ArrowUpDown, Grid2X2, List, SlidersHorizontal, X } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,6 +14,7 @@ import {
   TagFilterField,
 } from "@/components/tasks/filters/task-filter-fields"
 import type { Project } from "@/types/project"
+import type { TaskViewOption } from "@/constants/preferences"
 
 const SORT_OPTIONS = [
   { value: "updatedAt", label: "Recently updated" },
@@ -32,7 +33,9 @@ interface DesktopTaskFiltersProps {
   tags: string[]
   activeCount: number
   hasAnyFilter: boolean
+  view: TaskViewOption
   onFilterChange: (key: string, value: string | null) => void
+  onViewChange: (view: TaskViewOption) => void
   onClear: () => void
 }
 
@@ -47,7 +50,9 @@ export function DesktopTaskFilters({
   tags,
   activeCount,
   hasAnyFilter,
+  view,
   onFilterChange,
+  onViewChange,
   onClear,
 }: DesktopTaskFiltersProps) {
   return (
@@ -110,6 +115,27 @@ export function DesktopTaskFilters({
             ))}
           </PopoverContent>
         </Popover>
+
+        <div className="h-6 w-px bg-border" />
+
+        <div className="flex items-center gap-1 rounded-md border border-border/60 bg-card p-0.5 shadow-sm">
+          <button
+            type="button"
+            aria-label="Card view"
+            onClick={() => onViewChange("cards")}
+            className={`rounded p-1.5 transition-colors ${view === "cards" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+          >
+            <Grid2X2 className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            aria-label="List view"
+            onClick={() => onViewChange("list")}
+            className={`rounded p-1.5 transition-colors ${view === "list" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+          >
+            <List className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       {hasAnyFilter && (

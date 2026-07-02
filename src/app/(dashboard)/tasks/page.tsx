@@ -1,9 +1,12 @@
-import { getTasks, getTaskTags } from "@/lib/data/tasks"
+import { getTasks, getTaskStats, getTaskTags } from "@/lib/data/tasks"
 import { getProjects } from "@/lib/data/projects"
 import { TasksPageClient } from "@/components/tasks/tasks-page-client"
 import type { TaskStatus, TaskPriority } from "@/types/task"
 import type { DueDateFilter, TaskSortOption } from "@/lib/data/tasks"
 import { DEFAULT_TASK_PAGE_SIZE, isTaskPageSizeOption } from "@/constants/preferences"
+import { getStringParam, getValidatedParam } from "@/lib/search-params"
+import { PageHeader } from "@/components/ui/page-header"
+import { NewTaskButton } from "@/components/tasks/task-card/new-task-button"
 
 const VALID_STATUSES = new Set<TaskStatus>(['TODO', 'IN_PROGRESS', 'DONE'])
 const VALID_PRIORITIES = new Set<TaskPriority>(['LOW', 'MEDIUM', 'HIGH'])
@@ -26,45 +29,47 @@ function isValidExactDate(value?: string) {
 export default async function TasksPage({ searchParams }: PageProps) {
   const params = await searchParams
 
-  const rawStatus = typeof params.status === 'string' ? params.status : undefined
-  const rawPriority = typeof params.priority === 'string' ? params.priority : undefined
-  const rawDueDate = typeof params.dueDate === 'string' ? params.dueDate : undefined
-  const rawDueDateExact = typeof params.dueDateExact === 'string' ? params.dueDateExact : undefined
-  const search = typeof params.search === 'string' && params.search ? params.search : undefined
-  const projectId = typeof params.projectId === 'string' && params.projectId ? params.projectId : undefined
-  const tag = typeof params.tag === 'string' && params.tag ? params.tag : undefined
-  const rawSort = typeof params.sort === 'string' ? params.sort : undefined
-  const page = Math.max(1, parseInt(typeof params.page === 'string' ? params.page : '1') || 1)
-  const rawPageSize = Number(typeof params.pageSize === 'string' ? params.pageSize : DEFAULT_TASK_PAGE_SIZE)
-
-  const status = rawStatus && VALID_STATUSES.has(rawStatus as TaskStatus) ? (rawStatus as TaskStatus) : undefined
-  const priority = rawPriority && VALID_PRIORITIES.has(rawPriority as TaskPriority) ? (rawPriority as TaskPriority) : undefined
-  const dueDateExact = isValidExactDate(rawDueDateExact)
-    ? rawDueDateExact
-    : undefined
-  const dueDate = !dueDateExact && rawDueDate && VALID_DUE_DATES.has(rawDueDate as DueDateFilter)
-    ? (rawDueDate as DueDateFilter)
-    : undefined
-  const sort = rawSort && VALID_SORTS.has(rawSort as TaskSortOption) ? (rawSort as TaskSortOption) : undefined
+  const status = getValidatedParam(params, 'status', VALID_STATUSES)
+  const priority = getValidatedParam(params, 'priority', VALID_PRIORITIES)
+  const search = getStringParam(params, 'search')
+  const projectId = getStringParam(params, 'projectId')
+  const tag = getStringParam(params, 'tag')
+  const sort = getValidatedParam(params, 'sort', VALID_SORTS)
+  const page = Math.max(1, parseInt(getStringParam(params, 'page') ?? '1') || 1)
+  const rawPageSize = Number(getStringParam(params, 'pageSize') ?? DEFAULT_TASK_PAGE_SIZE)
   const perPage = isTaskPageSizeOption(rawPageSize) ? rawPageSize : DEFAULT_TASK_PAGE_SIZE
+
+  const rawDueDateExact = getStringParam(params, 'dueDateExact')
+  const dueDateExact = isValidExactDate(rawDueDateExact) ? rawDueDateExact : undefined
+  const dueDate = !dueDateExact ? getValidatedParam(params, 'dueDate', VALID_DUE_DATES) : undefined
 
   const hasFilters = Boolean(status || priority || search || projectId || dueDate || dueDateExact || tag)
 
-  const [{ tasks, total }, projects, tags] = await Promise.all([
+  const [{ tasks, total }, stats, projects, tags] = await Promise.all([
     getTasks({ status, priority, search, projectId, dueDate, dueDateExact, tag, sort, page, perPage }),
+    getTaskStats(),
     getProjects(),
     getTaskTags(),
   ])
 
   return (
+    <div className="space-y-6">
+      <PageHeader
+        title="Tasks"
+        description="All your tasks across projects"
+        action={<NewTaskButton iconOnlyOnMobile />}
+      />
+
     <TasksPageClient
       tasks={tasks}
       total={total}
+      stats={stats}
       projects={projects}
       tags={tags}
       page={page}
       perPage={perPage}
       hasFilters={hasFilters}
     />
+    </div>
   )
 }

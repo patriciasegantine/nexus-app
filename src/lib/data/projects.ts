@@ -2,22 +2,30 @@ import { auth } from "@/auth"
 import { db } from "@/lib/db"
 import type { ProjectBoardItem, Project } from "@/types/project"
 
+const projectSelect = {
+  id: true,
+  name: true,
+  slug: true,
+  description: true,
+  color: true,
+  tags: true,
+  status: true,
+  priority: true,
+  startDate: true,
+  targetDate: true,
+  icon: true,
+  userId: true,
+  createdAt: true,
+  updatedAt: true,
+} as const
+
 export async function getProjects(): Promise<Project[]> {
   const session = await auth()
   if (!session?.user?.id) return []
 
   return db.project.findMany({
     where: { userId: session.user.id },
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-      description: true,
-      color: true,
-      tags: true,
-      userId: true,
-      createdAt: true,
-    },
+    select: projectSelect,
     orderBy: { createdAt: "desc" },
   })
 }
@@ -29,14 +37,7 @@ export async function getProject(slug: string) {
   return db.project.findFirst({
     where: { slug, userId: session.user.id },
     select: {
-      id: true,
-      name: true,
-      slug: true,
-      description: true,
-      color: true,
-      tags: true,
-      userId: true,
-      createdAt: true,
+      ...projectSelect,
       tasks: {
         select: {
           id: true,
@@ -70,30 +71,25 @@ export interface GetBoardDataParams {
   search?: string
   tag?: string
   sort?: "createdAt" | "name" | "progress"
+  status?: string
 }
 
 export async function getBoardData(params: GetBoardDataParams = {}): Promise<ProjectBoardItem[]> {
   const session = await auth()
   if (!session?.user?.id) return []
 
-  const { search, tag, sort = "createdAt" } = params
+  const { search, tag, sort = "createdAt", status } = params
 
   const projects = await db.project.findMany({
     where: {
       userId: session.user.id,
       ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
       ...(tag ? { tags: { has: tag } } : {}),
+      ...(status ? { status: status as never } : {}),
     },
     orderBy: sort === "name" ? { name: "asc" } : { createdAt: "desc" },
     select: {
-      id: true,
-      name: true,
-      slug: true,
-      description: true,
-      color: true,
-      tags: true,
-      userId: true,
-      createdAt: true,
+      ...projectSelect,
       tasks: { select: { status: true, priority: true, dueDate: true } },
     },
   })
@@ -115,7 +111,13 @@ export async function getBoardData(params: GetBoardDataParams = {}): Promise<Pro
       description: project.description,
       color: project.color,
       tags: project.tags,
+      status: project.status,
+      priority: project.priority,
+      startDate: project.startDate,
+      targetDate: project.targetDate,
+      icon: project.icon,
       createdAt: project.createdAt,
+      updatedAt: project.updatedAt,
       total,
       done,
       inProgress,
