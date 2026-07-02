@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState, useTransition } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { AlertTriangle, CheckCircle2, ClipboardList, Loader2, PlayCircle, Plus } from "lucide-react"
+import { AlertTriangle, CheckCircle2, ClipboardList, Loader2, PlayCircle } from "lucide-react"
 import { format } from "date-fns"
 import { TasksList } from "@/components/tasks/tasks-list"
 import { TaskDialog } from "@/components/tasks/task-dialog/task-dialog"
@@ -88,11 +88,6 @@ export function TasksPageClient({ tasks, total, stats, projects, tags, page, per
     setView(newView)
     window.localStorage.setItem(TASK_VIEW_PREFERENCE_KEY, newView)
   }
-
-  // function handleNewTask() {
-  //   setSelectedTask(null)
-  //   setDialogOpen(true)
-  // }
 
   function handleEditTask(task: TaskListItem) {
     setSelectedTask(task)

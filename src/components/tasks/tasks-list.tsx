@@ -54,11 +54,11 @@ export function TasksList({
           <TableHeader className="bg-white dark:bg-card">
             <TableRow className="hover:bg-white dark:hover:bg-card border-b-2 border-border">
               <TableHead className="text-xs font-semibold text-foreground/70 uppercase tracking-wide">Title / Project</TableHead>
-              <TableHead className="hidden xl:table-cell w-48 text-xs font-semibold text-foreground/70 uppercase tracking-wide">Tags</TableHead>
+              <TableHead className="hidden xl:table-cell w-64 text-xs font-semibold text-foreground/70 uppercase tracking-wide">Tags</TableHead>
               <TableHead className="hidden sm:table-cell w-28 text-xs font-semibold text-foreground/70 uppercase tracking-wide">Status</TableHead>
               <TableHead className="hidden sm:table-cell w-28 text-xs font-semibold text-foreground/70 uppercase tracking-wide">Priority</TableHead>
               <TableHead className="w-28 text-right text-xs font-semibold text-foreground/70 uppercase tracking-wide">Due date</TableHead>
-              <TableHead className="w-14 lg:w-28" />
+              <TableHead className="w-12" />
             </TableRow>
           </TableHeader>
           <TableBody>
