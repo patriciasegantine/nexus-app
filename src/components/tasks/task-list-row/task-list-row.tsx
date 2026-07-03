@@ -7,7 +7,7 @@ import { TaskCardStatus } from "@/components/tasks/task-card/task-card-status"
 import { TaskListRowTitle } from "@/components/tasks/task-list-row/task-list-row-title"
 import { TaskListRowPriority } from "@/components/tasks/task-list-row/task-list-row-priority"
 import { TaskListRowDueDate } from "@/components/tasks/task-list-row/task-list-row-due-date"
-import { TaskListRowActions } from "@/components/tasks/task-list-row/task-list-row-actions"
+import { TaskActionsMenu } from "@/components/tasks/task-actions-menu"
 import { StatusBadge } from "@/components/tasks/status-badge"
 import { PriorityBadge } from "@/components/tasks/priority-badge"
 import { isBefore, startOfToday } from "date-fns"
@@ -22,7 +22,6 @@ interface TaskListRowProps {
   onStatusClick?: (status: TaskCardType["status"]) => void
   onPriorityClick?: (priority: TaskCardType["priority"]) => void
   onDueDateClick?: (dueDate: Date) => void
-  showProject?: boolean
 }
 
 export function TaskListRow({
@@ -41,7 +40,7 @@ export function TaskListRow({
   const priorityColor = TASK_PRIORITIES_COLORS[task.priority]
 
   return (
-    <TableRow className="bg-white dark:bg-card border-b border-border/50 hover:bg-muted/40 dark:hover:bg-muted/20 transition-colors">
+    <TableRow className="group/row bg-white dark:bg-card border-b border-border/50 hover:bg-muted/40 dark:hover:bg-muted/20 transition-colors">
 
       <TableCell className="w-full min-w-[150px]">
         <TaskListRowTitle
@@ -54,8 +53,8 @@ export function TaskListRow({
         </div>
       </TableCell>
 
-      <TableCell className="hidden xl:table-cell w-48">
-        <TaskTags taskId={task.id} tags={task.tags} onTagClick={onTagClick} showAll />
+      <TableCell className="hidden xl:table-cell w-64">
+        <TaskTags taskId={task.id} tags={task.tags} onTagClick={onTagClick} />
       </TableCell>
 
       <TableCell className="hidden sm:table-cell w-28 whitespace-nowrap">
@@ -70,8 +69,10 @@ export function TaskListRow({
         <TaskListRowDueDate dueDate={dueDate} isOverdue={isOverdue} onClick={onDueDateClick} />
       </TableCell>
 
-      <TableCell className="w-14 lg:w-28 text-center lg:text-right">
-        <TaskListRowActions onEdit={onEdit} onDuplicate={onDuplicate} onDelete={onDelete} />
+      <TableCell className="w-12">
+        <div className="flex justify-end">
+          <TaskActionsMenu onEdit={onEdit} onDuplicate={onDuplicate} onDelete={onDelete} />
+        </div>
       </TableCell>
 
     </TableRow>

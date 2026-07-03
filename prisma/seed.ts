@@ -53,6 +53,9 @@ async function main() {
       description: 'Full redesign of the company marketing site with new brand identity, improved performance, and mobile-first approach.',
       color: '#3b82f6',
       tags: ['design', 'frontend'],
+      priority: Priority.HIGH,
+      startDate: daysAgo(20),
+      targetDate: daysFromNow(20),
       userId: user.id,
     },
   })
@@ -64,6 +67,9 @@ async function main() {
       description: 'Cross-platform mobile application for iOS and Android using React Native, targeting the core user journey.',
       color: '#8b5cf6',
       tags: ['mobile', 'react-native'],
+      priority: Priority.HIGH,
+      startDate: daysAgo(21),
+      targetDate: daysFromNow(28),
       userId: user.id,
     },
   })
@@ -75,6 +81,9 @@ async function main() {
       description: 'Third-party API integrations for payment processing, email delivery, and analytics data pipeline.',
       color: '#14b8a6',
       tags: ['backend', 'api'],
+      priority: Priority.MEDIUM,
+      startDate: daysAgo(14),
+      targetDate: daysFromNow(14),
       userId: user.id,
     },
   })
