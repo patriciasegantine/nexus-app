@@ -24,7 +24,6 @@ export function TaskDeleteDialog({ task, onClose, onConfirm }: TaskDeleteDialogP
       open={!!task}
       onOpenChange={(open) => {
         if (!open) {
-          setTimeout(() => { document.body.style.pointerEvents = '' }, 0)
           onClose()
         }
       }}

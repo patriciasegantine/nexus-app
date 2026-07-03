@@ -5,6 +5,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { useRestoreBodyPointerEvents } from "@/hooks/use-restore-body-pointer-events"
 
 const Dialog = DialogPrimitive.Root
 
@@ -34,7 +35,10 @@ const DialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
     showClose?: boolean
   }
->(({ className, children, showClose = true, ...props }, ref) => (
+>(({ className, children, showClose = true, ...props }, ref) => {
+  useRestoreBodyPointerEvents()
+
+  return (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
@@ -57,7 +61,8 @@ const DialogContent = React.forwardRef<
       )}
     </DialogPrimitive.Content>
   </DialogPortal>
-))
+  )
+})
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
 const DialogHeader = ({
