@@ -114,6 +114,45 @@ export function ProjectTags({ projectId, tags, onTagClick }: ProjectTagsProps) {
   return (
     <>
       <div className="flex min-w-0 flex-1 items-center gap-1">
+        <div ref={containerRef} className="flex min-w-0 flex-1 items-center gap-1">
+          {currentTags.slice(0, visibleCount).map((tag) => (
+            <Tag
+              key={tag}
+              label={tag}
+              onClick={onTagClick ? (e) => { e.stopPropagation(); handleTagClick(tag) } : undefined}
+              onRemove={() => handleRemoveTag(tag)}
+              removePosition="corner"
+              className="max-w-[110px] shrink-0"
+            />
+          ))}
+
+          {hiddenCount > 0 && (
+            <Popover open={tagsOpen} onOpenChange={setTagsOpen}>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  className="w-8 shrink-0 rounded-full py-0.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  aria-label={`Show all ${currentTags.length} tags`}
+                >
+                  +{hiddenCount}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-56 space-y-2 p-3">
+                <p className="text-xs font-medium text-muted-foreground">All tags</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {currentTags.map((tag) => (
+                    <Tag
+                      key={tag}
+                      label={tag}
+                      onClick={onTagClick ? () => handleTagClick(tag) : undefined}
+                    />
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}
+        </div>
+
         {canAddTag && (
           <Popover open={addOpen} onOpenChange={setAddOpen}>
             <TooltipProvider delayDuration={300}>
@@ -122,7 +161,7 @@ export function ProjectTags({ projectId, tags, onTagClick }: ProjectTagsProps) {
                   <PopoverTrigger asChild>
                     <button
                       type="button"
-                      className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-dashed border-border text-muted-foreground transition-colors hover:border-foreground/40 hover:bg-muted hover:text-foreground"
+                      className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-dashed border-border text-muted-foreground transition hover:border-foreground/40 hover:bg-muted hover:text-foreground md:opacity-0 md:group-hover/row:opacity-100 md:focus-visible:opacity-100 md:data-[state=open]:opacity-100"
                       aria-label="Add tag"
                     >
                       <Plus className="h-3.5 w-3.5" />
@@ -164,45 +203,6 @@ export function ProjectTags({ projectId, tags, onTagClick }: ProjectTagsProps) {
             </PopoverContent>
           </Popover>
         )}
-
-        <div ref={containerRef} className="flex min-w-0 flex-1 items-center gap-1">
-          {currentTags.slice(0, visibleCount).map((tag) => (
-            <Tag
-              key={tag}
-              label={tag}
-              onClick={onTagClick ? (e) => { e.stopPropagation(); handleTagClick(tag) } : undefined}
-              onRemove={() => handleRemoveTag(tag)}
-              removePosition="corner"
-              className="max-w-[110px] shrink-0"
-            />
-          ))}
-
-          {hiddenCount > 0 && (
-            <Popover open={tagsOpen} onOpenChange={setTagsOpen}>
-              <PopoverTrigger asChild>
-                <button
-                  type="button"
-                  className="w-8 shrink-0 rounded-full py-0.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                  aria-label={`Show all ${currentTags.length} tags`}
-                >
-                  +{hiddenCount}
-                </button>
-              </PopoverTrigger>
-              <PopoverContent align="start" className="w-56 space-y-2 p-3">
-                <p className="text-xs font-medium text-muted-foreground">All tags</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {currentTags.map((tag) => (
-                    <Tag
-                      key={tag}
-                      label={tag}
-                      onClick={onTagClick ? () => handleTagClick(tag) : undefined}
-                    />
-                  ))}
-                </div>
-              </PopoverContent>
-            </Popover>
-          )}
-        </div>
       </div>
 
       <div
