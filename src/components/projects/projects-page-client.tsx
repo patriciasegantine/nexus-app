@@ -90,17 +90,17 @@ export function ProjectsPageClient({ projects, tags, hasFilters }: ProjectsPageC
               </div>
             ) : (
               <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-                <div className="hidden grid-cols-[minmax(280px,1.8fr)_120px_112px_minmax(160px,0.8fr)_minmax(180px,0.9fr)_96px_40px] gap-4 border-b border-border/70 bg-muted/40 px-4 py-2.5 text-xs font-medium uppercase tracking-wide text-muted-foreground lg:grid">
-                  <span>Project</span>
-                  <span>Status</span>
-                  <span>Priority</span>
-                  <span>Timeline</span>
-                  <span>Progress</span>
-                  <span className="text-right">Tasks</span>
-                  <span />
-                </div>
                 <div className="overflow-x-auto">
                   <div className="min-w-[1040px]">
+                    <div className="grid grid-cols-[minmax(280px,1.8fr)_120px_112px_minmax(160px,0.8fr)_minmax(180px,0.9fr)_96px_40px] gap-x-4 border-b border-border/70 bg-muted/40 px-4 py-2.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      <span>Project</span>
+                      <span>Status</span>
+                      <span>Priority</span>
+                      <span>Timeline</span>
+                      <span>Progress</span>
+                      <span className="text-right">Tasks</span>
+                      <span />
+                    </div>
                     {projects.map((project) => (
                       <ProjectListRow key={project.id} project={project} onTagClick={handleTagClick} />
                     ))}

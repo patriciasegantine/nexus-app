@@ -7,6 +7,9 @@ export const SAMPLE_PROJECTS = [
     description: "Modernize the company website with a new design system",
     color: "#3b82f6",
     tags: ["design", "frontend"],
+    priority: "HIGH" as const,
+    startDate: daysAgo(21),
+    targetDate: daysFromNow(28),
     tasks: [
       { title: "Create wireframes for homepage", status: "DONE" as const, priority: "HIGH" as const, dueDate: daysAgo(14), tags: ["design", "ux"] },
       { title: "Design new color palette", status: "DONE" as const, priority: "MEDIUM" as const, dueDate: daysAgo(7), tags: ["design"] },
@@ -20,6 +23,9 @@ export const SAMPLE_PROJECTS = [
     description: "Second major release with offline support and push notifications",
     color: "#8b5cf6",
     tags: ["mobile", "backend"],
+    priority: "MEDIUM" as const,
+    startDate: daysAgo(28),
+    targetDate: daysFromNow(35),
     tasks: [
       { title: "User authentication flow", status: "DONE" as const, priority: "HIGH" as const, dueDate: daysAgo(21), tags: ["auth", "backend"] },
       { title: "Push notification system", status: "IN_PROGRESS" as const, priority: "HIGH" as const, dueDate: daysAgo(7), tags: ["mobile"] },
@@ -33,6 +39,9 @@ export const SAMPLE_PROJECTS = [
     description: "ETL pipeline for analytics dashboards and automated reporting",
     color: "#10b981",
     tags: ["backend", "data"],
+    priority: "MEDIUM" as const,
+    startDate: daysAgo(35),
+    targetDate: daysFromNow(21),
     tasks: [
       { title: "Set up data warehouse", status: "DONE" as const, priority: "HIGH" as const, dueDate: daysAgo(28), tags: ["data", "backend"] },
       { title: "Build ingestion scripts", status: "DONE" as const, priority: "HIGH" as const, dueDate: daysAgo(14), tags: ["backend"] },

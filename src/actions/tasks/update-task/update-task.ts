@@ -85,15 +85,18 @@ export async function updateTaskStatus(
     return { success: false, error: "Unauthorized" }
   }
 
-  if (isDemoUser(session.user.email)) {
-    return { success: false, error: DEMO_ERROR }
-  }
-
   const parsed = updateTaskStatusSchema.safeParse({
     status: formData.get("status"),
   })
   if (!parsed.success) {
     return { success: false, error: parsed.error.errors[0].message }
+  }
+
+  // Demo exception: report success without persisting (and without revalidating,
+  // which would refetch and undo the optimistic move). The kanban drag works for
+  // the session, but the shared demo workspace stays untouched.
+  if (isDemoUser(session.user.email)) {
+    return { success: true, data: undefined }
   }
 
   const existing = await db.task.findUnique({

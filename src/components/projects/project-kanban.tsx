@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useTransition } from "react"
+import { useEffect, useMemo, useState, useTransition, type CSSProperties } from "react"
+import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -13,6 +14,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { PriorityFilterField, TagFilterField } from "@/components/tasks/filters/task-filter-fields"
 import { TaskCard } from "@/components/tasks/task-card/task-card"
 import { TaskDialog } from "@/components/tasks/task-dialog/task-dialog"
 import { ProjectDialog } from "@/components/projects/project-dialog/project-dialog"
@@ -24,13 +27,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { CalendarRange, ClipboardList, Flag, ListChecks, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react"
+import { CalendarRange, ClipboardList, Flag, ListChecks, ListFilter, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react"
 import { EmptyState } from "@/components/ui/empty-state"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { TASK_STATUS_NAMES, TASK_STATUS_COLUMNS } from "@/constants/task"
 import { AppRoutes } from "@/constants/routes"
 import { deleteProject } from "@/actions/projects"
+import { updateTaskStatus } from "@/actions/tasks"
 import type { TaskStatus, TaskCard as TaskCardType } from "@/types/task"
 import type { ProjectWithTasks } from "@/types/project"
 import { toast } from "@/hooks/use-toast"
@@ -47,8 +51,18 @@ interface ProjectKanbanProps {
   project: ProjectWithTasks
 }
 
+type ColumnFilter = { priority: string | null; tag: string | null }
+
+const EMPTY_COLUMN_FILTERS: Record<TaskStatus, ColumnFilter> = {
+  TODO: { priority: null, tag: null },
+  IN_PROGRESS: { priority: null, tag: null },
+  DONE: { priority: null, tag: null },
+}
+
 export function ProjectKanban({ project }: ProjectKanbanProps) {
   const router = useRouter()
+  const [tasks, setTasks] = useState<TaskCardType[]>(project.tasks)
+  const [columnFilters, setColumnFilters] = useState(EMPTY_COLUMN_FILTERS)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<TaskCardType | null>(null)
   const [editProjectOpen, setEditProjectOpen] = useState(false)
@@ -56,11 +70,57 @@ export function ProjectKanban({ project }: ProjectKanbanProps) {
   const [deleteConfirm, setDeleteConfirm] = useState("")
   const [isPending, startTransition] = useTransition()
 
+  useEffect(() => {
+    setTasks(project.tasks)
+  }, [project.tasks])
+
+  const allTags = useMemo(
+    () => Array.from(new Set(tasks.flatMap((t) => t.tags))).sort(),
+    [tasks]
+  )
+
   const tasksByStatus = TASK_STATUS_COLUMNS.reduce((acc, status) => {
-    acc[status] = project.tasks.filter((t) => t.status === status)
+    const filter = columnFilters[status]
+    acc[status] = tasks.filter((t) => {
+      if (t.status !== status) return false
+      if (filter.priority && t.priority !== filter.priority) return false
+      if (filter.tag && !t.tags.includes(filter.tag)) return false
+      return true
+    })
     return acc
-  }, {} as Record<TaskStatus, typeof project.tasks>)
+  }, {} as Record<TaskStatus, typeof tasks>)
   const timeline = formatProjectTimeline(project.startDate, project.targetDate)
+
+  function isColumnFilterActive(status: TaskStatus) {
+    return columnFilters[status].priority !== null || columnFilters[status].tag !== null
+  }
+
+  function setColumnFilter(status: TaskStatus, key: keyof ColumnFilter, value: string | null) {
+    setColumnFilters((prev) => ({ ...prev, [status]: { ...prev[status], [key]: value } }))
+  }
+
+  function clearColumnFilter(status: TaskStatus) {
+    setColumnFilters((prev) => ({ ...prev, [status]: { priority: null, tag: null } }))
+  }
+
+  async function handleDragEnd({ source, destination, draggableId }: DropResult) {
+    if (!destination) return
+
+    const sourceStatus = source.droppableId as TaskStatus
+    const destStatus = destination.droppableId as TaskStatus
+    if (sourceStatus === destStatus) return
+
+    const previousTasks = tasks
+    setTasks((prev) => prev.map((t) => (t.id === draggableId ? { ...t, status: destStatus } : t)))
+
+    const formData = new FormData()
+    formData.set("status", destStatus)
+    const result = await updateTaskStatus(draggableId, formData)
+    if (!result.success) {
+      setTasks(previousTasks)
+      toast({ variant: "destructive", description: result.error })
+    }
+  }
 
   function handleNewTask() {
     setSelectedTask(null)
@@ -192,29 +252,103 @@ export function ProjectKanban({ project }: ProjectKanbanProps) {
           </div>
         </div>
 
-        {project.tasks.length === 0 ? (
+        {tasks.length === 0 ? (
           <EmptyState icon={ClipboardList} title="No tasks yet." className="py-24" />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {TASK_STATUS_COLUMNS.map((status) => (
-              <div key={status} className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-sm font-medium">{TASK_STATUS_NAMES[status]}</h2>
-                  <Badge variant="secondary">{tasksByStatus[status].length}</Badge>
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {TASK_STATUS_COLUMNS.map((status) => (
+                <div key={status} className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-sm font-medium">{TASK_STATUS_NAMES[status]}</h2>
+                    <div className="flex items-center gap-1.5">
+                      <Badge variant="secondary">{tasksByStatus[status].length}</Badge>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className={cn(
+                              "h-6 w-6 text-muted-foreground hover:text-foreground",
+                              isColumnFilterActive(status) && "text-primary hover:text-primary"
+                            )}
+                            aria-label={`Filter ${TASK_STATUS_NAMES[status]} column`}
+                          >
+                            <ListFilter className="h-3.5 w-3.5" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent align="end" className="w-56 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                              Filter
+                            </p>
+                            {isColumnFilterActive(status) && (
+                              <button
+                                type="button"
+                                onClick={() => clearColumnFilter(status)}
+                                className="text-xs text-muted-foreground hover:text-foreground hover:underline underline-offset-2"
+                              >
+                                Clear
+                              </button>
+                            )}
+                          </div>
+                          <PriorityFilterField
+                            value={columnFilters[status].priority ?? ""}
+                            onChange={(value) => setColumnFilter(status, "priority", value)}
+                          />
+                          <TagFilterField
+                            value={columnFilters[status].tag ?? ""}
+                            onChange={(value) => setColumnFilter(status, "tag", value)}
+                            tags={allTags}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+
+                  <Droppable droppableId={status}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className={cn(
+                          "space-y-2 min-h-16 rounded-md transition-colors",
+                          snapshot.isDraggingOver && "bg-muted/60"
+                        )}
+                      >
+                        {tasksByStatus[status].length === 0 && (
+                          <p className="py-6 text-center text-xs italic text-muted-foreground/70">
+                            No tasks
+                          </p>
+                        )}
+                        {tasksByStatus[status].map((task, index) => (
+                          <Draggable key={task.id} draggableId={task.id} index={index}>
+                            {(dragProvided, dragSnapshot) => (
+                              <div
+                                ref={dragProvided.innerRef}
+                                {...dragProvided.draggableProps}
+                                {...dragProvided.dragHandleProps}
+                                style={dragProvided.draggableProps.style as CSSProperties}
+                                className={cn(dragSnapshot.isDragging && "opacity-90")}
+                              >
+                                <TaskCard
+                                  task={task}
+                                  onEdit={() => handleEditTask(task)}
+                                  showProject={false}
+                                  collapsible
+                                />
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
                 </div>
-                <div className="space-y-2">
-                  {tasksByStatus[status].map((task) => (
-                    <TaskCard
-                      key={task.id}
-                      task={task}
-                      onEdit={() => handleEditTask(task)}
-                      showProject={false}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </DragDropContext>
         )}
       </div>
 

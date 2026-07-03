@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, type MouseEvent } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
@@ -53,6 +53,12 @@ export function ProjectListRow({ project, onTagClick }: ProjectListRowProps) {
     if (!open) setDeleteConfirm("")
   }
 
+  function handleRowClick(event: MouseEvent<HTMLDivElement>) {
+    // Ignore clicks on interactive elements so tags, menus, and links keep their own behavior.
+    if ((event.target as HTMLElement).closest("button, a, input")) return
+    router.push(`${AppRoutes.DASHBOARD.PROJECTS}/${project.slug}`)
+  }
+
   function handleDelete() {
     startDelete(async () => {
       const result = await deleteProject(project.id)
@@ -68,7 +74,10 @@ export function ProjectListRow({ project, onTagClick }: ProjectListRowProps) {
 
   return (
     <>
-      <div className="grid grid-cols-[minmax(280px,1.8fr)_120px_112px_minmax(160px,0.8fr)_minmax(180px,0.9fr)_96px_40px] items-center gap-4 border-b border-border/70 bg-card px-4 py-3 transition-colors last:border-b-0 hover:bg-muted/35">
+      <div
+        onClick={handleRowClick}
+        className="group/row grid cursor-pointer grid-cols-[minmax(280px,1.8fr)_120px_112px_minmax(160px,0.8fr)_minmax(180px,0.9fr)_96px_40px] items-center gap-x-4 border-b border-border/70 bg-card px-4 py-3 transition-colors last:border-b-0 hover:bg-muted/35"
+      >
         <div className="flex min-w-0 items-start gap-3">
           <div
             className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-md"
@@ -135,8 +144,8 @@ export function ProjectListRow({ project, onTagClick }: ProjectListRowProps) {
           </div>
           <div className="h-2.5 overflow-hidden rounded-full bg-muted">
             <div
-              className="h-full rounded-full bg-muted-foreground/45 transition-all"
-              style={{ width: `${project.progress}%` }}
+              className="h-full rounded-full transition-all"
+              style={{ width: `${project.progress}%`, backgroundColor: project.color }}
             />
           </div>
         </div>
@@ -146,6 +155,7 @@ export function ProjectListRow({ project, onTagClick }: ProjectListRowProps) {
           <p>{project.done} done</p>
         </div>
 
+        <div className="flex justify-end">
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" aria-label="Project actions">
@@ -167,6 +177,7 @@ export function ProjectListRow({ project, onTagClick }: ProjectListRowProps) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </div>
 
       <ProjectDialog open={editOpen} onOpenChange={setEditOpen} project={project} />

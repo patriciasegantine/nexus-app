@@ -135,4 +135,5 @@ It has since been fully migrated to a **fullstack Next.js application**:
 
 ---
 
-Created with ❤️ by Patricia Segantine
+## Author
+Created by **Patricia Segantine** — Senior Frontend Engineer

@@ -62,7 +62,7 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
 
   return (
     <>
-      <Card className="border border-border bg-card shadow-sm transition-all duration-200 hover:shadow-md">
+      <Card className="group/row border border-border bg-card shadow-sm transition-all duration-200 hover:shadow-md">
         <CardContent className="p-4">
           <div className="space-y-4">
 
@@ -112,8 +112,8 @@ export function ProjectCard({ project, onTagClick }: ProjectCardProps) {
             <div className="space-y-3">
               <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-full rounded-full bg-muted-foreground/40 transition-all"
-                  style={{ width: `${project.progress}%` }}
+                  className="h-full rounded-full transition-all"
+                  style={{ width: `${project.progress}%`, backgroundColor: project.color }}
                 />
               </div>
 
