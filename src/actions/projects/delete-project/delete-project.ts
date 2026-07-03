@@ -6,13 +6,14 @@ import { revalidatePath } from "next/cache"
 import { AppRoutes } from "@/constants/routes"
 import type { ActionResult } from "@/types/actions"
 import { isDemoUser, DEMO_ERROR } from "@/lib/demo-guard"
+import { ACTION_MESSAGES, PROJECT_MESSAGES } from "@/constants/messages"
 
 export async function deleteProject(
   projectId: string
 ): Promise<ActionResult<void>> {
   const session = await auth()
   if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
+    return { success: false, error: ACTION_MESSAGES.UNAUTHORIZED }
   }
 
   if (isDemoUser(session.user.email)) {
@@ -25,7 +26,7 @@ export async function deleteProject(
   })
 
   if (!existing) {
-    return { success: false, error: "Project not found" }
+    return { success: false, error: PROJECT_MESSAGES.NOT_FOUND }
   }
 
   await db.project.delete({

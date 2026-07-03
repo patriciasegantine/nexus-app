@@ -5,6 +5,7 @@ import { db } from "@/lib/db"
 import { revalidatePath } from "next/cache"
 import { generateSlug, ensureUniqueSlug } from "@/lib/slug"
 import { AppRoutes } from "@/constants/routes"
+import { ACTION_MESSAGES, DEMO_MESSAGES } from "@/constants/messages"
 import type { ActionResult } from "@/types/actions"
 import { SAMPLE_PROJECTS } from "./sample-data"
 import { DEMO_ERROR, isDemoUser } from "@/lib/demo-guard"
@@ -12,7 +13,7 @@ import { DEMO_ERROR, isDemoUser } from "@/lib/demo-guard"
 export async function populateSampleData(): Promise<ActionResult> {
   const session = await auth()
   if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
+    return { success: false, error: ACTION_MESSAGES.UNAUTHORIZED }
   }
   if (isDemoUser(session.user.email)) {
     return { success: false, error: DEMO_ERROR }
@@ -22,7 +23,7 @@ export async function populateSampleData(): Promise<ActionResult> {
 
   const existingCount = await db.project.count({ where: { userId } })
   if (existingCount > 0) {
-    return { success: false, error: "Your workspace already has projects" }
+    return { success: false, error: DEMO_MESSAGES.WORKSPACE_ALREADY_HAS_PROJECTS }
   }
 
   const projectsWithSlugs = await Promise.all(

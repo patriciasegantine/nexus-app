@@ -19,6 +19,7 @@ import { projectFormSchema as projectSchema, type ProjectFormValues, type Projec
 import { DEFAULT_PROJECT_COLOR } from "../project-card/project-card.utils"
 import { toast } from "@/hooks/use-toast"
 import { ProjectDialogForm } from "./project-dialog-form"
+import { PROJECT_MESSAGES } from "@/constants/messages"
 
 function toDateString(date: Date | null | undefined): string {
   if (!date) return ""
@@ -118,7 +119,6 @@ export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProp
         setShowDiscardConfirm(true)
         return
       }
-      setTimeout(() => { document.body.style.pointerEvents = '' }, 0)
       onOpenChange(false)
       return
     }
@@ -127,7 +127,6 @@ export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProp
 
   function handleDiscard() {
     setShowDiscardConfirm(false)
-    setTimeout(() => { document.body.style.pointerEvents = '' }, 0)
     onOpenChange(false)
   }
 
@@ -153,6 +152,7 @@ export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProp
         return
       }
 
+      toast({ variant: "success", title: isEditing ? PROJECT_MESSAGES.UPDATED : PROJECT_MESSAGES.CREATED })
       onOpenChange(false)
     })
   }

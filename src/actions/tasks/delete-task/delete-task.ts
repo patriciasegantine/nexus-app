@@ -1,6 +1,7 @@
 "use server"
 
 import { auth } from "@/auth"
+import { ACTION_MESSAGES, TASK_MESSAGES } from "@/constants/messages"
 import { db } from "@/lib/db"
 import { revalidateTaskPaths, type ActionResult } from "../shared"
 import { isDemoUser, DEMO_ERROR } from "@/lib/demo-guard"
@@ -10,7 +11,7 @@ export async function deleteTask(
 ): Promise<ActionResult<void>> {
   const session = await auth()
   if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
+    return { success: false, error: ACTION_MESSAGES.UNAUTHORIZED }
   }
 
   if (isDemoUser(session.user.email)) {
@@ -23,7 +24,7 @@ export async function deleteTask(
   })
 
   if (!existing) {
-    return { success: false, error: "Task not found" }
+    return { success: false, error: TASK_MESSAGES.NOT_FOUND }
   }
 
   await db.task.delete({

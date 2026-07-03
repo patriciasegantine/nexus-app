@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { auth } from "@/auth"
+import { ACTION_MESSAGES, PROJECT_MESSAGES } from "@/constants/messages"
 import { AppRoutes } from "@/constants/routes"
 import { db } from "@/lib/db"
 import { createTaskSchema } from "@/validations/task"
@@ -13,7 +14,7 @@ export async function createTask(
 ): Promise<ActionResult<{ id: string }>> {
   const session = await auth()
   if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
+    return { success: false, error: ACTION_MESSAGES.UNAUTHORIZED }
   }
 
   if (isDemoUser(session.user.email)) {
@@ -41,7 +42,7 @@ export async function createTask(
   })
 
   if (!project) {
-    return { success: false, error: "Project not found" }
+    return { success: false, error: PROJECT_MESSAGES.NOT_FOUND }
   }
 
   const task = await db.task.create({

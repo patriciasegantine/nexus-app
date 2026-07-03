@@ -9,6 +9,7 @@ import { getCroppedBlob } from '@/lib/crop-image'
 import { updateAvatar } from '@/actions/settings'
 import { toast } from '@/hooks/use-toast'
 import type { Mode } from '@/components/settings/profile/avatar-upload-dialog'
+import { SETTINGS_MESSAGES } from '@/constants/messages'
 
 type AvatarUploadProps = {
   src: string | null | undefined
@@ -90,7 +91,7 @@ export function AvatarUpload({ src, name, onSave, onRemove }: AvatarUploadProps)
 
       const result = await updateAvatar(formData)
       if (!result.success) {
-        toast({ variant: 'destructive', description: result.error ?? 'Upload failed' })
+        toast({ variant: 'destructive', description: result.error ?? SETTINGS_MESSAGES.AVATAR_UPLOAD_FAILED })
         return
       }
 

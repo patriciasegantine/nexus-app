@@ -3,13 +3,14 @@ import { revalidatePath } from "next/cache"
 import { AppRoutes } from "@/constants/routes"
 import { parseTags } from "@/actions/shared"
 import { isDemoUser, DEMO_ERROR } from "@/lib/demo-guard"
+import { ACTION_MESSAGES } from "@/constants/messages"
 
 type AuthSuccess = { userId: string }
 type AuthFailure = { error: string }
 
 export async function requireProjectAuth(): Promise<AuthSuccess | AuthFailure> {
   const session = await auth()
-  if (!session?.user?.id) return { error: "Unauthorized" }
+  if (!session?.user?.id) return { error: ACTION_MESSAGES.UNAUTHORIZED }
   if (isDemoUser(session.user.email)) return { error: DEMO_ERROR }
   return { userId: session.user.id }
 }

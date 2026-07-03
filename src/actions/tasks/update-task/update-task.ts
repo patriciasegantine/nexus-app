@@ -1,6 +1,7 @@
 "use server"
 
 import { auth } from "@/auth"
+import { ACTION_MESSAGES, PROJECT_MESSAGES, TASK_MESSAGES } from "@/constants/messages"
 import { db } from "@/lib/db"
 import { updateTaskSchema, updateTaskStatusSchema } from "@/validations/task"
 import {
@@ -17,7 +18,7 @@ export async function updateTask(
 ): Promise<ActionResult<void>> {
   const session = await auth()
   if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
+    return { success: false, error: ACTION_MESSAGES.UNAUTHORIZED }
   }
 
   if (isDemoUser(session.user.email)) {
@@ -47,7 +48,7 @@ export async function updateTask(
   })
 
   if (!existing) {
-    return { success: false, error: "Task not found" }
+    return { success: false, error: TASK_MESSAGES.NOT_FOUND }
   }
 
   if (parsed.data.projectId && parsed.data.projectId !== existing.projectId) {
@@ -56,7 +57,7 @@ export async function updateTask(
       select: { id: true },
     })
     if (!project) {
-      return { success: false, error: "Project not found" }
+      return { success: false, error: PROJECT_MESSAGES.NOT_FOUND }
     }
   }
 
@@ -82,7 +83,7 @@ export async function updateTaskStatus(
 ): Promise<ActionResult<void>> {
   const session = await auth()
   if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
+    return { success: false, error: ACTION_MESSAGES.UNAUTHORIZED }
   }
 
   const parsed = updateTaskStatusSchema.safeParse({
@@ -105,7 +106,7 @@ export async function updateTaskStatus(
   })
 
   if (!existing) {
-    return { success: false, error: "Task not found" }
+    return { success: false, error: TASK_MESSAGES.NOT_FOUND }
   }
 
   await db.task.update({

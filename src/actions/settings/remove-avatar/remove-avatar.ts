@@ -5,10 +5,11 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
 import { DEMO_ERROR, isDemoUser } from '@/lib/demo-guard'
+import { ACTION_MESSAGES } from '@/constants/messages'
 
 export async function removeAvatar() {
   const session = await auth()
-  if (!session?.user?.id) return { success: false, error: 'Unauthorized' }
+  if (!session?.user?.id) return { success: false, error: ACTION_MESSAGES.UNAUTHORIZED }
   if (isDemoUser(session.user.email)) return { success: false, error: DEMO_ERROR }
 
   const user = await db.user.findUnique({

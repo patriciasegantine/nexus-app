@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
 import { clearAllData } from "@/actions/settings"
+import { SETTINGS_MESSAGES } from "@/constants/messages"
 import { CLEAR_DATA_CONFIRMATION } from "@/constants/settings"
 
 export function ClearDataDialog() {
@@ -42,7 +43,7 @@ export function ClearDataDialog() {
 
     if (result.success) {
       setOpen(false)
-      toast({ description: "All data cleared successfully." })
+      toast({ variant: "success", description: SETTINGS_MESSAGES.DATA_CLEARED })
       router.push("/")
     } else {
       toast({ variant: "destructive", description: result.error })

@@ -9,6 +9,7 @@ import { SettingsSection } from '@/components/settings/settings-section'
 import { AvatarUpload } from '@/components/settings/profile/avatar-upload'
 import { updateProfile } from '@/actions/settings'
 import { toast } from '@/hooks/use-toast'
+import { SETTINGS_MESSAGES } from '@/constants/messages'
 
 export function ProfileSettings() {
   const { data: session, update } = useSession()
@@ -33,7 +34,7 @@ export function ProfileSettings() {
         return
       }
       await update({ name: name.trim() })
-      toast({ description: 'Name updated.' })
+      toast({ variant: 'success', description: SETTINGS_MESSAGES.PROFILE_UPDATED })
     })
   }
 
