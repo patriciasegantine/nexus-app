@@ -53,7 +53,7 @@ export function TaskListRow({
         </div>
       </TableCell>
 
-      <TableCell className="hidden xl:table-cell w-64">
+      <TableCell className="hidden lg:table-cell w-64">
         <TaskTags taskId={task.id} tags={task.tags} onTagClick={onTagClick} />
       </TableCell>
 
