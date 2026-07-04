@@ -5,6 +5,7 @@ import { updateProjectSchema } from "@/validations/project"
 import { generateSlug, ensureUniqueSlug } from "@/lib/slug"
 import type { ActionResult } from "@/types/actions"
 import { requireProjectAuth, parseProjectFormData, revalidateProjectPaths } from "../project-action-utils"
+import { PROJECT_MESSAGES } from "@/constants/messages"
 
 export async function updateProject(projectId: string, formData: FormData): Promise<ActionResult<void>> {
   const auth = await requireProjectAuth()
@@ -17,7 +18,7 @@ export async function updateProject(projectId: string, formData: FormData): Prom
     where: { id: projectId, userId: auth.userId },
     select: { id: true, name: true },
   })
-  if (!existing) return { success: false, error: "Project not found" }
+  if (!existing) return { success: false, error: PROJECT_MESSAGES.NOT_FOUND }
 
   let slug: string | undefined
   if (parsed.data.name && parsed.data.name !== existing.name) {

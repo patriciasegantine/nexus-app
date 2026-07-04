@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast"
 import { populateSampleData } from "@/actions/demo"
+import { DEMO_MESSAGES } from "@/constants/messages"
 
 export function SampleDataButton() {
   const [open, setOpen] = useState(false)
@@ -28,7 +29,7 @@ export function SampleDataButton() {
     setLoading(false)
     setOpen(false)
     if (result.success) {
-      toast({ description: "Sample data added! Feel free to explore." })
+      toast({ variant: "success", description: DEMO_MESSAGES.SAMPLE_DATA_ADDED })
     } else {
       toast({ variant: "destructive", description: result.error })
     }

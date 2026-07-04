@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button'
 import { getCroppedBlob } from '@/lib/crop-image'
 import { updateAvatar } from '@/actions/settings'
 import { toast } from '@/hooks/use-toast'
+import { SETTINGS_MESSAGES } from '@/constants/messages'
 
 type AvatarCropModalProps = {
   open: boolean
@@ -44,7 +45,7 @@ export function AvatarCropModal({ open, imageSrc, onClose, onSave }: AvatarCropM
 
       const result = await updateAvatar(formData)
       if (!result.success) {
-        toast({ variant: 'destructive', description: result.error ?? 'Upload failed' })
+        toast({ variant: 'destructive', description: result.error ?? SETTINGS_MESSAGES.AVATAR_UPLOAD_FAILED })
         return
       }
 

@@ -13,6 +13,7 @@ import { SummaryMetric } from "@/components/ui/summary-metric"
 import { TaskDeleteDialog } from "@/components/tasks/task-dialog/task-delete-dialog"
 import { duplicateTask, deleteTask } from "@/actions/tasks"
 import { toast } from "@/hooks/use-toast"
+import { TASK_MESSAGES } from "@/constants/messages"
 import type { TaskListItem } from "@/types/task"
 import type { TaskStats } from "@/lib/data/tasks"
 import type { Project } from "@/types/project"
@@ -103,7 +104,7 @@ export function TasksPageClient({ tasks, total, stats, projects, tags, page, per
     startDuplicate(async () => {
       const result = await duplicateTask(task.id)
       if (result.success) {
-        toast({ title: "Task duplicated successfully." })
+        toast({ variant: "success", title: TASK_MESSAGES.DUPLICATED })
       } else {
         toast({ title: result.error, variant: "destructive" })
       }
@@ -114,7 +115,7 @@ export function TasksPageClient({ tasks, total, stats, projects, tags, page, per
     setTaskToDelete(null)
     const result = await deleteTask(id)
     if (result.success) {
-      toast({ title: "Task deleted." })
+      toast({ variant: "success", title: TASK_MESSAGES.DELETED })
     } else {
       toast({ title: result.error, variant: "destructive" })
     }

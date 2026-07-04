@@ -11,6 +11,7 @@ import { changePassword } from "@/actions/settings"
 import { INVALID_INPUT_CLASS } from "@/lib/form-styles"
 import { cn } from "@/lib/utils"
 import { toast } from "@/hooks/use-toast"
+import { SETTINGS_MESSAGES } from "@/constants/messages"
 
 function PasswordToggle({
   visible,
@@ -80,7 +81,7 @@ export function ChangePasswordForm({ hasPassword }: ChangePasswordFormProps) {
         return
       }
       resetForm()
-      toast({ description: "Password updated." })
+      toast({ variant: "success", description: SETTINGS_MESSAGES.PASSWORD_UPDATED })
     })
   }
 

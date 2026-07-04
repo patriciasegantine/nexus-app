@@ -5,6 +5,7 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+import { useRestoreBodyPointerEvents } from "@/hooks/use-restore-body-pointer-events"
 
 const AlertDialog = AlertDialogPrimitive.Root
 
@@ -30,7 +31,10 @@ AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName
 const AlertDialogContent = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+>(({ className, children, ...props }, ref) => {
+  useRestoreBodyPointerEvents()
+
+  return (
   <AlertDialogPortal>
     <AlertDialogOverlay />
     <AlertDialogPrimitive.Content
@@ -48,7 +52,8 @@ const AlertDialogContent = React.forwardRef<
       {children}
     </AlertDialogPrimitive.Content>
   </AlertDialogPortal>
-))
+  )
+})
 AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName
 
 const AlertDialogHeader = ({

@@ -4,6 +4,7 @@ import { headers } from "next/headers"
 import { AuthError } from "next-auth"
 import { signIn } from "@/auth"
 import { isRateLimited } from "@/lib/rate-limit"
+import { DEMO_MESSAGES } from "@/constants/messages"
 
 export type DemoLoginResult =
   | { success: true }
@@ -29,7 +30,7 @@ export async function demoLogin(): Promise<DemoLoginResult> {
       hasDemoLoginSecret: Boolean(secret),
       hasDemoUserEmail: Boolean(demoEmail),
     })
-    return { success: false, error: "The demo is temporarily unavailable. Please try again later." }
+    return { success: false, error: DEMO_MESSAGES.UNAVAILABLE }
   }
 
   try {
@@ -41,7 +42,7 @@ export async function demoLogin(): Promise<DemoLoginResult> {
   } catch (error) {
     if (error instanceof AuthError) {
       console.error("demo_login_failed", { type: error.type })
-      return { success: false, error: "The demo is temporarily unavailable. Please try again later." }
+      return { success: false, error: DEMO_MESSAGES.UNAVAILABLE }
     }
 
     throw error

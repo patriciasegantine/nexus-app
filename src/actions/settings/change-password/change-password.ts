@@ -2,7 +2,7 @@
 
 import bcrypt from "bcryptjs"
 import { auth } from "@/auth"
-import { AUTH_MESSAGES } from "@/constants/messages"
+import { ACTION_MESSAGES, AUTH_MESSAGES, SETTINGS_MESSAGES } from "@/constants/messages"
 import { AppRoutes } from "@/constants/routes"
 import { db } from "@/lib/db"
 import type { ActionResult } from "@/types/actions"
@@ -13,7 +13,7 @@ import { DEMO_ERROR, isDemoUser } from "@/lib/demo-guard"
 export async function changePassword(formData: FormData): Promise<ActionResult> {
   const session = await auth()
   if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
+    return { success: false, error: ACTION_MESSAGES.UNAUTHORIZED }
   }
   if (isDemoUser(session.user.email)) {
     return { success: false, error: DEMO_ERROR }
@@ -35,12 +35,12 @@ export async function changePassword(formData: FormData): Promise<ActionResult> 
   })
 
   if (!user?.password) {
-    return { success: false, error: "Password changes are only available for email/password accounts" }
+    return { success: false, error: SETTINGS_MESSAGES.PASSWORD_PROVIDER_UNAVAILABLE }
   }
 
   const currentPasswordMatches = await bcrypt.compare(parsed.data.currentPassword, user.password)
   if (!currentPasswordMatches) {
-    return { success: false, error: "Current password is incorrect" }
+    return { success: false, error: SETTINGS_MESSAGES.CURRENT_PASSWORD_INCORRECT }
   }
 
   const isSamePassword = await bcrypt.compare(parsed.data.newPassword, user.password)

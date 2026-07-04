@@ -2,6 +2,7 @@
 
 import { useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
+import { restoreBodyPointerEventsIfUnlocked } from "@/hooks/use-restore-body-pointer-events"
 import {
   Toast,
   ToastClose,
@@ -44,6 +45,11 @@ function ToastItem({ title, description, action, dismiss, ...props }: {
 
 export function Toaster() {
   const { toasts, dismiss } = useToast()
+
+  useEffect(() => {
+    const timer = setTimeout(restoreBodyPointerEventsIfUnlocked, 0)
+    return () => clearTimeout(timer)
+  }, [toasts.length])
 
   return (
     <ToastProvider>

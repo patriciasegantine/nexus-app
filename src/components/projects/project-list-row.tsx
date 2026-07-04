@@ -35,6 +35,7 @@ import { toast } from "@/hooks/use-toast"
 import type { ProjectBoardItem } from "@/types/project"
 import { formatProjectDate } from "@/components/projects/project-card/project-card.utils"
 import { ProjectPriorityMeta, ProjectStatusMeta } from "@/components/projects/project-meta"
+import { PROJECT_MESSAGES } from "@/constants/messages"
 
 interface ProjectListRowProps {
   project: ProjectBoardItem
@@ -66,6 +67,7 @@ export function ProjectListRow({ project, onTagClick }: ProjectListRowProps) {
         toast({ variant: "destructive", description: result.error })
         return
       }
+      toast({ variant: "success", title: PROJECT_MESSAGES.DELETED })
       setDeleteOpen(false)
       setDeleteConfirm("")
       router.refresh()

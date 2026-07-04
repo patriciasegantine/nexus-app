@@ -21,6 +21,7 @@ import { format } from "date-fns"
 import type { TaskCard } from "@/types/task"
 import { toast } from "@/hooks/use-toast"
 import { TaskDialogForm } from "./task-dialog-form"
+import { TASK_MESSAGES } from "@/constants/messages"
 
 export interface TaskFormData {
   priority: string
@@ -104,7 +105,6 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
         setShowDiscardConfirm(true)
         return
       }
-      setTimeout(() => { document.body.style.pointerEvents = '' }, 0)
       onOpenChange(false)
       return
     }
@@ -113,7 +113,6 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
 
   function handleDiscard() {
     setShowDiscardConfirm(false)
-    setTimeout(() => { document.body.style.pointerEvents = '' }, 0)
     onOpenChange(false)
   }
 
@@ -137,6 +136,7 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
         return
       }
 
+      toast({ variant: "success", title: isEditing ? TASK_MESSAGES.UPDATED : TASK_MESSAGES.CREATED })
       onOpenChange(false)
     })
   }

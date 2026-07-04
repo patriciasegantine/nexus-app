@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
 import { deleteAccount } from "@/actions/settings"
+import { SETTINGS_MESSAGES } from "@/constants/messages"
 import { DELETE_ACCOUNT_CONFIRMATION } from "@/constants/settings"
 
 export function DeleteAccountDialog() {
@@ -41,7 +42,7 @@ export function DeleteAccountDialog() {
 
     if (result.success) {
       setOpen(false)
-      toast({ description: "Account deleted." })
+      toast({ variant: "success", description: SETTINGS_MESSAGES.ACCOUNT_DELETED })
       await signOut({ callbackUrl: "/login" })
     } else {
       toast({ variant: "destructive", description: result.error })

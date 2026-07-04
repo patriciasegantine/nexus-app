@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tag } from "@/components/ui/tag"
 import { toast } from "@/hooks/use-toast"
+import { TAG_MESSAGES } from "@/constants/messages"
 import {
   Tooltip,
   TooltipContent,
@@ -118,7 +119,7 @@ export function TaskTags({ taskId, tags, onTagClick, showAll = false }: TaskTags
       setCurrentTags(result.data)
       setTagInput("")
       setAddOpen(false)
-      toast({ title: "Tag added." })
+      toast({ variant: "success", title: TAG_MESSAGES.ADDED })
     })
   }
 

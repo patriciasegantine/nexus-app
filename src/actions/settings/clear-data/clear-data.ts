@@ -8,6 +8,7 @@ import { AppRoutes } from "@/constants/routes"
 import { CLEAR_DATA_CONFIRMATION } from "@/constants/settings"
 import type { ActionResult } from "@/types/actions"
 import { isDemoUser, DEMO_ERROR } from "@/lib/demo-guard"
+import { ACTION_MESSAGES } from "@/constants/messages"
 
 const clearAllDataSchema = z.object({
   confirmation: z.literal(CLEAR_DATA_CONFIRMATION, {
@@ -18,7 +19,7 @@ const clearAllDataSchema = z.object({
 export async function clearAllData(formData: FormData): Promise<ActionResult> {
   const session = await auth()
   if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
+    return { success: false, error: ACTION_MESSAGES.UNAUTHORIZED }
   }
 
   if (isDemoUser(session.user.email)) {
