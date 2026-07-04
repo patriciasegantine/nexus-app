@@ -1,7 +1,7 @@
 import { CheckCircle2, ListTodo, Timer, AlertCircle } from 'lucide-react'
 import { TASK_STATUS_COLORS } from '@/constants/task'
 import { AppRoutes } from '@/constants/routes'
-import { StatCard } from './stat-card'
+import { SummaryMetric } from '@/components/ui/summary-metric'
 
 interface DashboardStatsProps {
   totalTasks: number
@@ -15,35 +15,35 @@ export function DashboardStats({ totalTasks, inProgress, completed, overdue }: D
 
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-      <StatCard
-        title="Total Tasks"
+      <SummaryMetric
+        icon={ListTodo}
+        label="Total Tasks"
         value={totalTasks}
         description={isEmpty ? "Start by creating your first project" : "across all projects"}
-        Icon={ListTodo}
         color={TASK_STATUS_COLORS.TODO}
         href={AppRoutes.DASHBOARD.TASKS}
       />
-      <StatCard
-        title="In Progress"
+      <SummaryMetric
+        icon={Timer}
+        label="In Progress"
         value={inProgress}
         description="currently active"
-        Icon={Timer}
         color={TASK_STATUS_COLORS.IN_PROGRESS}
         href={`${AppRoutes.DASHBOARD.TASKS}?status=IN_PROGRESS`}
       />
-      <StatCard
-        title="Done"
+      <SummaryMetric
+        icon={CheckCircle2}
+        label="Done"
         value={completed}
         description="tasks done"
-        Icon={CheckCircle2}
         color={TASK_STATUS_COLORS.DONE}
         href={`${AppRoutes.DASHBOARD.TASKS}?status=DONE`}
       />
-      <StatCard
-        title="Overdue"
+      <SummaryMetric
+        icon={AlertCircle}
+        label="Overdue"
         value={overdue}
         description="past due date"
-        Icon={AlertCircle}
         color="hsl(var(--destructive))"
         href={`${AppRoutes.DASHBOARD.TASKS}?dueDate=overdue`}
       />
