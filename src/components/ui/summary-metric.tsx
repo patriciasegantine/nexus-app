@@ -30,7 +30,7 @@ export function SummaryMetric({
     >
       <div
         className={cn(
-          "flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground sm:h-10 sm:w-10",
+          "flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground sm:h-10 sm:w-10",
           tone === "danger" && !color && "bg-orange-100 text-orange-600 dark:bg-orange-500/15 dark:text-orange-400"
         )}
         style={color ? { backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`, color } : undefined}
