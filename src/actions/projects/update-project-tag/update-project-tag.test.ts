@@ -23,24 +23,28 @@ jest.mock("next/cache", () => ({
   revalidatePath: jest.fn(),
 }))
 
+const mockAuth = auth as jest.Mock
+const mockFindUnique = db.project.findUnique as jest.Mock
+const mockUpdate = db.project.update as jest.Mock
+
 describe("updateProjectTag", () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
   it("adds a normalized tag to a user-owned project", async () => {
-    ;(auth as jest.Mock).mockResolvedValue({ user: { id: "user-1" } })
-    ;(db.project.findUnique as jest.Mock).mockResolvedValue({ tags: ["design"] })
-    ;(db.project.update as jest.Mock).mockResolvedValue({})
+    mockAuth.mockResolvedValue({ user: { id: "user-1" } })
+    mockFindUnique.mockResolvedValue({ tags: ["design"] })
+    mockUpdate.mockResolvedValue({})
 
     const result = await updateProjectTag("project-1", " Frontend ", "add")
 
     expect(result).toEqual({ success: true, data: ["design", "frontend"] })
-    expect(db.project.findUnique).toHaveBeenCalledWith({
+    expect(mockFindUnique).toHaveBeenCalledWith({
       where: { id: "project-1", userId: "user-1" },
       select: { tags: true },
     })
-    expect(db.project.update).toHaveBeenCalledWith({
+    expect(mockUpdate).toHaveBeenCalledWith({
       where: { id: "project-1", userId: "user-1" },
       data: { tags: ["design", "frontend"] },
     })
@@ -49,16 +53,16 @@ describe("updateProjectTag", () => {
   })
 
   it("removes a normalized tag from a user-owned project", async () => {
-    ;(auth as jest.Mock).mockResolvedValue({ user: { id: "user-1" } })
-    ;(db.project.findUnique as jest.Mock).mockResolvedValue({
+    mockAuth.mockResolvedValue({ user: { id: "user-1" } })
+    mockFindUnique.mockResolvedValue({
       tags: ["design", "frontend", "ux"],
     })
-    ;(db.project.update as jest.Mock).mockResolvedValue({})
+    mockUpdate.mockResolvedValue({})
 
     const result = await updateProjectTag("project-1", " Frontend ", "remove")
 
     expect(result).toEqual({ success: true, data: ["design", "ux"] })
-    expect(db.project.update).toHaveBeenCalledWith({
+    expect(mockUpdate).toHaveBeenCalledWith({
       where: { id: "project-1", userId: "user-1" },
       data: { tags: ["design", "ux"] },
     })
@@ -67,44 +71,44 @@ describe("updateProjectTag", () => {
   })
 
   it("rejects duplicate tags without updating", async () => {
-    ;(auth as jest.Mock).mockResolvedValue({ user: { id: "user-1" } })
-    ;(db.project.findUnique as jest.Mock).mockResolvedValue({ tags: ["frontend"] })
+    mockAuth.mockResolvedValue({ user: { id: "user-1" } })
+    mockFindUnique.mockResolvedValue({ tags: ["frontend"] })
 
     const result = await updateProjectTag("project-1", "frontend", "add")
 
     expect(result).toEqual({ success: false, error: "Tag already added" })
-    expect(db.project.update).not.toHaveBeenCalled()
+    expect(mockUpdate).not.toHaveBeenCalled()
     expect(revalidatePath).not.toHaveBeenCalled()
   })
 
   it("rejects tags beyond the project tag limit", async () => {
-    ;(auth as jest.Mock).mockResolvedValue({ user: { id: "user-1" } })
-    ;(db.project.findUnique as jest.Mock).mockResolvedValue({
+    mockAuth.mockResolvedValue({ user: { id: "user-1" } })
+    mockFindUnique.mockResolvedValue({
       tags: Array.from({ length: MAX_TAGS }, (_, index) => `tag-${index}`),
     })
 
     const result = await updateProjectTag("project-1", "extra", "add")
 
     expect(result).toEqual({ success: false, error: `Maximum ${MAX_TAGS} tags allowed` })
-    expect(db.project.update).not.toHaveBeenCalled()
+    expect(mockUpdate).not.toHaveBeenCalled()
   })
 
   it("does not reveal projects owned by another user", async () => {
-    ;(auth as jest.Mock).mockResolvedValue({ user: { id: "user-1" } })
-    ;(db.project.findUnique as jest.Mock).mockResolvedValue(null)
+    mockAuth.mockResolvedValue({ user: { id: "user-1" } })
+    mockFindUnique.mockResolvedValue(null)
 
     const result = await updateProjectTag("project-2", "frontend", "add")
 
     expect(result).toEqual({ success: false, error: "Project not found" })
-    expect(db.project.update).not.toHaveBeenCalled()
+    expect(mockUpdate).not.toHaveBeenCalled()
   })
 
   it("requires an authenticated user", async () => {
-    ;(auth as jest.Mock).mockResolvedValue(null)
+    mockAuth.mockResolvedValue(null)
 
     const result = await updateProjectTag("project-1", "frontend", "add")
 
     expect(result).toEqual({ success: false, error: "Unauthorized" })
-    expect(db.project.findUnique).not.toHaveBeenCalled()
+    expect(mockFindUnique).not.toHaveBeenCalled()
   })
 })
