@@ -54,13 +54,13 @@ This document captures what the project currently does, what it needs to feel co
 
 Small gaps that matter for a finished feel.
 
-- [ ] **Drag-and-drop Kanban** — `@hello-pangea/dnd` is already installed; wire it up to `updateTaskStatus`
+- [x] **Drag-and-drop Kanban** — `@hello-pangea/dnd` is already installed; wire it up to `updateTaskStatus`
 - [x] **Change password in settings** — email/password users have no way to update their password
 - [x] **Delete account** — Danger Zone clears data but does not remove the user record
 - [x] **Task sorting** — currently fixed to `updatedAt desc`; expose sort options in the UI
 - [x] **Project search** — the projects list has no search or filter
-- [ ] **Granular loading skeletons** — `loading.tsx` files exist but pages load as a unit; add per-component Skeleton
-- [ ] **Unit tests for critical actions** — projects (create, update, delete) and tasks (create, update, delete, duplicate) have zero test coverage; auth and settings actions are already covered
+- [x] **Granular loading skeletons (Dashboard)** — Dashboard now streams each section (stats, charts, recent tasks, recent projects) via independent Suspense boundaries with per-section skeletons instead of one whole-page `loading.tsx`. Tasks/Projects pages still load as a unit — deferred due to higher refactor risk (client components hold cross-cutting interactive state)
+- [x] **Unit tests for critical actions** — projects (create, update, delete, fetch, tags) and tasks (create, update, status, delete, duplicate, tags) now fully covered; auth and settings actions were already covered
 
 ---
 
@@ -108,7 +108,7 @@ Everything needed to go from a personal tool to a multi-user product.
 - [ ] **Rate limiting on all mutations** — not just auth endpoints
 - [ ] **Error monitoring** — Sentry (or equivalent)
 - [ ] **Product analytics** — PostHog or Mixpanel for feature adoption tracking
-- [ ] **CI/CD pipeline** — GitHub Actions: lint + typecheck + test on every PR
+- [x] **CI/CD pipeline** — GitHub Actions: lint + typecheck + test on every PR
 - [ ] **E2E tests** — Playwright (already installed as a dev dependency)
 - [ ] **Uptime monitoring** — external health checks and alerting
 
