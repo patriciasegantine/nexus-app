@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth"
 import { ACTION_MESSAGES, TAG_MESSAGES, TASK_MESSAGES } from "@/constants/messages"
-import { MAX_TAG_LENGTH, MAX_TAGS } from "@/constants/tags"
+import { MAX_TAG_LENGTH, MAX_TAGS, TAG_NAME_REGEX } from "@/constants/tags"
 import { db } from "@/lib/db"
 import { DEMO_ERROR, isDemoUser } from "@/lib/demo-guard"
 import { revalidateTaskPaths, type ActionResult } from "../shared"
@@ -23,6 +23,9 @@ export async function addTaskTag(
   if (!tag) return { success: false, error: TAG_MESSAGES.REQUIRED }
   if (tag.length > MAX_TAG_LENGTH) {
     return { success: false, error: TAG_MESSAGES.MAX_LENGTH(MAX_TAG_LENGTH) }
+  }
+  if (!TAG_NAME_REGEX.test(tag)) {
+    return { success: false, error: TAG_MESSAGES.INVALID }
   }
 
   const task = await db.task.findUnique({
