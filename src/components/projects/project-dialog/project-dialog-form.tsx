@@ -70,6 +70,7 @@ interface ProjectDialogFormProps {
   onTagsChange: (tags: string[]) => void
   tagInput: string
   onTagInputChange: (value: string) => void
+  tagSuggestions?: string[]
   formData: ProjectFormData
   onFormDataChange: SetFormField
   onCancel: () => void
@@ -106,6 +107,7 @@ export function ProjectDialogForm({
   onTagsChange,
   tagInput,
   onTagInputChange,
+  tagSuggestions,
   formData,
   onFormDataChange,
   onCancel,
@@ -158,6 +160,7 @@ export function ProjectDialogForm({
               onChange={onTagsChange}
               inputValue={tagInput}
               onInputChange={onTagInputChange}
+              suggestions={tagSuggestions}
             />
           </div>
         </div>
