@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { createProject, updateProject } from "@/actions/projects"
+import { createProject, fetchProjectTags, updateProject } from "@/actions/projects"
 import { projectFormSchema as projectSchema, type ProjectFormValues, type ProjectStatus, type ProjectPriority } from "@/validations/project"
 import { DEFAULT_PROJECT_COLOR } from "../project-card/project-card.utils"
 import { toast } from "@/hooks/use-toast"
@@ -66,6 +66,7 @@ export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProp
   const [isPending, startTransition] = useTransition()
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState("")
+  const [tagSuggestions, setTagSuggestions] = useState<string[]>([])
   const [projectFormData, setProjectFormData] = useState<ProjectFormData>(DEFAULT_PROJECT_FORM_DATA)
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
 
@@ -93,6 +94,8 @@ export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProp
       setProjectFormData(initProjectFormData)
       initialProjectFormData.current = initProjectFormData
       initialTags.current = initTags
+
+      fetchProjectTags().then(setTagSuggestions)
     }
   }, [open, project, reset])
 
@@ -178,6 +181,7 @@ export function ProjectDialog({ open, onOpenChange, project }: ProjectDialogProp
               onTagsChange={setTags}
               tagInput={tagInput}
               onTagInputChange={setTagInput}
+              tagSuggestions={tagSuggestions}
               formData={projectFormData}
               onFormDataChange={setFormField}
               onCancel={() => handleOpenChange(false)}

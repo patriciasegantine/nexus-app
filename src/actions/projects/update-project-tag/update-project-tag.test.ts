@@ -70,6 +70,32 @@ describe("updateProjectTag", () => {
     expect(revalidatePath).toHaveBeenCalledWith(AppRoutes.DASHBOARD.HOME)
   })
 
+  it("rejects a tag with disallowed characters when adding", async () => {
+    mockAuth.mockResolvedValue({ user: { id: "user-1" } })
+
+    const result = await updateProjectTag("project-1", "#,mnmnm", "add")
+
+    expect(result).toEqual({
+      success: false,
+      error: "Tags can only contain letters and numbers, separated by spaces, hyphens or underscores",
+    })
+    expect(mockFindUnique).not.toHaveBeenCalled()
+  })
+
+  it("still allows removing a legacy malformed tag", async () => {
+    mockAuth.mockResolvedValue({ user: { id: "user-1" } })
+    mockFindUnique.mockResolvedValue({ tags: ["design", "#,mnmnm"] })
+    mockUpdate.mockResolvedValue({})
+
+    const result = await updateProjectTag("project-1", "#,mnmnm", "remove")
+
+    expect(result).toEqual({ success: true, data: ["design"] })
+    expect(mockUpdate).toHaveBeenCalledWith({
+      where: { id: "project-1", userId: "user-1" },
+      data: { tags: ["design"] },
+    })
+  })
+
   it("rejects duplicate tags without updating", async () => {
     mockAuth.mockResolvedValue({ user: { id: "user-1" } })
     mockFindUnique.mockResolvedValue({ tags: ["frontend"] })

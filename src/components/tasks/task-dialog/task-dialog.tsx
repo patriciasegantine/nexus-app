@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { createTask, updateTask } from "@/actions/tasks"
+import { createTask, fetchTaskTags, updateTask } from "@/actions/tasks"
 import { fetchProjects } from "@/actions/projects"
 import { taskFormSchema as taskSchema, type TaskFormValues } from "@/validations/task"
 import { format } from "date-fns"
@@ -50,6 +50,7 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
   const [projects, setProjects] = useState<{ id: string; name: string }[]>([])
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState("")
+  const [tagSuggestions, setTagSuggestions] = useState<string[]>([])
   const [taskFormData, setTaskFormData] = useState<TaskFormData>(DEFAULT_TASK_FORM_DATA)
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
 
@@ -81,6 +82,7 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
       if (isEditing || !projectId) {
         fetchProjects().then(setProjects)
       }
+      fetchTaskTags().then(setTagSuggestions)
     }
   }, [open, task, projectId, isEditing, reset])
 
@@ -166,6 +168,7 @@ export function TaskDialog({ open, onOpenChange, projectId, task }: TaskDialogPr
               onTagsChange={setTags}
               tagInput={tagInput}
               onTagInputChange={setTagInput}
+              tagSuggestions={tagSuggestions}
               taskFormData={taskFormData}
               onTaskFormDataChange={setFormField}
               onCancel={() => handleOpenChange(false)}

@@ -69,6 +69,18 @@ describe("addTaskTag", () => {
     expect(mockFindUnique).not.toHaveBeenCalled()
   })
 
+  it("rejects a tag with disallowed characters", async () => {
+    mockAuth.mockResolvedValue({ user: { id: "user-1" } })
+
+    const result = await addTaskTag("task-1", "#,mnmnm")
+
+    expect(result).toEqual({
+      success: false,
+      error: "Tags can only contain letters and numbers, separated by spaces, hyphens or underscores",
+    })
+    expect(mockFindUnique).not.toHaveBeenCalled()
+  })
+
   it("rejects duplicate tags without updating", async () => {
     mockAuth.mockResolvedValue({ user: { id: "user-1" } })
     mockFindUnique.mockResolvedValue({ tags: ["frontend"] })

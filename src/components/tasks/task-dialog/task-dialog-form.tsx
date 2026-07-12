@@ -36,6 +36,7 @@ interface TaskDialogFormProps {
   onTagsChange: (tags: string[]) => void
   tagInput: string
   onTagInputChange: (value: string) => void
+  tagSuggestions?: string[]
   taskFormData: TaskFormData
   onTaskFormDataChange: SetTaskFormField
   onCancel: () => void
@@ -54,6 +55,7 @@ export function TaskDialogForm({
   onTagsChange,
   tagInput,
   onTagInputChange,
+  tagSuggestions,
   taskFormData,
   onTaskFormDataChange,
   onCancel,
@@ -96,6 +98,7 @@ export function TaskDialogForm({
               onChange={onTagsChange}
               inputValue={tagInput}
               onInputChange={onTagInputChange}
+              suggestions={tagSuggestions}
             />
           </div>
         </div>

@@ -48,6 +48,7 @@ export const TASK_MESSAGES = {
 export const TAG_MESSAGES = {
   REQUIRED: "Tag is required",
   ALREADY_ADDED: "Tag already added",
+  INVALID: "Tags can only contain letters and numbers, separated by spaces, hyphens or underscores",
   MAX_LENGTH: (maxLength: number) => `Tags must be at most ${maxLength} characters`,
   MAX_COUNT: (maxTags: number) => `Maximum ${maxTags} tags allowed`,
   ADDED: "Tag added.",

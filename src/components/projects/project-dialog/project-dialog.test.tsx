@@ -9,6 +9,7 @@ const mockToast = jest.fn()
 jest.mock("@/actions/projects", () => ({
   createProject: jest.fn(),
   updateProject: jest.fn(),
+  fetchProjectTags: jest.fn().mockResolvedValue([]),
 }))
 
 jest.mock("@/hooks/use-toast", () => ({
